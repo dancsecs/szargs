@@ -26,7 +26,7 @@ import (
 	"github.com/dancsecs/sztestlog"
 )
 
-func TestSzArgs_NeedNextArg(t *testing.T) {
+func TestSzArgs_Next(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
@@ -36,7 +36,7 @@ func TestSzArgs_NeedNextArg(t *testing.T) {
 		err  error
 	)
 
-	arg, args, err = szargs.NeedNextArg("TestArg", args)
+	arg, args, err = szargs.Next("TestArg", args)
 
 	chk.Str(arg, "")
 	chk.StrSlice(args, nil)
@@ -47,19 +47,19 @@ func TestSzArgs_NeedNextArg(t *testing.T) {
 
 	args = []string{"arg1", "arg2"}
 
-	arg, args, err = szargs.NeedNextArg("TestArg", args)
+	arg, args, err = szargs.Next("TestArg", args)
 
 	chk.Str(arg, "arg1")
 	chk.StrSlice(args, []string{"arg2"})
 	chk.NoErr(err)
 
-	arg, args, err = szargs.NeedNextArg("TestArg", args)
+	arg, args, err = szargs.Next("TestArg", args)
 
 	chk.Str(arg, "arg2")
 	chk.StrSlice(args, nil)
 	chk.NoErr(err)
 
-	arg, args, err = szargs.NeedNextArg("TestArg", args)
+	arg, args, err = szargs.Next("TestArg", args)
 
 	chk.Str(arg, "")
 	chk.StrSlice(args, nil)
@@ -67,6 +67,41 @@ func TestSzArgs_NeedNextArg(t *testing.T) {
 		err,
 		szargs.ErrMissing.Error()+": TestArg",
 	)
+}
+
+func TestSzArgs_Last(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	var (
+		arg  string
+		args []string
+		err  error
+	)
+
+	arg, args, err = szargs.Last("TestArg", args)
+
+	chk.Str(arg, "")
+	chk.StrSlice(args, nil)
+	chk.Err(
+		err,
+		"missing argument: TestArg",
+	)
+
+	arg, args, err = szargs.Last("TestArg", []string{"arg1", "arg2"})
+
+	chk.Str(arg, "")
+	chk.StrSlice(args, []string{"arg1", "arg2"})
+	chk.Err(
+		err,
+		"unexpected argument: [arg2]",
+	)
+
+	arg, args, err = szargs.Last("TestArg", []string{"arg2"})
+
+	chk.Str(arg, "arg2")
+	chk.StrSlice(args, nil)
+	chk.NoErr(err)
 }
 
 func TestSzArgs_ArgCount(t *testing.T) {

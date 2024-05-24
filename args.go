@@ -26,8 +26,9 @@ import (
 
 // Exported errors.
 var (
-	ErrAmbiguous = errors.New("ambiguous argument")
-	ErrMissing   = errors.New("missing argument")
+	ErrAmbiguous  = errors.New("ambiguous argument")
+	ErrMissing    = errors.New("missing argument")
+	ErrUnexpected = errors.New("unexpected argument")
 )
 
 // Arg represents a single argument.
@@ -140,17 +141,37 @@ func (a Arg) Values(args []string) ([]string, []string, error) {
 	return values, cleanedArgs, nil
 }
 
-// NeedNextArg is a helper method to consume the next arg returning an error
+// Next is a helper method to consume the next arg returning an error
 // if there are no more args.  Otherwise it extracts the first argument
 // returning the modified list.
-func NeedNextArg(name string, args []string) (string, []string, error) {
+func Next(name string, args []string) (string, []string, error) {
 	if len(args) < 1 {
-		return "", nil, fmt.Errorf(
+		return "", args, fmt.Errorf(
 			"%w: %s", ErrMissing, name,
 		)
 	}
 
 	return args[0], args[1:], nil
+}
+
+// Last is a helper method to consume the next arg returning an error
+// if there are no more args or any extra args.  Otherwise it extracts the
+// argument.
+func Last(name string, args []string) (string, []string, error) {
+	value, cleanedArgs, err := Next(name, args)
+
+	if err == nil && len(cleanedArgs) > 0 {
+		return "", args, fmt.Errorf("%w: %v",
+			ErrUnexpected,
+			cleanedArgs,
+		)
+	}
+
+	if err != nil {
+		return "", args, err
+	}
+
+	return value, cleanedArgs, nil
 }
 
 // Value is a convenience function that selects a values from a default that
