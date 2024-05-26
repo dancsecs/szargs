@@ -79,28 +79,25 @@ func TestSzArgs_Last(t *testing.T) {
 		err  error
 	)
 
-	arg, args, err = szargs.Last("TestArg", args)
+	arg, err = szargs.Last("TestArg", args)
 
 	chk.Str(arg, "")
-	chk.StrSlice(args, nil)
 	chk.Err(
 		err,
 		"missing argument: TestArg",
 	)
 
-	arg, args, err = szargs.Last("TestArg", []string{"arg1", "arg2"})
+	arg, err = szargs.Last("TestArg", []string{"arg1", "arg2"})
 
 	chk.Str(arg, "")
-	chk.StrSlice(args, []string{"arg1", "arg2"})
 	chk.Err(
 		err,
 		"unexpected argument: [arg2]",
 	)
 
-	arg, args, err = szargs.Last("TestArg", []string{"arg2"})
+	arg, err = szargs.Last("TestArg", []string{"arg2"})
 
 	chk.Str(arg, "arg2")
-	chk.StrSlice(args, nil)
 	chk.NoErr(err)
 }
 

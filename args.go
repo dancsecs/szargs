@@ -22,6 +22,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 )
 
 // Exported errors.
@@ -157,21 +158,31 @@ func Next(name string, args []string) (string, []string, error) {
 // Last is a helper method to consume the next arg returning an error
 // if there are no more args or any extra args.  Otherwise it extracts the
 // argument.
-func Last(name string, args []string) (string, []string, error) {
+func Last(name string, args []string) (string, error) {
 	value, cleanedArgs, err := Next(name, args)
 
-	if err == nil && len(cleanedArgs) > 0 {
-		return "", args, fmt.Errorf("%w: %v",
-			ErrUnexpected,
-			cleanedArgs,
-		)
+	if err == nil {
+		err = Done(cleanedArgs)
 	}
 
 	if err != nil {
-		return "", args, err
+		return "", err
 	}
 
-	return value, cleanedArgs, nil
+	return value, nil
+}
+
+// Done insures that there are no further args exist returning an error
+// if any are found.
+func Done(args []string) error {
+	if len(args) > 0 {
+		return fmt.Errorf("%w: [%v]",
+			ErrUnexpected,
+			strings.Join(args, " "),
+		)
+	}
+
+	return nil
 }
 
 // Value is a convenience function that selects a values from a default that
