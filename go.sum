@@ -1,6 +1,6 @@
-github.com/dancsecs/szlog v0.0.0-20240523124755-ee740f9b2896 h1:TVCAte1zZQ5YTTG56A/ferhqJBNptE49jQ0GKod6EJo=
-github.com/dancsecs/szlog v0.0.0-20240523124755-ee740f9b2896/go.mod h1:v2jqe60Pi1WRP6i1nUH/6+5QFoWKXOz2pQp2oIejSuw=
-github.com/dancsecs/sztest v0.0.0-20240523122652-8619cca9e89f h1:O3tZ8zmu10ojrdI9I7MotJBropgQwyLADweDZVmdKHU=
-github.com/dancsecs/sztest v0.0.0-20240523122652-8619cca9e89f/go.mod h1:kbuIqdeICPjQoRnA7ZSxlOYuk4qwLywBRfdDiHPm7Gw=
-github.com/dancsecs/sztestlog v0.0.0-20240523125021-0f8b5cc8af18 h1:6Ta3n4KLbSnOfz7lrXm8AUPVklcR6TyfzWKV+9PcksQ=
-github.com/dancsecs/sztestlog v0.0.0-20240523125021-0f8b5cc8af18/go.mod h1:P7/I8CDX4N7De0+Q6pB3sXv4Us1M0c3ZH67MY+wAT7s=
+github.com/dancsecs/szlog v0.0.0 h1:QbYo1NLP4KX1gFDXuet8BB3vsO0RGLxpT0Dz8f898Ns=
+github.com/dancsecs/szlog v0.0.0/go.mod h1:v2jqe60Pi1WRP6i1nUH/6+5QFoWKXOz2pQp2oIejSuw=
+github.com/dancsecs/sztest v0.1.1 h1:j1lIMAek3ndOWd8QAApKUOVKzTgKyLL21I1Hda4wMDw=
+github.com/dancsecs/sztest v0.1.1/go.mod h1:kbuIqdeICPjQoRnA7ZSxlOYuk4qwLywBRfdDiHPm7Gw=
+github.com/dancsecs/sztestlog v0.0.0 h1:on23Zk7GTUrupWpIEV+rIF9dp359tbHKSnb1goTujnA=
+github.com/dancsecs/sztestlog v0.0.0/go.mod h1:P7/I8CDX4N7De0+Q6pB3sXv4Us1M0c3ZH67MY+wAT7s=
