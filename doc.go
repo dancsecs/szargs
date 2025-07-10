@@ -17,7 +17,15 @@
 */
 
 /*
-Package szargs provides simple methods of setting variables based on
-command line arguments ([]string) and environment variables.
+Package szargs provides simple methods of setting variables based on command
+line arguments ([]string) and environment variables. Arguments come in two
+types:  Flagged and positional.
+
+Flagged arguments are generally prefixed with a single dash "-" for single
+letter flag or a double dash "--" for an extended spelled out flag.  A flag
+can be stand alone in the case of a boolean such as "-v" indicating a verbose
+setting or can be followed by and argument such as "--dir theDirectory".  Once
+all flags have been processed then the remaining arguments can be identified
+by their ordering.
 */
 package szargs
