@@ -31,7 +31,7 @@ func TestSzArgs_ArgCount(t *testing.T) {
 	defer chk.Release()
 
 	var (
-		arg   = szargs.Arg("-v")
+		arg   = szargs.Arg("-v | --verbose")
 		count int
 		args  []string
 	)
@@ -52,12 +52,30 @@ func TestSzArgs_ArgCount(t *testing.T) {
 	chk.Int(count, 1)
 	chk.StrSlice(args, []string{"arg1", "arg2"})
 
-	count, args = arg.Count([]string{"arg1", "arg2", "-v"})
+	count, args = arg.Count([]string{"arg1", "arg2", "--verbose"})
 	chk.Int(count, 1)
 	chk.StrSlice(args, []string{"arg1", "arg2"})
 
 	count, args = arg.Count([]string{"-v", "arg1", "-v", "arg2", "-v"})
 	chk.Int(count, 3)
+	chk.StrSlice(args, []string{"arg1", "arg2"})
+
+	count, args = arg.Count(
+		[]string{
+			"--verbose",
+			"-v",
+			"--verbose",
+			"arg1",
+			"--verbose",
+			"-v",
+			"--verbose",
+			"arg2",
+			"--verbose",
+			"-v",
+			"--verbose",
+		},
+	)
+	chk.Int(count, 9)
 	chk.StrSlice(args, []string{"arg1", "arg2"})
 }
 

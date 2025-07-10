@@ -35,7 +35,7 @@ func (a Arg) Value(
 	cleanedArgs := make([]string, 0, len(args))
 
 	for i, mi := 0, len(args); i < mi; i++ {
-		if args[i] == string(a) {
+		if a.argIs(args[i]) {
 			if (i + 1) >= mi {
 				return "", false, args,
 					fmt.Errorf(

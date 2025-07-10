@@ -34,6 +34,16 @@ var (
 // Arg represents a single argument.
 type Arg string
 
+func (a Arg) argIs(arg string) bool {
+	for _, v := range strings.Split(string(a), "|") {
+		if strings.TrimSpace(v) == arg {
+			return true
+		}
+	}
+
+	return false
+}
+
 // Count scans argument array (args) removing and counting the number of
 // times the argument is encountered.
 func (a Arg) Count(args []string) (int, []string) {
@@ -41,7 +51,7 @@ func (a Arg) Count(args []string) (int, []string) {
 	cleanedArgs := make([]string, 0, len(args))
 
 	for _, arg := range args {
-		if arg == string(a) {
+		if a.argIs(arg) {
 			count++
 		} else {
 			cleanedArgs = append(cleanedArgs, arg)
