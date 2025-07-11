@@ -35,7 +35,8 @@ var (
 type Arg string
 
 func (a Arg) argIs(arg string) bool {
-	for _, v := range strings.Split(string(a), "|") {
+	s := strings.Trim(string(a), "[]{}")
+	for _, v := range strings.Split(s, "|") {
 		if strings.TrimSpace(v) == arg {
 			return true
 		}
@@ -61,22 +62,23 @@ func (a Arg) Count(args []string) (int, []string) {
 	return count, cleanedArgs
 }
 
-// Is scans the args returning true if found after removing the arg from
-// the list.  If the argument appears twice then and ambiguous error will be
-// returned with the arg array untouched.
+// Is scans the args counting and removing the arg from the list.  If the
+// argument appears more than once an ErrAmbiguous is returned.
 func (a Arg) Is(args []string) (bool, []string, error) {
-	count, cleanedArgs := a.Count(args)
+	var count int
+
+	count, args = a.Count(args)
 	if count > 1 {
 		return false, args,
 			fmt.Errorf(
-				"%w: %s found: %d times",
+				"%w: '%s' found %d times",
 				ErrAmbiguous,
 				a,
 				count,
 			)
 	}
 
-	return count == 1, cleanedArgs, nil
+	return count == 1, args, nil
 }
 
 // Done insures that there are no further args exist returning an error

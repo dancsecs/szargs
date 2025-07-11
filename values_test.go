@@ -121,7 +121,7 @@ func TestSzargsArgument_ValuesMissing(t *testing.T) {
 	chk.StrSlice(value, nil)
 	chk.StrSlice(
 		args,
-		[]string{"arg1", "arg2", "-n"},
+		[]string{"arg1", "arg2"},
 	)
 	chk.Err(
 		err,

@@ -113,12 +113,43 @@ func TestSzargsArgument_ValueDuplicate(t *testing.T) {
 	chk.False(found)
 	chk.StrSlice(
 		args,
-		[]string{"-n", "firstName", "arg1", "arg2", "-n", "secondName"},
+		[]string{"arg1", "arg2"},
 	)
 	chk.Err(
 		err,
 		szargs.ErrAmbiguous.Error()+
 			": '-n secondName' already set to: 'firstName'",
+	)
+}
+
+func TestSzargsArgument_ValueTriplicate(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	value, found, args, err := szargs.Arg("-n").Value(
+		[]string{
+			"-n", "firstName",
+			"arg1",
+			"-n", "secondName",
+			"arg2",
+			"-n", "thirdName",
+		},
+	)
+
+	chk.Str(value, "")
+	chk.False(found)
+	chk.StrSlice(
+		args,
+		[]string{"arg1", "arg2"},
+	)
+	chk.Err(
+		err,
+		szargs.ErrAmbiguous.Error()+
+			": '-n secondName' already set to: 'firstName'"+
+			": "+
+			szargs.ErrAmbiguous.Error()+
+			": '-n thirdName' already set to: 'firstName'"+
+			"",
 	)
 }
 
@@ -134,7 +165,7 @@ func TestSzargsArgument_ValueMissing(t *testing.T) {
 	chk.False(found)
 	chk.StrSlice(
 		args,
-		[]string{"arg1", "arg2", "-n"},
+		[]string{"arg1", "arg2"},
 	)
 	chk.Err(
 		err,

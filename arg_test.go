@@ -122,9 +122,9 @@ func TestSzArgs_Is(t *testing.T) {
 
 	found, args, err = arg.Is([]string{"-v", "arg1", "arg2", "-v"})
 	chk.False(found)
-	chk.StrSlice(args, []string{"-v", "arg1", "arg2", "-v"})
+	chk.StrSlice(args, []string{"arg1", "arg2"})
 	chk.Err(
 		err,
-		szargs.ErrAmbiguous.Error()+": -v found: 2 times",
+		szargs.ErrAmbiguous.Error()+": '-v' found 2 times",
 	)
 }

@@ -24,31 +24,34 @@ import (
 
 // Values scans the args looking for all instances of the specified flag.  If
 // it finds it then the next arg as the value absorbing both the flag the
-// value from the argument list.  If there is no next arg an error is returned
-// and the original arg array is returned.
+// value from the argument list.
 func (a Arg) Values(args []string) ([]string, []string, error) {
 	values := []string(nil)
 	cleanedArgs := make([]string, 0, len(args))
+	err := error(nil)
 
 	for i, mi := 0, len(args); i < mi; i++ {
 		if a.argIs(args[i]) {
 			if (i + 1) >= mi {
-				return nil, args,
-					fmt.Errorf(
-						"%w: '%s value'",
-						ErrMissing,
-						a,
-					)
+				err = fmt.Errorf(
+					"%w: '%s value'",
+					ErrMissing,
+					a,
+				)
+			} else {
+				i++
+				values = append(values, args[i])
 			}
-
-			i++
-			values = append(values, args[i])
 		} else {
 			cleanedArgs = append(cleanedArgs, args[i])
 		}
 	}
 
-	return values, cleanedArgs, nil
+	if err == nil {
+		return values, cleanedArgs, nil
+	}
+
+	return nil, cleanedArgs, err
 }
 
 // ValuesString scans the args looking for all instances of the specified flag

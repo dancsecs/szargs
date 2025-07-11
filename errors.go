@@ -24,6 +24,7 @@ import (
 
 // Exported errors.
 var (
+	ErrNoArgs         = errors.New("no program arguments provided")
 	ErrSyntax         = errors.New("syntax")
 	ErrRange          = errors.New("range")
 	ErrInvalidFloat64 = errors.New("invalid float64")
