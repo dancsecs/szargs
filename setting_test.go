@@ -16,6 +16,7 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+//nolint:dupl // Ok.
 package szargs_test
 
 import (
@@ -31,99 +32,6 @@ const (
 	tstArg = "-t"
 )
 
-func TestSzargs_ValueNoArgNoEnv(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
-	defer chk.Release()
-
-	value, args, err := szargs.Value("def", tstEnv, tstArg, nil)
-
-	chk.Str(value, "def")
-	chk.StrSlice(args, nil)
-	chk.NoErr(err)
-
-	value, args, err = szargs.Value("def", tstEnv, tstArg,
-		[]string{"arg1", "arg2"},
-	)
-
-	chk.Str(value, "def")
-	chk.StrSlice(args,
-		[]string{"arg1", "arg2"},
-	)
-	chk.NoErr(err)
-}
-
-func TestSzargs_ValueArgAmbiguous(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
-	defer chk.Release()
-
-	value, args, err := szargs.Value("def", tstEnv, tstArg,
-		[]string{tstArg, "first", "arg1", "arg2", tstArg, "second"},
-	)
-
-	chk.Str(value, "")
-	chk.StrSlice(args,
-		[]string{tstArg, "first", "arg1", "arg2", tstArg, "second"},
-	)
-	chk.Err(
-		err,
-		szargs.ErrAmbiguous.Error()+
-			": '-t second' already set to: 'first'",
-	)
-}
-
-func TestSzargs_ValueArgMissing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
-	defer chk.Release()
-
-	value, args, err := szargs.Value("def", tstEnv, tstArg,
-		[]string{"arg1", "arg2", tstArg},
-	)
-
-	chk.Str(value, "")
-	chk.StrSlice(args,
-		[]string{"arg1", "arg2", tstArg},
-	)
-	chk.Err(
-		err,
-		szargs.ErrMissing.Error()+
-			": '-t value'",
-	)
-}
-
-func TestSzargs_ValueEnv(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
-	defer chk.Release()
-
-	chk.SetEnv(tstEnv, "env")
-
-	value, args, err := szargs.Value("def", tstEnv, tstArg,
-		[]string{"arg1", "arg2"},
-	)
-
-	chk.Str(value, "env")
-	chk.StrSlice(args,
-		[]string{"arg1", "arg2"},
-	)
-	chk.NoErr(err)
-}
-
-func TestSzargs_ValueEnvAndArg(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
-	defer chk.Release()
-
-	chk.SetEnv(tstEnv, "env")
-
-	value, args, err := szargs.Value("def", tstEnv, tstArg,
-		[]string{"arg1", tstArg, "arg", "arg2"},
-	)
-
-	chk.Str(value, "arg")
-	chk.StrSlice(args,
-		[]string{"arg1", "arg2"},
-	)
-	chk.NoErr(err)
-}
-
 /*
  ***************************************************************************
  *
@@ -132,38 +40,68 @@ func TestSzargs_ValueEnvAndArg(t *testing.T) {
  ***************************************************************************
  */
 
+func TestSzargs_SettingString_MissingArgError(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+		tstArg,
+	})
+
+	result := args.SettingString(
+		tstArg, tstEnv, "def", "testName",
+	)
+
+	chk.Err(
+		args.Err(),
+		chk.ErrChain(
+			szargs.ErrInvalidFlag,
+			szargs.ErrMissing,
+			"'-t value'",
+		),
+	)
+	chk.Str(result, "")
+	chk.StrSlice(args.Args(), []string{tstArg})
+}
+
 func TestSzargs_SettingString_Default(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	result, args, err := szargs.SettingString(
-		"testName", "def", tstEnv, tstArg, nil,
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
+	result := args.SettingString(
+		tstArg, tstEnv, "def", "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Str(result, "def")
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
 func TestSzargs_SettingString_Env(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"309",
 		"anotherArg1",
-	}
+	})
 
 	chk.SetEnv(tstEnv, "envValue")
 
-	result, args, err := szargs.SettingString(
-		"testName", "def", tstEnv, tstArg, args,
+	result := args.SettingString(
+		tstArg, tstEnv, "def", "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Str(result, "envValue")
 	chk.StrSlice(
-		args,
+		args.Args(),
 		[]string{
 			"309",
 			"anotherArg1",
@@ -175,22 +113,24 @@ func TestSzargs_SettingString_Arg(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"309",
 		tstArg,
 		"testValue1",
 		"anotherArg1",
-	}
+	})
 
 	chk.SetEnv(tstEnv, "envValue")
 
-	result, args, err := szargs.SettingString(
-		"testName", "def", tstEnv, tstArg, args)
+	result := args.SettingString(
+		tstArg, tstEnv, "def", "testName",
+	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Str(result, "testValue1")
 	chk.StrSlice(
-		args,
+		args.Args(),
 		[]string{
 			"309",
 			"anotherArg1",
@@ -210,88 +150,99 @@ func TestSzargs_SettingFloat64_Invalid_Arg(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber1",
-	}
+	})
 
-	result, args, err := szargs.SettingFloat64(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingFloat64(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidFloat64,
 			szargs.ErrSyntax,
-			"testName",
+			tstArg,
 			"'notANumber1'",
 		),
 	)
-	chk.Float64(result, 0, 0) // No tolerance.
-	chk.StrSlice(args, nil)   // Argument extracted.
+	chk.Float64(result, 0, 0)      // No tolerance.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingFloat64_Invalid_Env(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{}
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
 	chk.SetEnv(tstEnv, "notANumber")
 
-	result, args, err := szargs.SettingFloat64(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingFloat64(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidEnv,
 			szargs.ErrInvalidFloat64,
 			szargs.ErrSyntax,
-			"testName",
+			tstEnv,
 			"'notANumber'",
 		),
 	)
-	chk.Float64(result, 0, 0) // No tolerance.
-	chk.StrSlice(args, nil)   // Argument extracted.
+	chk.Float64(result, 0, 0)      // No tolerance.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingFloat64_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
 	// Default.
-	result, args, err := szargs.SettingFloat64(
-		"testName", 222.222, tstEnv, tstArg, nil,
+	result := args.SettingFloat64(
+		tstArg, tstEnv, 222.222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Float64(result, 222.222, 0) // No tolerance.
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Environment.
 	chk.SetEnv(tstEnv, "333.333")
-	result, args, err = szargs.SettingFloat64(
-		"testName", 222.222, tstEnv, tstArg, args,
+	result = args.SettingFloat64(
+		tstArg, tstEnv, 222.222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Float64(result, 333.333, 0) // No tolerance.
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Argument
-	args = []string{
+	args = szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"444.444",
-	}
-	result, args, err = szargs.SettingFloat64(
-		"testName", 222.222, tstEnv, tstArg, args,
+	})
+
+	result = args.SettingFloat64(
+		tstArg, tstEnv, 222.222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Float64(result, 444.444, 0) // No tolerance.
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
 /*
@@ -306,88 +257,98 @@ func TestSzargs_SettingFloat32_Invalid_Arg(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber1",
-	}
+	})
 
-	result, args, err := szargs.SettingFloat32(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingFloat32(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidFloat32,
 			szargs.ErrSyntax,
-			"testName",
+			tstArg,
 			"'notANumber1'",
 		),
 	)
-	chk.Float32(result, 0, 0) // No tolerance.
-	chk.StrSlice(args, nil)   // Argument extracted.
+	chk.Float32(result, 0, 0)      // No tolerance.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingFloat32_Invalid_Env(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{}
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
 	chk.SetEnv(tstEnv, "notANumber")
 
-	result, args, err := szargs.SettingFloat32(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingFloat32(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidEnv,
 			szargs.ErrInvalidFloat32,
 			szargs.ErrSyntax,
-			"testName",
+			tstEnv,
 			"'notANumber'",
 		),
 	)
-	chk.Float32(result, 0, 0) // No tolerance.
-	chk.StrSlice(args, nil)   // Argument extracted.
+	chk.Float32(result, 0, 0)      // No tolerance.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingFloat32_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
 	// Default.
-	result, args, err := szargs.SettingFloat32(
-		"testName", 222.222, tstEnv, tstArg, nil,
+	result := args.SettingFloat32(
+		tstArg, tstEnv, 222.222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Float32(result, 222.222, 0) // No tolerance.
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Environment.
 	chk.SetEnv(tstEnv, "333.333")
-	result, args, err = szargs.SettingFloat32(
-		"testName", 222.222, tstEnv, tstArg, args,
+	result = args.SettingFloat32(
+		tstArg, tstEnv, 222.222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Float32(result, 333.333, 0) // No tolerance.
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Argument
-	args = []string{
+	args = szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"444.444",
-	}
-	result, args, err = szargs.SettingFloat32(
-		"testName", 222.222, tstEnv, tstArg, args,
+	})
+	result = args.SettingFloat32(
+		tstArg, tstEnv, 222.222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Float32(result, 444.444, 0) // No tolerance.
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
 /*
@@ -402,88 +363,98 @@ func TestSzargs_SettingInt64_Invalid_Arg(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber1",
-	}
+	})
 
-	result, args, err := szargs.SettingInt64(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingInt64(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidInt64,
 			szargs.ErrSyntax,
-			"testName",
+			tstArg,
 			"'notANumber1'",
 		),
 	)
 	chk.Int64(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingInt64_Invalid_Env(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{}
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
 	chk.SetEnv(tstEnv, "notANumber")
 
-	result, args, err := szargs.SettingInt64(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingInt64(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidEnv,
 			szargs.ErrInvalidInt64,
 			szargs.ErrSyntax,
-			"testName",
+			tstEnv,
 			"'notANumber'",
 		),
 	)
 	chk.Int64(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingInt64_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
 	// Default.
-	result, args, err := szargs.SettingInt64(
-		"testName", 222, tstEnv, tstArg, nil,
+	result := args.SettingInt64(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int64(result, 222)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Environment.
 	chk.SetEnv(tstEnv, "333")
-	result, args, err = szargs.SettingInt64(
-		"testName", 222, tstEnv, tstArg, args,
+	result = args.SettingInt64(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int64(result, 333)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Argument
-	args = []string{
+	args = szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"444",
-	}
-	result, args, err = szargs.SettingInt64(
-		"testName", 222, tstEnv, tstArg, args,
+	})
+	result = args.SettingInt64(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int64(result, 444)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
 /*
@@ -498,88 +469,98 @@ func TestSzargs_SettingInt32_Invalid_Arg(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber1",
-	}
+	})
 
-	result, args, err := szargs.SettingInt32(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingInt32(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidInt32,
 			szargs.ErrSyntax,
-			"testName",
+			tstArg,
 			"'notANumber1'",
 		),
 	)
 	chk.Int32(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingInt32_Invalid_Env(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{}
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
 	chk.SetEnv(tstEnv, "notANumber")
 
-	result, args, err := szargs.SettingInt32(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingInt32(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidEnv,
 			szargs.ErrInvalidInt32,
 			szargs.ErrSyntax,
-			"testName",
+			tstEnv,
 			"'notANumber'",
 		),
 	)
 	chk.Int32(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingInt32_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
 	// Default.
-	result, args, err := szargs.SettingInt32(
-		"testName", 222, tstEnv, tstArg, nil,
+	result := args.SettingInt32(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int32(result, 222)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Environment.
 	chk.SetEnv(tstEnv, "333")
-	result, args, err = szargs.SettingInt32(
-		"testName", 222, tstEnv, tstArg, args,
+	result = args.SettingInt32(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int32(result, 333)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Argument
-	args = []string{
+	args = szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"444",
-	}
-	result, args, err = szargs.SettingInt32(
-		"testName", 222, tstEnv, tstArg, args,
+	})
+	result = args.SettingInt32(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int32(result, 444)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
 /*
@@ -594,88 +575,98 @@ func TestSzargs_SettingInt16_Invalid_Arg(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber1",
-	}
+	})
 
-	result, args, err := szargs.SettingInt16(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingInt16(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidInt16,
 			szargs.ErrSyntax,
-			"testName",
+			tstArg,
 			"'notANumber1'",
 		),
 	)
 	chk.Int16(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingInt16_Invalid_Env(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{}
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
 	chk.SetEnv(tstEnv, "notANumber")
 
-	result, args, err := szargs.SettingInt16(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingInt16(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidEnv,
 			szargs.ErrInvalidInt16,
 			szargs.ErrSyntax,
-			"testName",
+			tstEnv,
 			"'notANumber'",
 		),
 	)
 	chk.Int16(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingInt16_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
 	// Default.
-	result, args, err := szargs.SettingInt16(
-		"testName", 222, tstEnv, tstArg, nil,
+	result := args.SettingInt16(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int16(result, 222)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Environment.
 	chk.SetEnv(tstEnv, "333")
-	result, args, err = szargs.SettingInt16(
-		"testName", 222, tstEnv, tstArg, args,
+	result = args.SettingInt16(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int16(result, 333)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Argument
-	args = []string{
+	args = szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"444",
-	}
-	result, args, err = szargs.SettingInt16(
-		"testName", 222, tstEnv, tstArg, args,
+	})
+	result = args.SettingInt16(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int16(result, 444)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
 /*
@@ -690,88 +681,98 @@ func TestSzargs_SettingInt8_Invalid_Arg(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber1",
-	}
+	})
 
-	result, args, err := szargs.SettingInt8(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingInt8(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidInt8,
 			szargs.ErrSyntax,
-			"testName",
+			tstArg,
 			"'notANumber1'",
 		),
 	)
 	chk.Int8(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingInt8_Invalid_Env(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{}
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
 	chk.SetEnv(tstEnv, "notANumber")
 
-	result, args, err := szargs.SettingInt8(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingInt8(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidEnv,
 			szargs.ErrInvalidInt8,
 			szargs.ErrSyntax,
-			"testName",
+			tstEnv,
 			"'notANumber'",
 		),
 	)
 	chk.Int8(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingInt8_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
 	// Default.
-	result, args, err := szargs.SettingInt8(
-		"testName", 22, tstEnv, tstArg, nil,
+	result := args.SettingInt8(
+		tstArg, tstEnv, 22, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int8(result, 22)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Environment.
 	chk.SetEnv(tstEnv, "33")
-	result, args, err = szargs.SettingInt8(
-		"testName", 22, tstEnv, tstArg, args,
+	result = args.SettingInt8(
+		tstArg, tstEnv, 22, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int8(result, 33)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Argument
-	args = []string{
+	args = szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"44",
-	}
-	result, args, err = szargs.SettingInt8(
-		"testName", 22, tstEnv, tstArg, args,
+	})
+	result = args.SettingInt8(
+		tstArg, tstEnv, 22, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int8(result, 44)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
 /*
@@ -786,88 +787,98 @@ func TestSzargs_SettingInt_Invalid_Arg(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber1",
-	}
+	})
 
-	result, args, err := szargs.SettingInt(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingInt(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidInt,
 			szargs.ErrSyntax,
-			"testName",
+			tstArg,
 			"'notANumber1'",
 		),
 	)
 	chk.Int(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingInt_Invalid_Env(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{}
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
 	chk.SetEnv(tstEnv, "notANumber")
 
-	result, args, err := szargs.SettingInt(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingInt(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidEnv,
 			szargs.ErrInvalidInt,
 			szargs.ErrSyntax,
-			"testName",
+			tstEnv,
 			"'notANumber'",
 		),
 	)
 	chk.Int(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingInt_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
 	// Default.
-	result, args, err := szargs.SettingInt(
-		"testName", 222, tstEnv, tstArg, nil,
+	result := args.SettingInt(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int(result, 222)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Environment.
 	chk.SetEnv(tstEnv, "333")
-	result, args, err = szargs.SettingInt(
-		"testName", 222, tstEnv, tstArg, args,
+	result = args.SettingInt(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int(result, 333)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Argument
-	args = []string{
+	args = szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"444",
-	}
-	result, args, err = szargs.SettingInt(
-		"testName", 222, tstEnv, tstArg, args,
+	})
+	result = args.SettingInt(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int(result, 444)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
 /*
@@ -882,88 +893,98 @@ func TestSzargs_SettingUint64_Invalid_Arg(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber1",
-	}
+	})
 
-	result, args, err := szargs.SettingUint64(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingUint64(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidUint64,
 			szargs.ErrSyntax,
-			"testName",
+			tstArg,
 			"'notANumber1'",
 		),
 	)
 	chk.Uint64(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingUint64_Invalid_Env(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{}
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
 	chk.SetEnv(tstEnv, "notANumber")
 
-	result, args, err := szargs.SettingUint64(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingUint64(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidEnv,
 			szargs.ErrInvalidUint64,
 			szargs.ErrSyntax,
-			"testName",
+			tstEnv,
 			"'notANumber'",
 		),
 	)
 	chk.Uint64(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingUint64_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
 	// Default.
-	result, args, err := szargs.SettingUint64(
-		"testName", 222, tstEnv, tstArg, nil,
+	result := args.SettingUint64(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint64(result, 222)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Environment.
 	chk.SetEnv(tstEnv, "333")
-	result, args, err = szargs.SettingUint64(
-		"testName", 222, tstEnv, tstArg, args,
+	result = args.SettingUint64(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint64(result, 333)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Argument
-	args = []string{
+	args = szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"444",
-	}
-	result, args, err = szargs.SettingUint64(
-		"testName", 222, tstEnv, tstArg, args,
+	})
+	result = args.SettingUint64(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint64(result, 444)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
 /*
@@ -978,88 +999,98 @@ func TestSzargs_SettingUint32_Invalid_Arg(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber1",
-	}
+	})
 
-	result, args, err := szargs.SettingUint32(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingUint32(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidUint32,
 			szargs.ErrSyntax,
-			"testName",
+			tstArg,
 			"'notANumber1'",
 		),
 	)
 	chk.Uint32(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingUint32_Invalid_Env(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{}
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
 	chk.SetEnv(tstEnv, "notANumber")
 
-	result, args, err := szargs.SettingUint32(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingUint32(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidEnv,
 			szargs.ErrInvalidUint32,
 			szargs.ErrSyntax,
-			"testName",
+			tstEnv,
 			"'notANumber'",
 		),
 	)
 	chk.Uint32(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingUint32_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
 	// Default.
-	result, args, err := szargs.SettingUint32(
-		"testName", 222, tstEnv, tstArg, nil,
+	result := args.SettingUint32(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint32(result, 222)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Environment.
 	chk.SetEnv(tstEnv, "333")
-	result, args, err = szargs.SettingUint32(
-		"testName", 222, tstEnv, tstArg, args,
+	result = args.SettingUint32(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint32(result, 333)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Argument
-	args = []string{
+	args = szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"444",
-	}
-	result, args, err = szargs.SettingUint32(
-		"testName", 222, tstEnv, tstArg, args,
+	})
+	result = args.SettingUint32(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint32(result, 444)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
 /*
@@ -1074,88 +1105,98 @@ func TestSzargs_SettingUint16_Invalid_Arg(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber1",
-	}
+	})
 
-	result, args, err := szargs.SettingUint16(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingUint16(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidUint16,
 			szargs.ErrSyntax,
-			"testName",
+			tstArg,
 			"'notANumber1'",
 		),
 	)
 	chk.Uint16(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingUint16_Invalid_Env(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{}
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
 	chk.SetEnv(tstEnv, "notANumber")
 
-	result, args, err := szargs.SettingUint16(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingUint16(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidEnv,
 			szargs.ErrInvalidUint16,
 			szargs.ErrSyntax,
-			"testName",
+			tstEnv,
 			"'notANumber'",
 		),
 	)
 	chk.Uint16(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingUint16_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
 	// Default.
-	result, args, err := szargs.SettingUint16(
-		"testName", 222, tstEnv, tstArg, nil,
+	result := args.SettingUint16(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint16(result, 222)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Environment.
 	chk.SetEnv(tstEnv, "333")
-	result, args, err = szargs.SettingUint16(
-		"testName", 222, tstEnv, tstArg, args,
+	result = args.SettingUint16(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint16(result, 333)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Argument
-	args = []string{
+	args = szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"444",
-	}
-	result, args, err = szargs.SettingUint16(
-		"testName", 222, tstEnv, tstArg, args,
+	})
+	result = args.SettingUint16(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint16(result, 444)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
 /*
@@ -1170,88 +1211,98 @@ func TestSzargs_SettingUint8_Invalid_Arg(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber1",
-	}
+	})
 
-	result, args, err := szargs.SettingUint8(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingUint8(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidUint8,
 			szargs.ErrSyntax,
-			"testName",
+			tstArg,
 			"'notANumber1'",
 		),
 	)
 	chk.Uint8(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingUint8_Invalid_Env(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{}
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
 	chk.SetEnv(tstEnv, "notANumber")
 
-	result, args, err := szargs.SettingUint8(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingUint8(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidEnv,
 			szargs.ErrInvalidUint8,
 			szargs.ErrSyntax,
-			"testName",
+			tstEnv,
 			"'notANumber'",
 		),
 	)
 	chk.Uint8(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingUint8_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
 	// Default.
-	result, args, err := szargs.SettingUint8(
-		"testName", 22, tstEnv, tstArg, nil,
+	result := args.SettingUint8(
+		tstArg, tstEnv, 22, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint8(result, 22)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Environment.
 	chk.SetEnv(tstEnv, "33")
-	result, args, err = szargs.SettingUint8(
-		"testName", 22, tstEnv, tstArg, args,
+	result = args.SettingUint8(
+		tstArg, tstEnv, 22, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint8(result, 33)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Argument
-	args = []string{
+	args = szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"44",
-	}
-	result, args, err = szargs.SettingUint8(
-		"testName", 22, tstEnv, tstArg, args,
+	})
+	result = args.SettingUint8(
+		tstArg, tstEnv, 22, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint8(result, 44)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
 /*
@@ -1266,86 +1317,96 @@ func TestSzargs_SettingUint_Invalid_Arg(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber1",
-	}
+	})
 
-	result, args, err := szargs.SettingUint(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingUint(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidUint,
 			szargs.ErrSyntax,
-			"testName",
+			tstArg,
 			"'notANumber1'",
 		),
 	)
 	chk.Uint(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingUint_Invalid_Env(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{}
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
 	chk.SetEnv(tstEnv, "notANumber")
 
-	result, args, err := szargs.SettingUint(
-		"testName", 123, tstEnv, tstArg, args,
+	result := args.SettingUint(
+		tstArg, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
+			szargs.ErrInvalidEnv,
 			szargs.ErrInvalidUint,
 			szargs.ErrSyntax,
-			"testName",
+			tstEnv,
 			"'notANumber'",
 		),
 	)
 	chk.Uint(result, 0)
-	chk.StrSlice(args, nil) // Argument extracted.
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
 }
 
 func TestSzargs_SettingUint_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
 	// Default.
-	result, args, err := szargs.SettingUint(
-		"testName", 222, tstEnv, tstArg, nil,
+	result := args.SettingUint(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint(result, 222)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Environment.
 	chk.SetEnv(tstEnv, "333")
-	result, args, err = szargs.SettingUint(
-		"testName", 222, tstEnv, tstArg, args,
+	result = args.SettingUint(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint(result, 333)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 
 	// Argument
-	args = []string{
+	args = szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"444",
-	}
-	result, args, err = szargs.SettingUint(
-		"testName", 222, tstEnv, tstArg, args,
+	})
+	result = args.SettingUint(
+		tstArg, tstEnv, 222, "testName",
 	)
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint(result, 444)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }

@@ -26,110 +26,6 @@ import (
 	"github.com/dancsecs/sztestlog"
 )
 
-func TestSzargsArgument_ValuesNonePresent(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
-	defer chk.Release()
-
-	value, args, err := szargs.Arg("-n").Values(nil)
-
-	chk.StrSlice(value, nil)
-	chk.StrSlice(args, nil)
-	chk.NoErr(err)
-
-	value, args, err = szargs.Arg("-n").Values(
-		[]string{"arg1", "arg2"},
-	)
-
-	chk.StrSlice(value, nil)
-	chk.StrSlice(args,
-		[]string{"arg1", "arg2"},
-	)
-	chk.NoErr(err)
-}
-
-func TestSzargsArgument_ValuesAtBeginning(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
-	defer chk.Release()
-
-	value, args, err := szargs.Arg("-n").Values(
-		[]string{"-n", "theName"},
-	)
-
-	chk.StrSlice(value, []string{"theName"})
-	chk.StrSlice(args, []string{})
-	chk.NoErr(err)
-
-	value, args, err = szargs.Arg("-n").Values(
-		[]string{"-n", "theName", "arg1", "arg2"},
-	)
-
-	chk.StrSlice(value, []string{"theName"})
-	chk.StrSlice(args, []string{"arg1", "arg2"})
-	chk.NoErr(err)
-}
-
-func TestSzargsArgument_ValuesMiddle(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
-	defer chk.Release()
-
-	value, args, err := szargs.Arg("-n").Values(
-		[]string{"arg1", "-n", "theName", "arg2"},
-	)
-
-	chk.StrSlice(value, []string{"theName"})
-	chk.StrSlice(args, []string{"arg1", "arg2"})
-	chk.NoErr(err)
-}
-
-func TestSzargsArgument_ValuesEnd(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
-	defer chk.Release()
-
-	value, args, err := szargs.Arg("-n").Values(
-		[]string{"arg1", "arg2", "-n", "theName"},
-	)
-
-	chk.StrSlice(value, []string{"theName"})
-	chk.StrSlice(args, []string{"arg1", "arg2"})
-	chk.NoErr(err)
-}
-
-func TestSzargsArgument_ValuesDuplicate(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
-	defer chk.Release()
-
-	value, args, err := szargs.Arg("-n").Values(
-		[]string{"-n", "firstName", "arg1", "arg2", "-n", "secondName"},
-	)
-
-	chk.StrSlice(value, []string{"firstName", "secondName"})
-	chk.StrSlice(
-		args,
-		[]string{"arg1", "arg2"},
-	)
-	chk.NoErr(err)
-}
-
-func TestSzargsArgument_ValuesMissing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
-	defer chk.Release()
-
-	value, args, err := szargs.Arg("-n").Values(
-		[]string{"arg1", "arg2", "-n"},
-	)
-
-	chk.StrSlice(value, nil)
-	chk.StrSlice(
-		args,
-		[]string{"arg1", "arg2"},
-	)
-	chk.Err(
-		err,
-		szargs.ErrMissing.Error()+
-			": '-n value'",
-	)
-}
-
 /*
  ***************************************************************************
  *
@@ -138,22 +34,27 @@ func TestSzargsArgument_ValuesMissing(t *testing.T) {
  ***************************************************************************
  */
 
-func TestSzargsArgument_ValuesString_Missing(t *testing.T) {
+func TestSzargs_ValuesString_Missing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	result, args, err := szargs.Arg("-t").ValuesString(nil)
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
-	chk.NoErr(err)
+	result := args.ValuesString("-t", "the test flag")
+
+	chk.NoErr(args.Err())
 	chk.StrSlice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesString_Success(t *testing.T) {
+func TestSzargs_ValuesString_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"309",
 		"-t",
 		"testValue1",
@@ -161,11 +62,11 @@ func TestSzargsArgument_ValuesString_Success(t *testing.T) {
 		"-t",
 		"testValue2",
 		"anotherArg2",
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesString(args)
+	result := args.ValuesString("-t", "the test flag")
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.StrSlice(
 		result,
 		[]string{
@@ -174,7 +75,7 @@ func TestSzargsArgument_ValuesString_Success(t *testing.T) {
 		},
 	)
 	chk.StrSlice(
-		args,
+		args.Args(),
 		[]string{
 			"309",
 			"anotherArg1",
@@ -191,34 +92,39 @@ func TestSzargsArgument_ValuesString_Success(t *testing.T) {
  ***************************************************************************
  */
 
-func TestSzargsArgument_ValuesFloat64_Missing(t *testing.T) {
+func TestSzargs_ValuesFloat64_Missing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	result, args, err := szargs.Arg("-t").ValuesFloat64(nil)
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
-	chk.NoErr(err)
+	result := args.ValuesFloat64("-t", "the test flag")
+
+	chk.NoErr(args.Err())
 	chk.Float64Slice(result, nil, 0) // No tolerance.
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesFloat64_Invalid(t *testing.T) {
+func TestSzargs_ValuesFloat64_Invalid(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber1",
 		"-t",
 		"1.7e+309", // MaxFloat64 * 10 is out of range.
 		"-t",
 		"-1.7e+309", // MinFloat64 * 10 is out of range.
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesFloat64(args)
+	result := args.ValuesFloat64("-t", "the test flag")
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
 			szargs.ErrInvalidFloat64,
 			szargs.ErrSyntax,
@@ -235,27 +141,28 @@ func TestSzargsArgument_ValuesFloat64_Invalid(t *testing.T) {
 		),
 	)
 	chk.Float64Slice(result, nil, 0) // No tolerance.
-	chk.StrSlice(args, nil)          // Argument extracted.
+	chk.StrSlice(args.Args(), nil)   // Argument extracted.
 }
 
-func TestSzargsArgument_ValuesFloat64_Success(t *testing.T) {
+func TestSzargs_ValuesFloat64_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"309.2",
 		"-t",
 		"127.49",
 		"anotherArg",
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesFloat64(args)
+	result := args.ValuesFloat64("-t", "the test flag")
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Float64Slice(result, []float64{309.2, 127.49}, 0) // No tolerance.
 	chk.StrSlice(
-		args,
+		args.Args(),
 		[]string{
 			"anotherArg",
 		},
@@ -270,34 +177,39 @@ func TestSzargsArgument_ValuesFloat64_Success(t *testing.T) {
  ***************************************************************************
  */
 
-func TestSzargsArgument_ValuesFloat32_Missing(t *testing.T) {
+func TestSzargs_ValuesFloat32_Missing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	result, args, err := szargs.Arg("-t").ValuesFloat32(nil)
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
-	chk.NoErr(err)
+	result := args.ValuesFloat32("-t", "the test flag")
+
+	chk.NoErr(args.Err())
 	chk.Float32Slice(result, nil, 0) // No tolerance.
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesFloat32_Invalid(t *testing.T) {
+func TestSzargs_ValuesFloat32_Invalid(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber",
 		"-t",
 		"1.7e+309",
 		"-t",
 		"-1.7e+309",
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesFloat32(args)
+	result := args.ValuesFloat32("-t", "the test flag")
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
 			szargs.ErrInvalidFloat32,
 			szargs.ErrSyntax,
@@ -314,27 +226,28 @@ func TestSzargsArgument_ValuesFloat32_Invalid(t *testing.T) {
 		),
 	)
 	chk.Float32Slice(result, nil, 0) // No tolerance.
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesFloat32_Success(t *testing.T) {
+func TestSzargs_ValuesFloat32_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"222.5",
 		"-t",
 		"309.2",
 		"anotherArg",
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesFloat32(args)
+	result := args.ValuesFloat32("-t", "the test flag")
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Float32Slice(result, []float32{222.5, 309.2}, 0) // No tolerance.
 	chk.StrSlice(
-		args,
+		args.Args(),
 		[]string{
 			"anotherArg",
 		},
@@ -349,34 +262,39 @@ func TestSzargsArgument_ValuesFloat32_Success(t *testing.T) {
  ***************************************************************************
  */
 
-func TestSzargsArgument_ValuesInt64_Missing(t *testing.T) {
+func TestSzargs_ValuesInt64_Missing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	result, args, err := szargs.Arg("-t").ValuesInt64(nil)
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
-	chk.NoErr(err)
+	result := args.ValuesInt64("-t", "the test flag")
+
+	chk.NoErr(args.Err())
 	chk.Int64Slice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesInt64_Invalid(t *testing.T) {
+func TestSzargs_ValuesInt64_Invalid(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber",
 		"-t",
 		"9223372036854775808", // MaxInt64 + 1 is out of range.
 		"-t",
 		"-9223372036854775809", // MinInt64 - 1 is out of range.
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesInt64(args)
+	result := args.ValuesInt64("-t", "the test flag")
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
 			szargs.ErrInvalidInt64,
 			szargs.ErrSyntax,
@@ -393,27 +311,28 @@ func TestSzargsArgument_ValuesInt64_Invalid(t *testing.T) {
 		),
 	)
 	chk.Int64Slice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesInt64_Success(t *testing.T) {
+func TestSzargs_ValuesInt64_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"908",
 		"-t",
 		"309",
 		"anotherArg",
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesInt64(args)
+	result := args.ValuesInt64("-t", "the test flag")
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int64Slice(result, []int64{908, 309})
 	chk.StrSlice(
-		args,
+		args.Args(),
 		[]string{
 			"anotherArg",
 		},
@@ -428,34 +347,39 @@ func TestSzargsArgument_ValuesInt64_Success(t *testing.T) {
  ***************************************************************************
  */
 
-func TestSzargsArgument_ValuesInt32_Missing(t *testing.T) {
+func TestSzargs_ValuesInt32_Missing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	result, args, err := szargs.Arg("-t").ValuesInt32(nil)
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
-	chk.NoErr(err)
+	result := args.ValuesInt32("-t", "the test flag")
+
+	chk.NoErr(args.Err())
 	chk.Int32Slice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValueInt32_Invalid(t *testing.T) {
+func TestSzargs_ValueInt32_Invalid(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber",
 		"-t",
 		"2147483648", // MaxInt32 + 1 is out of range.
 		"-t",
 		"-2147483649", // MinInt32 - 1 is out of range.
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesInt32(args)
+	result := args.ValuesInt32("-t", "the test flag")
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
 			szargs.ErrInvalidInt32,
 			szargs.ErrSyntax,
@@ -472,27 +396,28 @@ func TestSzargsArgument_ValueInt32_Invalid(t *testing.T) {
 		),
 	)
 	chk.Int32Slice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesInt32_Success(t *testing.T) {
+func TestSzargs_ValuesInt32_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"4493",
 		"-t",
 		"309",
 		"anotherArg",
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesInt32(args)
+	result := args.ValuesInt32("-t", "the test flag")
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int32Slice(result, []int32{4493, 309})
 	chk.StrSlice(
-		args,
+		args.Args(),
 		[]string{
 			"anotherArg",
 		},
@@ -507,34 +432,39 @@ func TestSzargsArgument_ValuesInt32_Success(t *testing.T) {
  ***************************************************************************
  */
 
-func TestSzargsArgument_ValuesInt16_Missing(t *testing.T) {
+func TestSzargs_ValuesInt16_Missing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	result, args, err := szargs.Arg("-t").ValuesInt16(nil)
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
-	chk.NoErr(err)
+	result := args.ValuesInt16("-t", "the test flag")
+
+	chk.NoErr(args.Err())
 	chk.Int16Slice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesInt16_Invalid(t *testing.T) {
+func TestSzargs_ValuesInt16_Invalid(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber",
 		"-t",
 		"32768", // MaxInt16 + 1 is out of range.
 		"-t",
 		"-32769", // MainInt16 - 1 is out of range.
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesInt16(args)
+	result := args.ValuesInt16("-t", "the test flag")
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
 			szargs.ErrInvalidInt16,
 			szargs.ErrSyntax,
@@ -551,27 +481,28 @@ func TestSzargsArgument_ValuesInt16_Invalid(t *testing.T) {
 		),
 	)
 	chk.Int16Slice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesInt16_Success(t *testing.T) {
+func TestSzargs_ValuesInt16_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"309",
 		"-t",
 		"111",
 		"anotherArg",
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesInt16(args)
+	result := args.ValuesInt16("-t", "the test flag")
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int16Slice(result, []int16{309, 111})
 	chk.StrSlice(
-		args,
+		args.Args(),
 		[]string{
 			"anotherArg",
 		},
@@ -586,34 +517,39 @@ func TestSzargsArgument_ValuesInt16_Success(t *testing.T) {
  ***************************************************************************
  */
 
-func TestSzargsArgument_ValuesInt8_Missing(t *testing.T) {
+func TestSzargs_ValuesInt8_Missing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	result, args, err := szargs.Arg("-t").ValuesInt8(nil)
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
-	chk.NoErr(err)
+	result := args.ValuesInt8("-t", "the test flag")
+
+	chk.NoErr(args.Err())
 	chk.Int8Slice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesInt8_Invalid(t *testing.T) {
+func TestSzargs_ValuesInt8_Invalid(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber",
 		"-t",
 		"128", // MaxInt8 + 1 is out of range.
 		"-t",
 		"-129", // MinInt8 - 1 is out of range.
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesInt8(args)
+	result := args.ValuesInt8("-t", "the test flag")
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
 			szargs.ErrInvalidInt8,
 			szargs.ErrSyntax,
@@ -630,27 +566,28 @@ func TestSzargsArgument_ValuesInt8_Invalid(t *testing.T) {
 		),
 	)
 	chk.Int8Slice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesInt8_Success(t *testing.T) {
+func TestSzargs_ValuesInt8_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"109",
 		"-t",
 		"-109",
 		"anotherArg",
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesInt8(args)
+	result := args.ValuesInt8("-t", "the test flag")
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Int8Slice(result, []int8{109, -109})
 	chk.StrSlice(
-		args,
+		args.Args(),
 		[]string{
 			"anotherArg",
 		},
@@ -665,34 +602,39 @@ func TestSzargsArgument_ValuesInt8_Success(t *testing.T) {
  ***************************************************************************
  */
 
-func TestSzargsArgument_ValuesInt_Missing(t *testing.T) {
+func TestSzargs_ValuesInt_Missing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	result, args, err := szargs.Arg("-t").ValuesInt(nil)
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
-	chk.NoErr(err)
+	result := args.ValuesInt("-t", "the test flag")
+
+	chk.NoErr(args.Err())
 	chk.IntSlice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesInt_Invalid(t *testing.T) {
+func TestSzargs_ValuesInt_Invalid(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber",
 		"-t",
 		"9223372036854775808", // MaxInt + 1 is out of range.
 		"-t",
 		"-9223372036854775809", // MinInt - 1 is out of range.
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesInt(args)
+	result := args.ValuesInt("-t", "the test flag")
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
 			szargs.ErrInvalidInt,
 			szargs.ErrSyntax,
@@ -709,27 +651,28 @@ func TestSzargsArgument_ValuesInt_Invalid(t *testing.T) {
 		),
 	)
 	chk.IntSlice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesInt_Success(t *testing.T) {
+func TestSzargs_ValuesInt_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"-1308",
 		"-t",
 		"309",
 		"anotherArg",
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesInt(args)
+	result := args.ValuesInt("-t", "the test flag")
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.IntSlice(result, []int{-1308, 309})
 	chk.StrSlice(
-		args,
+		args.Args(),
 		[]string{
 			"anotherArg",
 		},
@@ -744,32 +687,37 @@ func TestSzargsArgument_ValuesInt_Success(t *testing.T) {
  ***************************************************************************
  */
 
-func TestSzargsArgument_ValuesUint64_Missing(t *testing.T) {
+func TestSzargs_ValuesUint64_Missing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	result, args, err := szargs.Arg("-t").ValuesUint64(nil)
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
-	chk.NoErr(err)
+	result := args.ValuesUint64("-t", "the test flag")
+
+	chk.NoErr(args.Err())
 	chk.Uint64Slice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesUint64_Invalid(t *testing.T) {
+func TestSzargs_ValuesUint64_Invalid(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber",
 		"-t",
 		"18446744073709551616", // MaxUint64 + 1 is out of range.
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesUint64(args)
+	result := args.ValuesUint64("-t", "the test flag")
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
 			szargs.ErrInvalidUint64,
 			szargs.ErrSyntax,
@@ -782,27 +730,28 @@ func TestSzargsArgument_ValuesUint64_Invalid(t *testing.T) {
 		),
 	)
 	chk.Uint64Slice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesUint64_Success(t *testing.T) {
+func TestSzargs_ValuesUint64_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"309",
 		"-t",
 		"15309",
 		"anotherArg",
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesUint64(args)
+	result := args.ValuesUint64("-t", "the test flag")
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint64Slice(result, []uint64{309, 15309})
 	chk.StrSlice(
-		args,
+		args.Args(),
 		[]string{
 			"anotherArg",
 		},
@@ -817,32 +766,37 @@ func TestSzargsArgument_ValuesUint64_Success(t *testing.T) {
  ***************************************************************************
  */
 
-func TestSzargsArgument_ValuesUint32_Missing(t *testing.T) {
+func TestSzargs_ValuesUint32_Missing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	result, args, err := szargs.Arg("-t").ValuesUint32(nil)
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
-	chk.NoErr(err)
+	result := args.ValuesUint32("-t", "the test flag")
+
+	chk.NoErr(args.Err())
 	chk.Uint32Slice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesUint32_Invalid(t *testing.T) {
+func TestSzargs_ValuesUint32_Invalid(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber",
 		"-t",
 		"4294967296", // MaxUint32 + 1 is out of range.
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesUint32(args)
+	result := args.ValuesUint32("-t", "the test flag")
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
 			szargs.ErrInvalidUint32,
 			szargs.ErrSyntax,
@@ -855,27 +809,28 @@ func TestSzargsArgument_ValuesUint32_Invalid(t *testing.T) {
 		),
 	)
 	chk.Uint32Slice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesUint32_Success(t *testing.T) {
+func TestSzargs_ValuesUint32_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"309",
 		"anotherArg",
 		"-t",
 		"123",
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesUint32(args)
+	result := args.ValuesUint32("-t", "the test flag")
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint32Slice(result, []uint32{309, 123})
 	chk.StrSlice(
-		args,
+		args.Args(),
 		[]string{
 			"anotherArg",
 		},
@@ -890,32 +845,37 @@ func TestSzargsArgument_ValuesUint32_Success(t *testing.T) {
  ***************************************************************************
  */
 
-func TestSzargsArgument_ValuesUint16_Missing(t *testing.T) {
+func TestSzargs_ValuesUint16_Missing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	result, args, err := szargs.Arg("-t").ValuesUint16(nil)
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
-	chk.NoErr(err)
+	result := args.ValuesUint16("-t", "the test flag")
+
+	chk.NoErr(args.Err())
 	chk.Uint16Slice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesUint16_Invalid(t *testing.T) {
+func TestSzargs_ValuesUint16_Invalid(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber",
 		"-t",
 		"65536", // MaxUint16 + 1 is out of range.
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesUint16(args)
+	result := args.ValuesUint16("-t", "the test flag")
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
 			szargs.ErrInvalidUint16,
 			szargs.ErrSyntax,
@@ -928,27 +888,28 @@ func TestSzargsArgument_ValuesUint16_Invalid(t *testing.T) {
 		),
 	)
 	chk.Uint16Slice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesUint16_Success(t *testing.T) {
+func TestSzargs_ValuesUint16_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"309",
 		"anotherArg",
 		"-t",
 		"867",
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesUint16(args)
+	result := args.ValuesUint16("-t", "the test flag")
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint16Slice(result, []uint16{309, 867})
 	chk.StrSlice(
-		args,
+		args.Args(),
 		[]string{
 			"anotherArg",
 		},
@@ -963,32 +924,37 @@ func TestSzargsArgument_ValuesUint16_Success(t *testing.T) {
  ***************************************************************************
  */
 
-func TestSzargsArgument_ValuesUint8_Missing(t *testing.T) {
+func TestSzargs_ValuesUint8_Missing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	result, args, err := szargs.Arg("-t").ValuesUint8(nil)
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
-	chk.NoErr(err)
+	result := args.ValuesUint8("-t", "the test flag")
+
+	chk.NoErr(args.Err())
 	chk.Uint8Slice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesUint8_Invalid(t *testing.T) {
+func TestSzargs_ValuesUint8_Invalid(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber",
 		"-t",
 		"256", // MaxUint8 + 1 is out of range.
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesUint8(args)
+	result := args.ValuesUint8("-t", "the test flag")
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
 			szargs.ErrInvalidUint8,
 			szargs.ErrSyntax,
@@ -1001,27 +967,28 @@ func TestSzargsArgument_ValuesUint8_Invalid(t *testing.T) {
 		),
 	)
 	chk.Uint8Slice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesUint8_Success(t *testing.T) {
+func TestSzargs_ValuesUint8_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"109",
 		"-t",
 		"111",
 		"anotherArg",
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesUint8(args)
+	result := args.ValuesUint8("-t", "the test flag")
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.Uint8Slice(result, []uint8{109, 111})
 	chk.StrSlice(
-		args,
+		args.Args(),
 		[]string{
 			"anotherArg",
 		},
@@ -1036,32 +1003,37 @@ func TestSzargsArgument_ValuesUint8_Success(t *testing.T) {
  ***************************************************************************
  */
 
-func TestSzargsArgument_ValuesUint_Missing(t *testing.T) {
+func TestSzargs_ValuesUint_Missing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	result, args, err := szargs.Arg("-t").ValuesUint(nil)
+	args := szargs.New("program description", []string{
+		"programName",
+	})
 
-	chk.NoErr(err)
+	result := args.ValuesUint("-t", "the test flag")
+
+	chk.NoErr(args.Err())
 	chk.UintSlice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesUint_Invalid(t *testing.T) {
+func TestSzargs_ValuesUint_Invalid(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"notANumber",
 		"-t",
 		"18446744073709551616", // MaxUint + 1 is out of range.
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesUint(args)
+	result := args.ValuesUint("-t", "the test flag")
 
 	chk.Err(
-		err,
+		args.Err(),
 		chk.ErrChain(
 			szargs.ErrInvalidUint,
 			szargs.ErrSyntax,
@@ -1074,27 +1046,28 @@ func TestSzargsArgument_ValuesUint_Invalid(t *testing.T) {
 		),
 	)
 	chk.UintSlice(result, nil)
-	chk.StrSlice(args, nil)
+	chk.StrSlice(args.Args(), nil)
 }
 
-func TestSzargsArgument_ValuesUint_Success(t *testing.T) {
+func TestSzargs_ValuesUint_Success(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	args := []string{
+	args := szargs.New("program description", []string{
+		"programName",
 		"-t",
 		"309",
 		"anotherArg",
 		"-t",
 		"765",
-	}
+	})
 
-	result, args, err := szargs.Arg("-t").ValuesUint(args)
+	result := args.ValuesUint("-t", "the test flag")
 
-	chk.NoErr(err)
+	chk.NoErr(args.Err())
 	chk.UintSlice(result, []uint{309, 765})
 	chk.StrSlice(
-		args,
+		args.Args(),
 		[]string{
 			"anotherArg",
 		},

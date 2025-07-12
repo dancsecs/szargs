@@ -18,14 +18,12 @@
 
 package szargs
 
-import (
-	"fmt"
-)
+import "fmt"
 
 // Values scans the args looking for all instances of the specified flag.  If
 // it finds it then the next arg as the value absorbing both the flag the
 // value from the argument list.
-func (a Arg) Values(args []string) ([]string, []string, error) {
+func (a Flag) values(args []string) ([]string, []string, error) {
 	values := []string(nil)
 	cleanedArgs := make([]string, 0, len(args))
 	err := error(nil)
@@ -56,22 +54,28 @@ func (a Arg) Values(args []string) ([]string, []string, error) {
 
 // ValuesString scans the args looking for all instances of the specified flag
 // returning all found in a typed slice.
-func (a Arg) ValuesString(args []string) ([]string, []string, error) {
-	return a.Values(args)
+func (args *Args) ValuesString(flag, desc string) []string {
+	args.addUsage(flag, desc)
+	result, newArgs, err := Flag(flag).values(args.args)
+	args.args = newArgs
+	args.PushErr(err)
+
+	return result
 }
 
 // ValuesFloat64 scans the args looking for all instances of the specified flag
 // returning all found in a typed slice.
-func (a Arg) ValuesFloat64(
-	args []string,
-) ([]float64, []string, error) {
+func (args *Args) ValuesFloat64(flag, desc string) []float64 {
 	var (
-		matches []string
-		result  []float64
-		err     error
+		matches     []string
+		cleanedArgs []string
+		result      []float64
+		err         error
 	)
 
-	matches, args, err = a.Values(args)
+	args.addUsage(flag, desc)
+
+	matches, cleanedArgs, err = Flag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -82,7 +86,7 @@ func (a Arg) ValuesFloat64(
 		result = make([]float64, len(matches))
 
 		for i, arg := range matches {
-			argItem, argErr = parseFloat64(string(a), arg)
+			argItem, argErr = parseFloat64(flag, arg)
 			if argErr != nil {
 				if err == nil {
 					err = argErr
@@ -95,23 +99,29 @@ func (a Arg) ValuesFloat64(
 		}
 	}
 
+	args.args = cleanedArgs
+	args.PushErr(err)
+
 	if err == nil {
-		return result, args, nil
+		return result
 	}
 
-	return nil, args, err
+	return nil
 }
 
 // ValuesFloat32 scans the args looking for all instances of the specified flag
 // returning all found in a typed slice.
-func (a Arg) ValuesFloat32(args []string) ([]float32, []string, error) {
+func (args *Args) ValuesFloat32(flag, desc string) []float32 {
 	var (
-		matches []string
-		result  []float32
-		err     error
+		matches     []string
+		cleanedArgs []string
+		result      []float32
+		err         error
 	)
 
-	matches, args, err = a.Values(args)
+	args.addUsage(flag, desc)
+
+	matches, cleanedArgs, err = Flag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -122,7 +132,7 @@ func (a Arg) ValuesFloat32(args []string) ([]float32, []string, error) {
 		result = make([]float32, len(matches))
 
 		for i, arg := range matches {
-			argItem, argErr = parseFloat32(string(a), arg)
+			argItem, argErr = parseFloat32(flag, arg)
 			if argErr != nil {
 				if err == nil {
 					err = argErr
@@ -135,23 +145,29 @@ func (a Arg) ValuesFloat32(args []string) ([]float32, []string, error) {
 		}
 	}
 
+	args.args = cleanedArgs
+	args.PushErr(err)
+
 	if err == nil {
-		return result, args, nil
+		return result
 	}
 
-	return nil, args, err
+	return nil
 }
 
 // ValuesInt64 scans the args looking for all instances of the specified flag
 // returning all found in a typed slice.
-func (a Arg) ValuesInt64(args []string) ([]int64, []string, error) {
+func (args *Args) ValuesInt64(flag, desc string) []int64 {
 	var (
-		matches []string
-		result  []int64
-		err     error
+		matches     []string
+		cleanedArgs []string
+		result      []int64
+		err         error
 	)
 
-	matches, args, err = a.Values(args)
+	args.addUsage(flag, desc)
+
+	matches, cleanedArgs, err = Flag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -162,7 +178,7 @@ func (a Arg) ValuesInt64(args []string) ([]int64, []string, error) {
 		result = make([]int64, len(matches))
 
 		for i, arg := range matches {
-			argItem, argErr = parseInt64(string(a), arg)
+			argItem, argErr = parseInt64(flag, arg)
 			if argErr != nil {
 				if err == nil {
 					err = argErr
@@ -175,23 +191,29 @@ func (a Arg) ValuesInt64(args []string) ([]int64, []string, error) {
 		}
 	}
 
+	args.args = cleanedArgs
+	args.PushErr(err)
+
 	if err == nil {
-		return result, args, nil
+		return result
 	}
 
-	return nil, args, err
+	return nil
 }
 
 // ValuesInt32 scans the args looking for all instances of the specified flag
 // returning all found in a typed slice.
-func (a Arg) ValuesInt32(args []string) ([]int32, []string, error) {
+func (args *Args) ValuesInt32(flag, desc string) []int32 {
 	var (
-		matches []string
-		result  []int32
-		err     error
+		matches     []string
+		cleanedArgs []string
+		result      []int32
+		err         error
 	)
 
-	matches, args, err = a.Values(args)
+	args.addUsage(flag, desc)
+
+	matches, cleanedArgs, err = Flag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -202,7 +224,7 @@ func (a Arg) ValuesInt32(args []string) ([]int32, []string, error) {
 		result = make([]int32, len(matches))
 
 		for i, arg := range matches {
-			argItem, argErr = parseInt32(string(a), arg)
+			argItem, argErr = parseInt32(flag, arg)
 			if argErr != nil {
 				if err == nil {
 					err = argErr
@@ -215,23 +237,29 @@ func (a Arg) ValuesInt32(args []string) ([]int32, []string, error) {
 		}
 	}
 
+	args.args = cleanedArgs
+	args.PushErr(err)
+
 	if err == nil {
-		return result, args, nil
+		return result
 	}
 
-	return nil, args, err
+	return nil
 }
 
 // ValuesInt16 scans the args looking for all instances of the specified flag
 // returning all found in a typed slice.
-func (a Arg) ValuesInt16(args []string) ([]int16, []string, error) {
+func (args *Args) ValuesInt16(flag, desc string) []int16 {
 	var (
-		matches []string
-		result  []int16
-		err     error
+		matches     []string
+		cleanedArgs []string
+		result      []int16
+		err         error
 	)
 
-	matches, args, err = a.Values(args)
+	args.addUsage(flag, desc)
+
+	matches, cleanedArgs, err = Flag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -242,7 +270,7 @@ func (a Arg) ValuesInt16(args []string) ([]int16, []string, error) {
 		result = make([]int16, len(matches))
 
 		for i, arg := range matches {
-			argItem, argErr = parseInt16(string(a), arg)
+			argItem, argErr = parseInt16(flag, arg)
 			if argErr != nil {
 				if err == nil {
 					err = argErr
@@ -255,23 +283,29 @@ func (a Arg) ValuesInt16(args []string) ([]int16, []string, error) {
 		}
 	}
 
+	args.args = cleanedArgs
+	args.PushErr(err)
+
 	if err == nil {
-		return result, args, nil
+		return result
 	}
 
-	return nil, args, err
+	return nil
 }
 
 // ValuesInt8 scans the args looking for all instances of the specified flag
 // returning all found in a typed slice.
-func (a Arg) ValuesInt8(args []string) ([]int8, []string, error) {
+func (args *Args) ValuesInt8(flag, desc string) []int8 {
 	var (
-		matches []string
-		result  []int8
-		err     error
+		matches     []string
+		cleanedArgs []string
+		result      []int8
+		err         error
 	)
 
-	matches, args, err = a.Values(args)
+	args.addUsage(flag, desc)
+
+	matches, cleanedArgs, err = Flag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -282,7 +316,7 @@ func (a Arg) ValuesInt8(args []string) ([]int8, []string, error) {
 		result = make([]int8, len(matches))
 
 		for i, arg := range matches {
-			argItem, argErr = parseInt8(string(a), arg)
+			argItem, argErr = parseInt8(flag, arg)
 			if argErr != nil {
 				if err == nil {
 					err = argErr
@@ -295,23 +329,29 @@ func (a Arg) ValuesInt8(args []string) ([]int8, []string, error) {
 		}
 	}
 
+	args.args = cleanedArgs
+	args.PushErr(err)
+
 	if err == nil {
-		return result, args, nil
+		return result
 	}
 
-	return nil, args, err
+	return nil
 }
 
 // ValuesInt scans the args looking for all instances of the specified flag
 // returning all found in a typed slice.
-func (a Arg) ValuesInt(args []string) ([]int, []string, error) {
+func (args *Args) ValuesInt(flag, desc string) []int {
 	var (
-		matches []string
-		result  []int
-		err     error
+		matches     []string
+		cleanedArgs []string
+		result      []int
+		err         error
 	)
 
-	matches, args, err = a.Values(args)
+	args.addUsage(flag, desc)
+
+	matches, cleanedArgs, err = Flag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -322,7 +362,7 @@ func (a Arg) ValuesInt(args []string) ([]int, []string, error) {
 		result = make([]int, len(matches))
 
 		for i, arg := range matches {
-			argItem, argErr = parseInt(string(a), arg)
+			argItem, argErr = parseInt(flag, arg)
 			if argErr != nil {
 				if err == nil {
 					err = argErr
@@ -335,23 +375,29 @@ func (a Arg) ValuesInt(args []string) ([]int, []string, error) {
 		}
 	}
 
+	args.args = cleanedArgs
+	args.PushErr(err)
+
 	if err == nil {
-		return result, args, nil
+		return result
 	}
 
-	return nil, args, err
+	return nil
 }
 
 // ValuesUint64 scans the args looking for all instances of the specified flag
 // returning all found in a typed slice.
-func (a Arg) ValuesUint64(args []string) ([]uint64, []string, error) {
+func (args *Args) ValuesUint64(flag, desc string) []uint64 {
 	var (
-		matches []string
-		result  []uint64
-		err     error
+		matches     []string
+		cleanedArgs []string
+		result      []uint64
+		err         error
 	)
 
-	matches, args, err = a.Values(args)
+	args.addUsage(flag, desc)
+
+	matches, cleanedArgs, err = Flag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -362,7 +408,7 @@ func (a Arg) ValuesUint64(args []string) ([]uint64, []string, error) {
 		result = make([]uint64, len(matches))
 
 		for i, arg := range matches {
-			argItem, argErr = parseUint64(string(a), arg)
+			argItem, argErr = parseUint64(flag, arg)
 			if argErr != nil {
 				if err == nil {
 					err = argErr
@@ -375,23 +421,29 @@ func (a Arg) ValuesUint64(args []string) ([]uint64, []string, error) {
 		}
 	}
 
+	args.args = cleanedArgs
+	args.PushErr(err)
+
 	if err == nil {
-		return result, args, nil
+		return result
 	}
 
-	return nil, args, err
+	return nil
 }
 
 // ValuesUint32 scans the args looking for all instances of the specified flag
 // returning all found in a typed slice.
-func (a Arg) ValuesUint32(args []string) ([]uint32, []string, error) {
+func (args *Args) ValuesUint32(flag, desc string) []uint32 {
 	var (
-		matches []string
-		result  []uint32
-		err     error
+		matches     []string
+		cleanedArgs []string
+		result      []uint32
+		err         error
 	)
 
-	matches, args, err = a.Values(args)
+	args.addUsage(flag, desc)
+
+	matches, cleanedArgs, err = Flag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -402,7 +454,7 @@ func (a Arg) ValuesUint32(args []string) ([]uint32, []string, error) {
 		result = make([]uint32, len(matches))
 
 		for i, arg := range matches {
-			argItem, argErr = parseUint32(string(a), arg)
+			argItem, argErr = parseUint32(flag, arg)
 			if argErr != nil {
 				if err == nil {
 					err = argErr
@@ -415,23 +467,29 @@ func (a Arg) ValuesUint32(args []string) ([]uint32, []string, error) {
 		}
 	}
 
+	args.args = cleanedArgs
+	args.PushErr(err)
+
 	if err == nil {
-		return result, args, nil
+		return result
 	}
 
-	return nil, args, err
+	return nil
 }
 
 // ValuesUint16 scans the args looking for all instances of the specified flag
 // returning all found in a typed slice.
-func (a Arg) ValuesUint16(args []string) ([]uint16, []string, error) {
+func (args *Args) ValuesUint16(flag, desc string) []uint16 {
 	var (
-		matches []string
-		result  []uint16
-		err     error
+		matches     []string
+		cleanedArgs []string
+		result      []uint16
+		err         error
 	)
 
-	matches, args, err = a.Values(args)
+	args.addUsage(flag, desc)
+
+	matches, cleanedArgs, err = Flag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -442,7 +500,7 @@ func (a Arg) ValuesUint16(args []string) ([]uint16, []string, error) {
 		result = make([]uint16, len(matches))
 
 		for i, arg := range matches {
-			argItem, argErr = parseUint16(string(a), arg)
+			argItem, argErr = parseUint16(flag, arg)
 			if argErr != nil {
 				if err == nil {
 					err = argErr
@@ -455,23 +513,29 @@ func (a Arg) ValuesUint16(args []string) ([]uint16, []string, error) {
 		}
 	}
 
+	args.args = cleanedArgs
+	args.PushErr(err)
+
 	if err == nil {
-		return result, args, nil
+		return result
 	}
 
-	return nil, args, err
+	return nil
 }
 
 // ValuesUint8 scans the args looking for all instances of the specified flag
 // returning all found in a typed slice.
-func (a Arg) ValuesUint8(args []string) ([]uint8, []string, error) {
+func (args *Args) ValuesUint8(flag, desc string) []uint8 {
 	var (
-		matches []string
-		result  []uint8
-		err     error
+		matches     []string
+		cleanedArgs []string
+		result      []uint8
+		err         error
 	)
 
-	matches, args, err = a.Values(args)
+	args.addUsage(flag, desc)
+
+	matches, cleanedArgs, err = Flag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -482,7 +546,7 @@ func (a Arg) ValuesUint8(args []string) ([]uint8, []string, error) {
 		result = make([]uint8, len(matches))
 
 		for i, arg := range matches {
-			argItem, argErr = parseUint8(string(a), arg)
+			argItem, argErr = parseUint8(flag, arg)
 			if argErr != nil {
 				if err == nil {
 					err = argErr
@@ -495,23 +559,29 @@ func (a Arg) ValuesUint8(args []string) ([]uint8, []string, error) {
 		}
 	}
 
+	args.args = cleanedArgs
+	args.PushErr(err)
+
 	if err == nil {
-		return result, args, nil
+		return result
 	}
 
-	return nil, args, err
+	return nil
 }
 
 // ValuesUint scans the args looking for all instances of the specified flag
 // returning all found in a typed slice.
-func (a Arg) ValuesUint(args []string) ([]uint, []string, error) {
+func (args *Args) ValuesUint(flag, desc string) []uint {
 	var (
-		matches []string
-		result  []uint
-		err     error
+		matches     []string
+		cleanedArgs []string
+		result      []uint
+		err         error
 	)
 
-	matches, args, err = a.Values(args)
+	args.addUsage(flag, desc)
+
+	matches, cleanedArgs, err = Flag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -522,7 +592,7 @@ func (a Arg) ValuesUint(args []string) ([]uint, []string, error) {
 		result = make([]uint, len(matches))
 
 		for i, arg := range matches {
-			argItem, argErr = parseUint(string(a), arg)
+			argItem, argErr = parseUint(flag, arg)
 			if argErr != nil {
 				if err == nil {
 					err = argErr
@@ -535,9 +605,12 @@ func (a Arg) ValuesUint(args []string) ([]uint, []string, error) {
 		}
 	}
 
+	args.args = cleanedArgs
+	args.PushErr(err)
+
 	if err == nil {
-		return result, args, nil
+		return result
 	}
 
-	return nil, args, err
+	return nil
 }

@@ -18,17 +18,13 @@
 
 package szargs
 
-import (
-	"fmt"
-)
+import "fmt"
 
 // Value scans the args looking for the specified flag.  If it finds
 // it then the next arg as the value absorbing both the flag the value
 // from the argument list.  If there is no next arg or the flag appears more
 // than once an error is returned.
-func (a Arg) Value(
-	args []string,
-) (string, bool, []string, error) {
+func (a Flag) value(args []string) (string, bool, []string, error) {
 	found := false
 	value := ""
 	cleanedArgs := make([]string, 0, len(args))
@@ -86,10 +82,13 @@ func (a Arg) Value(
 // from the argument list.  If there is no next arg or the flag appears more
 // than once an error is returned.  If an error occurs then the original
 // arg array is returned.
-func (a Arg) ValueString(
-	args []string,
-) (string, bool, []string, error) {
-	return a.Value(args)
+func (args *Args) ValueString(flag, desc string) (string, bool) {
+	args.addUsage(flag, desc)
+	result, found, newArgs, err := Flag(flag).value(args.args)
+	args.args = newArgs
+	args.PushErr(err)
+
+	return result, found
 }
 
 // ValueFloat64 scans the args looking for the specified flag.  If it finds
@@ -97,9 +96,7 @@ func (a Arg) ValueString(
 // from the argument list.  If there is no next arg or the flag appears more
 // than once an error is returned.  If an error occurs then the original
 // arg array is returned.
-func (a Arg) ValueFloat64(
-	args []string,
-) (float64, bool, []string, error) {
+func (args *Args) ValueFloat64(flag, desc string) (float64, bool) {
 	var (
 		arg    string
 		found  bool
@@ -107,16 +104,21 @@ func (a Arg) ValueFloat64(
 		err    error
 	)
 
-	arg, found, args, err = a.Value(args)
+	args.addUsage(flag, desc)
+
+	arg, found, newArgs, err := Flag(flag).value(args.args)
 
 	if err == nil && found {
-		result, err = parseFloat64(string(a), arg)
+		result, err = parseFloat64(flag, arg)
 		if err != nil {
 			found = false
 		}
 	}
 
-	return result, found, args, err
+	args.args = newArgs
+	args.PushErr(err)
+
+	return result, found
 }
 
 // ValueFloat32 scans the args looking for the specified flag.  If it finds
@@ -124,9 +126,7 @@ func (a Arg) ValueFloat64(
 // from the argument list.  If there is no next arg or the flag appears more
 // than once an error is returned.  If an error occurs then the original
 // arg array is returned.
-func (a Arg) ValueFloat32(
-	args []string,
-) (float32, bool, []string, error) {
+func (args *Args) ValueFloat32(flag, desc string) (float32, bool) {
 	var (
 		arg    string
 		found  bool
@@ -134,16 +134,21 @@ func (a Arg) ValueFloat32(
 		err    error
 	)
 
-	arg, found, args, err = a.Value(args)
+	args.addUsage(flag, desc)
+
+	arg, found, newArgs, err := Flag(flag).value(args.args)
 
 	if err == nil && found {
-		result, err = parseFloat32(string(a), arg)
+		result, err = parseFloat32(flag, arg)
 		if err != nil {
 			found = false
 		}
 	}
 
-	return result, found, args, err
+	args.args = newArgs
+	args.PushErr(err)
+
+	return result, found
 }
 
 // ValueInt64 scans the args looking for the specified flag.  If it finds
@@ -151,9 +156,7 @@ func (a Arg) ValueFloat32(
 // from the argument list.  If there is no next arg or the flag appears more
 // than once an error is returned.  If an error occurs then the original
 // arg array is returned.
-func (a Arg) ValueInt64(
-	args []string,
-) (int64, bool, []string, error) {
+func (args *Args) ValueInt64(flag, desc string) (int64, bool) {
 	var (
 		arg    string
 		found  bool
@@ -161,16 +164,21 @@ func (a Arg) ValueInt64(
 		err    error
 	)
 
-	arg, found, args, err = a.Value(args)
+	args.addUsage(flag, desc)
+
+	arg, found, newArgs, err := Flag(flag).value(args.args)
 
 	if err == nil && found {
-		result, err = parseInt64(string(a), arg)
+		result, err = parseInt64(flag, arg)
 		if err != nil {
 			found = false
 		}
 	}
 
-	return result, found, args, err
+	args.args = newArgs
+	args.PushErr(err)
+
+	return result, found
 }
 
 // ValueInt32 scans the args looking for the specified flag.  If it finds
@@ -178,9 +186,7 @@ func (a Arg) ValueInt64(
 // from the argument list.  If there is no next arg or the flag appears more
 // than once an error is returned.  If an error occurs then the original
 // arg array is returned.
-func (a Arg) ValueInt32(
-	args []string,
-) (int32, bool, []string, error) {
+func (args *Args) ValueInt32(flag, desc string) (int32, bool) {
 	var (
 		arg    string
 		found  bool
@@ -188,16 +194,21 @@ func (a Arg) ValueInt32(
 		err    error
 	)
 
-	arg, found, args, err = a.Value(args)
+	args.addUsage(flag, desc)
+
+	arg, found, newArgs, err := Flag(flag).value(args.args)
 
 	if err == nil && found {
-		result, err = parseInt32(string(a), arg)
+		result, err = parseInt32(flag, arg)
 		if err != nil {
 			found = false
 		}
 	}
 
-	return result, found, args, err
+	args.args = newArgs
+	args.PushErr(err)
+
+	return result, found
 }
 
 // ValueInt16 scans the args looking for the specified flag.  If it finds
@@ -205,9 +216,7 @@ func (a Arg) ValueInt32(
 // from the argument list.  If there is no next arg or the flag appears more
 // than once an error is returned.  If an error occurs then the original
 // arg array is returned.
-func (a Arg) ValueInt16(
-	args []string,
-) (int16, bool, []string, error) {
+func (args *Args) ValueInt16(flag, desc string) (int16, bool) {
 	var (
 		arg    string
 		found  bool
@@ -215,16 +224,21 @@ func (a Arg) ValueInt16(
 		err    error
 	)
 
-	arg, found, args, err = a.Value(args)
+	args.addUsage(flag, desc)
+
+	arg, found, newArgs, err := Flag(flag).value(args.args)
 
 	if err == nil && found {
-		result, err = parseInt16(string(a), arg)
+		result, err = parseInt16(flag, arg)
 		if err != nil {
 			found = false
 		}
 	}
 
-	return result, found, args, err
+	args.args = newArgs
+	args.PushErr(err)
+
+	return result, found
 }
 
 // ValueInt8 scans the args looking for the specified flag.  If it finds
@@ -232,9 +246,7 @@ func (a Arg) ValueInt16(
 // from the argument list.  If there is no next arg or the flag appears more
 // than once an error is returned.  If an error occurs then the original
 // arg array is returned.
-func (a Arg) ValueInt8(
-	args []string,
-) (int8, bool, []string, error) {
+func (args *Args) ValueInt8(flag, desc string) (int8, bool) {
 	var (
 		arg    string
 		found  bool
@@ -242,16 +254,21 @@ func (a Arg) ValueInt8(
 		err    error
 	)
 
-	arg, found, args, err = a.Value(args)
+	args.addUsage(flag, desc)
+
+	arg, found, newArgs, err := Flag(flag).value(args.args)
 
 	if err == nil && found {
-		result, err = parseInt8(string(a), arg)
+		result, err = parseInt8(flag, arg)
 		if err != nil {
 			found = false
 		}
 	}
 
-	return result, found, args, err
+	args.args = newArgs
+	args.PushErr(err)
+
+	return result, found
 }
 
 // ValueInt scans the args looking for the specified flag.  If it finds
@@ -259,9 +276,7 @@ func (a Arg) ValueInt8(
 // from the argument list.  If there is no next arg or the flag appears more
 // than once an error is returned.  If an error occurs then the original
 // arg array is returned.
-func (a Arg) ValueInt(
-	args []string,
-) (int, bool, []string, error) {
+func (args *Args) ValueInt(flag, desc string) (int, bool) {
 	var (
 		arg    string
 		found  bool
@@ -269,16 +284,21 @@ func (a Arg) ValueInt(
 		err    error
 	)
 
-	arg, found, args, err = a.Value(args)
+	args.addUsage(flag, desc)
+
+	arg, found, newArgs, err := Flag(flag).value(args.args)
 
 	if err == nil && found {
-		result, err = parseInt(string(a), arg)
+		result, err = parseInt(flag, arg)
 		if err != nil {
 			found = false
 		}
 	}
 
-	return result, found, args, err
+	args.args = newArgs
+	args.PushErr(err)
+
+	return result, found
 }
 
 // ValueUint64 scans the args looking for the specified flag.  If it finds
@@ -286,9 +306,7 @@ func (a Arg) ValueInt(
 // from the argument list.  If there is no next arg or the flag appears more
 // than once an error is returned.  If an error occurs then the original
 // arg array is returned.
-func (a Arg) ValueUint64(
-	args []string,
-) (uint64, bool, []string, error) {
+func (args *Args) ValueUint64(flag, desc string) (uint64, bool) {
 	var (
 		arg    string
 		found  bool
@@ -296,16 +314,21 @@ func (a Arg) ValueUint64(
 		err    error
 	)
 
-	arg, found, args, err = a.Value(args)
+	args.addUsage(flag, desc)
+
+	arg, found, newArgs, err := Flag(flag).value(args.args)
 
 	if err == nil && found {
-		result, err = parseUint64(string(a), arg)
+		result, err = parseUint64(flag, arg)
 		if err != nil {
 			found = false
 		}
 	}
 
-	return result, found, args, err
+	args.args = newArgs
+	args.PushErr(err)
+
+	return result, found
 }
 
 // ValueUint32 scans the args looking for the specified flag.  If it finds
@@ -313,9 +336,7 @@ func (a Arg) ValueUint64(
 // from the argument list.  If there is no next arg or the flag appears more
 // than once an error is returned.  If an error occurs then the original
 // arg array is returned.
-func (a Arg) ValueUint32(
-	args []string,
-) (uint32, bool, []string, error) {
+func (args *Args) ValueUint32(flag, desc string) (uint32, bool) {
 	var (
 		arg    string
 		found  bool
@@ -323,16 +344,21 @@ func (a Arg) ValueUint32(
 		err    error
 	)
 
-	arg, found, args, err = a.Value(args)
+	args.addUsage(flag, desc)
+
+	arg, found, newArgs, err := Flag(flag).value(args.args)
 
 	if err == nil && found {
-		result, err = parseUint32(string(a), arg)
+		result, err = parseUint32(flag, arg)
 		if err != nil {
 			found = false
 		}
 	}
 
-	return result, found, args, err
+	args.args = newArgs
+	args.PushErr(err)
+
+	return result, found
 }
 
 // ValueUint16 scans the args looking for the specified flag.  If it finds
@@ -340,9 +366,7 @@ func (a Arg) ValueUint32(
 // from the argument list.  If there is no next arg or the flag appears more
 // than once an error is returned.  If an error occurs then the original
 // arg array is returned.
-func (a Arg) ValueUint16(
-	args []string,
-) (uint16, bool, []string, error) {
+func (args *Args) ValueUint16(flag, desc string) (uint16, bool) {
 	var (
 		arg    string
 		found  bool
@@ -350,16 +374,21 @@ func (a Arg) ValueUint16(
 		err    error
 	)
 
-	arg, found, args, err = a.Value(args)
+	args.addUsage(flag, desc)
+
+	arg, found, newArgs, err := Flag(flag).value(args.args)
 
 	if err == nil && found {
-		result, err = parseUint16(string(a), arg)
+		result, err = parseUint16(flag, arg)
 		if err != nil {
 			found = false
 		}
 	}
 
-	return result, found, args, err
+	args.args = newArgs
+	args.PushErr(err)
+
+	return result, found
 }
 
 // ValueUint8 scans the args looking for the specified flag.  If it finds
@@ -367,9 +396,7 @@ func (a Arg) ValueUint16(
 // from the argument list.  If there is no next arg or the flag appears more
 // than once an error is returned.  If an error occurs then the original
 // arg array is returned.
-func (a Arg) ValueUint8(
-	args []string,
-) (uint8, bool, []string, error) {
+func (args *Args) ValueUint8(flag, desc string) (uint8, bool) {
 	var (
 		arg    string
 		found  bool
@@ -377,16 +404,21 @@ func (a Arg) ValueUint8(
 		err    error
 	)
 
-	arg, found, args, err = a.Value(args)
+	args.addUsage(flag, desc)
+
+	arg, found, newArgs, err := Flag(flag).value(args.args)
 
 	if err == nil && found {
-		result, err = parseUint8(string(a), arg)
+		result, err = parseUint8(flag, arg)
 		if err != nil {
 			found = false
 		}
 	}
 
-	return result, found, args, err
+	args.args = newArgs
+	args.PushErr(err)
+
+	return result, found
 }
 
 // ValueUint scans the args looking for the specified flag.  If it finds
@@ -394,9 +426,7 @@ func (a Arg) ValueUint8(
 // from the argument list.  If there is no next arg or the flag appears more
 // than once an error is returned.  If an error occurs then the original
 // arg array is returned.
-func (a Arg) ValueUint(
-	args []string,
-) (uint, bool, []string, error) {
+func (args *Args) ValueUint(flag, desc string) (uint, bool) {
 	var (
 		arg    string
 		found  bool
@@ -404,14 +434,19 @@ func (a Arg) ValueUint(
 		err    error
 	)
 
-	arg, found, args, err = a.Value(args)
+	args.addUsage(flag, desc)
+
+	arg, found, newArgs, err := Flag(flag).value(args.args)
 
 	if err == nil && found {
-		result, err = parseUint(string(a), arg)
+		result, err = parseUint(flag, arg)
 		if err != nil {
 			found = false
 		}
 	}
 
-	return result, found, args, err
+	args.args = newArgs
+	args.PushErr(err)
+
+	return result, found
 }

@@ -31,7 +31,7 @@ func TestSzArgs_ArgCount(t *testing.T) {
 	defer chk.Release()
 
 	var (
-		arg   = szargs.Arg("-v | --verbose")
+		arg   = szargs.Flag("-v | --verbose")
 		count int
 		args  []string
 	)
@@ -85,7 +85,7 @@ func TestSzArgs_Is(t *testing.T) {
 
 	var (
 		err   error
-		arg   = szargs.Arg("-v")
+		arg   = szargs.Flag("-v")
 		found bool
 		args  []string
 	)

@@ -19,392 +19,597 @@
 package szargs
 
 import (
+	"errors"
 	"os"
 )
 
 const defaultStandIn = "~~--default--~~"
 
-// Value is a convenience function that selects a values from a default that
+// Setting is a convenience function that selects a values from a default that
 // can be overridden by an optional environment variable or an optional
 // argument.  If the argument is found its value is chosen and removed from
 // the returned argument list.  An error is returned if the argument is missing
 // or ambiguous.
-func Value(
-	defaultValue, envOverride, argOverride string,
-	args []string,
-) (string, []string, error) {
-	value, found, cleanArgs, err := Arg(argOverride).Value(args)
+func setting(
+	flag, env, def string, args []string,
+) (string, []string, error, error) {
+	srcErr := ErrInvalidFlag
+
+	value, found, cleanArgs, err := Flag(flag).value(args)
 	if err != nil {
-		return "", args, err
+		return "", args, srcErr, err
 	}
 
 	if !found {
-		value = defaultValue
+		value = def
+		srcErr = nil
 
-		if envOverride != "" {
-			envValue, ok := os.LookupEnv(envOverride)
+		if env != "" {
+			envValue, ok := os.LookupEnv(env)
 			if ok {
 				value = envValue
+				srcErr = ErrInvalidEnv
 			}
 		}
 	}
 
-	return value, cleanArgs, nil
+	return value, cleanArgs, srcErr, nil
 }
 
 // SettingString scans the args looking for arg.  If it is not found then it
 // looks for an environment variable and if this does not exist then it will
 // return the specified default.
-func SettingString(
-	_ /*name*/, def, env, arg string, args []string,
-) (string, []string, error) {
-	return Value(def, env, arg, args)
+func (args *Args) SettingString(
+	flag, env, def, desc string,
+) string {
+	args.addUsage(flag, desc)
+	result, cleanedArgs, srcErr, err := setting(flag, env, def, args.Args())
+	args.args = cleanedArgs
+
+	if err != nil {
+		args.PushErr(srcErr)
+		args.PushErr(err)
+	}
+
+	return result
 }
 
 // SettingFloat64 scans the args looking for arg.  If it is not found then it
 // looks for an environment variable and if this does not exist then it will
 // return the specified default.
-func SettingFloat64(
-	name string, def float64, env, arg string, args []string,
-) (float64, []string, error) {
+func (args *Args) SettingFloat64(
+	flag, env string, def float64, desc string,
+) float64 {
 	var (
-		value  string
-		result float64
-		err    error
+		value       string
+		cleanedArgs []string
+		result      float64
+		parseName   string
+		srcErr      error
+		err         error
 	)
 
-	value, args, err = Value(defaultStandIn, env, arg, args)
+	args.addUsage(flag, desc)
 
-	if err == nil {
+	value, cleanedArgs, srcErr, err = setting(
+		flag, env, defaultStandIn, args.Args(),
+	)
+
+	if err == nil { //nolint:nestif // Ok.
 		if value == defaultStandIn {
 			result = def
 		} else {
-			result, err = parseFloat64(name, value)
+			if errors.Is(srcErr, ErrInvalidEnv) {
+				parseName = env
+			} else {
+				parseName = flag
+			}
+
+			result, err = parseFloat64(parseName, value)
 		}
 	}
 
-	if err == nil {
-		return result, args, nil
+	args.args = cleanedArgs
+
+	if err != nil {
+		args.PushErr(srcErr)
+		args.PushErr(err)
 	}
 
-	return result, args, err
+	return result
 }
 
 // SettingFloat32 scans the args looking for arg.  If it is not found then it
 // looks for an environment variable and if this does not exist then it will
 // return the specified default.
-func SettingFloat32(
-	name string, def float32, env, arg string, args []string,
-) (float32, []string, error) {
+func (args *Args) SettingFloat32(
+	flag, env string, def float32, desc string,
+) float32 {
 	var (
-		value  string
-		result float32
-		err    error
+		value       string
+		cleanedArgs []string
+		result      float32
+		parseName   string
+		srcErr      error
+		err         error
 	)
 
-	value, args, err = Value(defaultStandIn, env, arg, args)
+	args.addUsage(flag, desc)
 
-	if err == nil {
+	value, cleanedArgs, srcErr, err = setting(
+		flag, env, defaultStandIn, args.Args(),
+	)
+
+	if err == nil { //nolint:nestif // Ok.
 		if value == defaultStandIn {
 			result = def
 		} else {
-			result, err = parseFloat32(name, value)
+			if errors.Is(srcErr, ErrInvalidEnv) {
+				parseName = env
+			} else {
+				parseName = flag
+			}
+
+			result, err = parseFloat32(parseName, value)
 		}
 	}
 
-	if err == nil {
-		return result, args, nil
+	args.args = cleanedArgs
+
+	if err != nil {
+		args.PushErr(srcErr)
+		args.PushErr(err)
 	}
 
-	return result, args, err
+	return result
 }
 
 // SettingInt64 scans the args looking for arg.  If it is not found then it
 // looks for an environment variable and if this does not exist then it will
 // return the specified default.
-func SettingInt64(
-	name string, def int64, env, arg string, args []string,
-) (int64, []string, error) {
+func (args *Args) SettingInt64(
+	flag, env string, def int64, desc string,
+) int64 {
 	var (
-		value  string
-		result int64
-		err    error
+		value       string
+		cleanedArgs []string
+		result      int64
+		parseName   string
+		srcErr      error
+		err         error
 	)
 
-	value, args, err = Value(defaultStandIn, env, arg, args)
+	args.addUsage(flag, desc)
 
-	if err == nil {
+	value, cleanedArgs, srcErr, err = setting(
+		flag, env, defaultStandIn, args.Args(),
+	)
+
+	if err == nil { //nolint:nestif // Ok.
 		if value == defaultStandIn {
 			result = def
 		} else {
-			result, err = parseInt64(name, value)
+			if errors.Is(srcErr, ErrInvalidEnv) {
+				parseName = env
+			} else {
+				parseName = flag
+			}
+
+			result, err = parseInt64(parseName, value)
 		}
 	}
 
-	if err == nil {
-		return result, args, nil
+	args.args = cleanedArgs
+
+	if err != nil {
+		args.PushErr(srcErr)
+		args.PushErr(err)
 	}
 
-	return result, args, err
+	return result
 }
 
 // SettingInt32 scans the args looking for arg.  If it is not found then it
 // looks for an environment variable and if this does not exist then it will
 // return the specified default.
-func SettingInt32(
-	name string, def int32, env, arg string, args []string,
-) (int32, []string, error) {
+func (args *Args) SettingInt32(
+	flag, env string, def int32, desc string,
+) int32 {
 	var (
-		value  string
-		result int32
-		err    error
+		value       string
+		cleanedArgs []string
+		result      int32
+		parseName   string
+		srcErr      error
+		err         error
 	)
 
-	value, args, err = Value(defaultStandIn, env, arg, args)
+	args.addUsage(flag, desc)
 
-	if err == nil {
+	value, cleanedArgs, srcErr, err = setting(
+		flag, env, defaultStandIn, args.Args(),
+	)
+
+	if err == nil { //nolint:nestif // Ok.
 		if value == defaultStandIn {
 			result = def
 		} else {
-			result, err = parseInt32(name, value)
+			if errors.Is(srcErr, ErrInvalidEnv) {
+				parseName = env
+			} else {
+				parseName = flag
+			}
+
+			result, err = parseInt32(parseName, value)
 		}
 	}
 
-	if err == nil {
-		return result, args, nil
+	args.args = cleanedArgs
+
+	if err != nil {
+		args.PushErr(srcErr)
+		args.PushErr(err)
 	}
 
-	return result, args, err
+	return result
 }
 
 // SettingInt16 scans the args looking for arg.  If it is not found then it
 // looks for an environment variable and if this does not exist then it will
 // return the specified default.
-func SettingInt16(
-	name string, def int16, env, arg string, args []string,
-) (int16, []string, error) {
+func (args *Args) SettingInt16(
+	flag, env string, def int16, desc string,
+) int16 {
 	var (
-		value  string
-		result int16
-		err    error
+		value       string
+		cleanedArgs []string
+		result      int16
+		parseName   string
+		srcErr      error
+		err         error
 	)
 
-	value, args, err = Value(defaultStandIn, env, arg, args)
+	args.addUsage(flag, desc)
 
-	if err == nil {
+	value, cleanedArgs, srcErr, err = setting(
+		flag, env, defaultStandIn, args.Args(),
+	)
+
+	if err == nil { //nolint:nestif // Ok.
 		if value == defaultStandIn {
 			result = def
 		} else {
-			result, err = parseInt16(name, value)
+			if errors.Is(srcErr, ErrInvalidEnv) {
+				parseName = env
+			} else {
+				parseName = flag
+			}
+
+			result, err = parseInt16(parseName, value)
 		}
 	}
 
-	if err == nil {
-		return result, args, nil
+	args.args = cleanedArgs
+
+	if err != nil {
+		args.PushErr(srcErr)
+		args.PushErr(err)
 	}
 
-	return result, args, err
+	return result
 }
 
 // SettingInt8 scans the args looking for arg.  If it is not found then it
 // looks for an environment variable and if this does not exist then it will
 // return the specified default.
-func SettingInt8(
-	name string, def int8, env, arg string, args []string,
-) (int8, []string, error) {
+func (args *Args) SettingInt8(
+	flag, env string, def int8, desc string,
+) int8 {
 	var (
-		value  string
-		result int8
-		err    error
+		value       string
+		cleanedArgs []string
+		result      int8
+		parseName   string
+		srcErr      error
+		err         error
 	)
 
-	value, args, err = Value(defaultStandIn, env, arg, args)
+	args.addUsage(flag, desc)
 
-	if err == nil {
+	value, cleanedArgs, srcErr, err = setting(
+		flag, env, defaultStandIn, args.Args(),
+	)
+
+	if err == nil { //nolint:nestif // Ok.
 		if value == defaultStandIn {
 			result = def
 		} else {
-			result, err = parseInt8(name, value)
+			if errors.Is(srcErr, ErrInvalidEnv) {
+				parseName = env
+			} else {
+				parseName = flag
+			}
+
+			result, err = parseInt8(parseName, value)
 		}
 	}
 
-	if err == nil {
-		return result, args, nil
+	args.args = cleanedArgs
+
+	if err != nil {
+		args.PushErr(srcErr)
+		args.PushErr(err)
 	}
 
-	return result, args, err
+	return result
 }
 
 // SettingInt scans the args looking for arg.  If it is not found then it
 // looks for an environment variable and if this does not exist then it will
 // return the specified default.
-func SettingInt(
-	name string, def int, env, arg string, args []string,
-) (int, []string, error) {
+func (args *Args) SettingInt(
+	flag, env string, def int, desc string,
+) int {
 	var (
-		value  string
-		result int
-		err    error
+		value       string
+		cleanedArgs []string
+		result      int
+		parseName   string
+		srcErr      error
+		err         error
 	)
 
-	value, args, err = Value(defaultStandIn, env, arg, args)
+	args.addUsage(flag, desc)
 
-	if err == nil {
+	value, cleanedArgs, srcErr, err = setting(
+		flag, env, defaultStandIn, args.Args(),
+	)
+
+	if err == nil { //nolint:nestif // Ok.
 		if value == defaultStandIn {
 			result = def
 		} else {
-			result, err = parseInt(name, value)
+			if errors.Is(srcErr, ErrInvalidEnv) {
+				parseName = env
+			} else {
+				parseName = flag
+			}
+
+			result, err = parseInt(parseName, value)
 		}
 	}
 
-	if err == nil {
-		return result, args, nil
+	args.args = cleanedArgs
+
+	if err != nil {
+		args.PushErr(srcErr)
+		args.PushErr(err)
 	}
 
-	return result, args, err
+	return result
 }
 
 // SettingUint64 scans the args looking for arg.  If it is not found then it
 // looks for an environment variable and if this does not exist then it will
 // return the specified default.
-func SettingUint64(
-	name string, def uint64, env, arg string, args []string,
-) (uint64, []string, error) {
+func (args *Args) SettingUint64(
+	flag, env string, def uint64, desc string,
+) uint64 {
 	var (
-		value  string
-		result uint64
-		err    error
+		value       string
+		cleanedArgs []string
+		result      uint64
+		parseName   string
+		srcErr      error
+		err         error
 	)
 
-	value, args, err = Value(defaultStandIn, env, arg, args)
+	args.addUsage(flag, desc)
 
-	if err == nil {
+	value, cleanedArgs, srcErr, err = setting(
+		flag, env, defaultStandIn, args.Args(),
+	)
+
+	if err == nil { //nolint:nestif // Ok.
 		if value == defaultStandIn {
 			result = def
 		} else {
-			result, err = parseUint64(name, value)
+			if errors.Is(srcErr, ErrInvalidEnv) {
+				parseName = env
+			} else {
+				parseName = flag
+			}
+
+			result, err = parseUint64(parseName, value)
 		}
 	}
 
-	if err == nil {
-		return result, args, nil
+	args.args = cleanedArgs
+
+	if err != nil {
+		args.PushErr(srcErr)
+		args.PushErr(err)
 	}
 
-	return result, args, err
+	return result
 }
 
 // SettingUint32 scans the args looking for arg.  If it is not found then it
 // looks for an environment variable and if this does not exist then it will
 // return the specified default.
-func SettingUint32(
-	name string, def uint32, env, arg string, args []string,
-) (uint32, []string, error) {
+func (args *Args) SettingUint32(
+	flag, env string, def uint32, desc string,
+) uint32 {
 	var (
-		value  string
-		result uint32
-		err    error
+		value       string
+		cleanedArgs []string
+		result      uint32
+		parseName   string
+		srcErr      error
+		err         error
 	)
 
-	value, args, err = Value(defaultStandIn, env, arg, args)
+	args.addUsage(flag, desc)
 
-	if err == nil {
+	value, cleanedArgs, srcErr, err = setting(
+		flag, env, defaultStandIn, args.Args(),
+	)
+
+	if err == nil { //nolint:nestif // Ok.
 		if value == defaultStandIn {
 			result = def
 		} else {
-			result, err = parseUint32(name, value)
+			if errors.Is(srcErr, ErrInvalidEnv) {
+				parseName = env
+			} else {
+				parseName = flag
+			}
+
+			result, err = parseUint32(parseName, value)
 		}
 	}
 
-	if err == nil {
-		return result, args, nil
+	args.args = cleanedArgs
+
+	if err != nil {
+		args.PushErr(srcErr)
+		args.PushErr(err)
 	}
 
-	return result, args, err
+	return result
 }
 
 // SettingUint16 scans the args looking for arg.  If it is not found then it
 // looks for an environment variable and if this does not exist then it will
 // return the specified default.
-func SettingUint16(
-	name string, def uint16, env, arg string, args []string,
-) (uint16, []string, error) {
+func (args *Args) SettingUint16(
+	flag, env string, def uint16, desc string,
+) uint16 {
 	var (
-		value  string
-		result uint16
-		err    error
+		value       string
+		cleanedArgs []string
+		result      uint16
+		parseName   string
+		srcErr      error
+		err         error
 	)
 
-	value, args, err = Value(defaultStandIn, env, arg, args)
+	args.addUsage(flag, desc)
 
-	if err == nil {
+	value, cleanedArgs, srcErr, err = setting(
+		flag, env, defaultStandIn, args.Args(),
+	)
+
+	if err == nil { //nolint:nestif // Ok.
 		if value == defaultStandIn {
 			result = def
 		} else {
-			result, err = parseUint16(name, value)
+			if errors.Is(srcErr, ErrInvalidEnv) {
+				parseName = env
+			} else {
+				parseName = flag
+			}
+
+			result, err = parseUint16(parseName, value)
 		}
 	}
 
-	if err == nil {
-		return result, args, nil
+	args.args = cleanedArgs
+
+	if err != nil {
+		args.PushErr(srcErr)
+		args.PushErr(err)
 	}
 
-	return result, args, err
+	return result
 }
 
 // SettingUint8 scans the args looking for arg.  If it is not found then it
 // looks for an environment variable and if this does not exist then it will
 // return the specified default.
-func SettingUint8(
-	name string, def uint8, env, arg string, args []string,
-) (uint8, []string, error) {
+func (args *Args) SettingUint8(
+	flag, env string, def uint8, desc string,
+) uint8 {
 	var (
-		value  string
-		result uint8
-		err    error
+		value       string
+		cleanedArgs []string
+		result      uint8
+		parseName   string
+		srcErr      error
+		err         error
 	)
 
-	value, args, err = Value(defaultStandIn, env, arg, args)
+	args.addUsage(flag, desc)
 
-	if err == nil {
+	value, cleanedArgs, srcErr, err = setting(
+		flag, env, defaultStandIn, args.Args(),
+	)
+
+	if err == nil { //nolint:nestif // Ok.
 		if value == defaultStandIn {
 			result = def
 		} else {
-			result, err = parseUint8(name, value)
+			if errors.Is(srcErr, ErrInvalidEnv) {
+				parseName = env
+			} else {
+				parseName = flag
+			}
+
+			result, err = parseUint8(parseName, value)
 		}
 	}
 
-	if err == nil {
-		return result, args, nil
+	args.args = cleanedArgs
+
+	if err != nil {
+		args.PushErr(srcErr)
+		args.PushErr(err)
 	}
 
-	return result, args, err
+	return result
 }
 
 // SettingUint scans the args looking for arg.  If it is not found then it
 // looks for an environment variable and if this does not exist then it will
 // return the specified default.
-func SettingUint(
-	name string, def uint, env, arg string, args []string,
-) (uint, []string, error) {
+func (args *Args) SettingUint(
+	flag, env string, def uint, desc string,
+) uint {
 	var (
-		value  string
-		result uint
-		err    error
+		value       string
+		cleanedArgs []string
+		result      uint
+		parseName   string
+		srcErr      error
+		err         error
 	)
 
-	value, args, err = Value(defaultStandIn, env, arg, args)
+	args.addUsage(flag, desc)
 
-	if err == nil {
+	value, cleanedArgs, srcErr, err = setting(
+		flag, env, defaultStandIn, args.Args(),
+	)
+
+	if err == nil { //nolint:nestif // Ok.
 		if value == defaultStandIn {
 			result = def
 		} else {
-			result, err = parseUint(name, value)
+			if errors.Is(srcErr, ErrInvalidEnv) {
+				parseName = env
+			} else {
+				parseName = flag
+			}
+
+			result, err = parseUint(parseName, value)
 		}
 	}
 
-	if err == nil {
-		return result, args, nil
+	args.args = cleanedArgs
+
+	if err != nil {
+		args.PushErr(srcErr)
+		args.PushErr(err)
 	}
 
-	return result, args, err
+	return result
 }

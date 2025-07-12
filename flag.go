@@ -31,10 +31,10 @@ var (
 	ErrUnexpected = errors.New("unexpected argument")
 )
 
-// Arg represents a single argument.
-type Arg string
+// Flag represents a single argument.
+type Flag string
 
-func (a Arg) argIs(arg string) bool {
+func (a Flag) argIs(arg string) bool {
 	s := strings.Trim(string(a), "[]{}")
 	for _, v := range strings.Split(s, "|") {
 		if strings.TrimSpace(v) == arg {
@@ -47,7 +47,7 @@ func (a Arg) argIs(arg string) bool {
 
 // Count scans argument array (args) removing and counting the number of
 // times the argument is encountered.
-func (a Arg) Count(args []string) (int, []string) {
+func (a Flag) Count(args []string) (int, []string) {
 	count := 0
 	cleanedArgs := make([]string, 0, len(args))
 
@@ -64,7 +64,7 @@ func (a Arg) Count(args []string) (int, []string) {
 
 // Is scans the args counting and removing the arg from the list.  If the
 // argument appears more than once an ErrAmbiguous is returned.
-func (a Arg) Is(args []string) (bool, []string, error) {
+func (a Flag) Is(args []string) (bool, []string, error) {
 	var count int
 
 	count, args = a.Count(args)
@@ -79,17 +79,4 @@ func (a Arg) Is(args []string) (bool, []string, error) {
 	}
 
 	return count == 1, args, nil
-}
-
-// Done insures that there are no further args exist returning an error
-// if any are found.
-func Done(args []string) error {
-	if len(args) > 0 {
-		return fmt.Errorf("%w: [%v]",
-			ErrUnexpected,
-			strings.Join(args, " "),
-		)
-	}
-
-	return nil
 }
