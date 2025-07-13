@@ -20,38 +20,6 @@ package szargs
 
 import "fmt"
 
-// Values scans the args looking for all instances of the specified flag.  If
-// it finds it then the next arg as the value absorbing both the flag the
-// value from the argument list.
-func (a Flag) values(args []string) ([]string, []string, error) {
-	values := []string(nil)
-	cleanedArgs := make([]string, 0, len(args))
-	err := error(nil)
-
-	for i, mi := 0, len(args); i < mi; i++ {
-		if a.argIs(args[i]) {
-			if (i + 1) >= mi {
-				err = fmt.Errorf(
-					"%w: '%s value'",
-					ErrMissing,
-					a,
-				)
-			} else {
-				i++
-				values = append(values, args[i])
-			}
-		} else {
-			cleanedArgs = append(cleanedArgs, args[i])
-		}
-	}
-
-	if err == nil {
-		return values, cleanedArgs, nil
-	}
-
-	return nil, cleanedArgs, err
-}
-
 // ValuesString scans the args looking for all instances of the specified flag
 // returning all found in a typed slice.
 func (args *Args) ValuesString(flag, desc string) []string {

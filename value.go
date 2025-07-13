@@ -18,65 +18,6 @@
 
 package szargs
 
-import "fmt"
-
-// Value scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.
-func (a Flag) value(args []string) (string, bool, []string, error) {
-	found := false
-	value := ""
-	cleanedArgs := make([]string, 0, len(args))
-	err := error(nil)
-
-	pushErr := func(newErr error) {
-		if err == nil {
-			err = newErr
-		} else {
-			err = fmt.Errorf("%w: %w", err, newErr)
-		}
-	}
-
-	for i, mi := 0, len(args); i < mi; i++ {
-		if a.argIs(args[i]) { //nolint:nestif // Ok.
-			if (i + 1) >= mi {
-				pushErr(
-					fmt.Errorf(
-						"%w: '%s value'",
-						ErrMissing,
-						a,
-					),
-				)
-			} else {
-				i++
-				if found {
-					pushErr(
-						fmt.Errorf(
-							"%w: '%s %s' already set to: '%s'",
-							ErrAmbiguous,
-							a,
-							args[i],
-							value,
-						),
-					)
-				} else {
-					value = args[i]
-					found = true
-				}
-			}
-		} else {
-			cleanedArgs = append(cleanedArgs, args[i])
-		}
-	}
-
-	if err == nil {
-		return value, found, cleanedArgs, nil
-	}
-
-	return "", false, cleanedArgs, err
-}
-
 // ValueString scans the args looking for the specified flag.  If it finds
 // it then the next arg as the value absorbing both the flag the value
 // from the argument list.  If there is no next arg or the flag appears more

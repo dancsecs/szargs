@@ -115,7 +115,7 @@ func (args *Args) Count(flag, description string) int {
 
 	args.addUsage(flag, description)
 
-	count, args.args = Flag(flag).Count(args.args)
+	count, args.args = Flag(flag).count(args.args)
 
 	return count
 }
@@ -129,7 +129,7 @@ func (args *Args) Is(flag, description string) bool {
 
 	args.addUsage(flag, description)
 
-	found, args.args, err = Flag(flag).Is(args.args)
+	found, args.args, err = Flag(flag).is(args.args)
 	if err != nil {
 		args.PushErr(err)
 	}
