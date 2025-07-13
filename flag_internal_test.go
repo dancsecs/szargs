@@ -219,7 +219,7 @@ func TestSzargs_ValueDuplicate(t *testing.T) {
 	chk.Err(
 		err,
 		ErrAmbiguous.Error()+
-			": '-n secondName' already set to: 'firstName'",
+			": '-n' for 'secondName' already set to: 'firstName'",
 	)
 }
 
@@ -246,10 +246,10 @@ func TestSzargs_ValueTriplicate(t *testing.T) {
 	chk.Err(
 		err,
 		ErrAmbiguous.Error()+
-			": '-n secondName' already set to: 'firstName'"+
+			": '-n' for 'secondName' already set to: 'firstName'"+
 			": "+
 			ErrAmbiguous.Error()+
-			": '-n thirdName' already set to: 'firstName'"+
+			": '-n' for 'thirdName' already set to: 'firstName'"+
 			"",
 	)
 }
@@ -258,7 +258,7 @@ func TestSzargs_ValueMissing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, found, args, err := argFlag("-n").value(
+	value, found, args, err := argFlag("-n value").value(
 		[]string{"arg1", "arg2", "-n"},
 	)
 
@@ -363,7 +363,7 @@ func TestSzargs_ValuesMissing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, args, err := argFlag("-n").values(
+	value, args, err := argFlag("-n value").values(
 		[]string{"arg1", "arg2", "-n"},
 	)
 

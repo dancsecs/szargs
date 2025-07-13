@@ -112,7 +112,7 @@ func (a argFlag) value(args []string) (string, bool, []string, error) {
 			if (i + 1) >= mi {
 				pushErr(
 					fmt.Errorf(
-						"%w: '%s value'",
+						"%w: '%s'",
 						ErrMissing,
 						a,
 					),
@@ -122,7 +122,7 @@ func (a argFlag) value(args []string) (string, bool, []string, error) {
 				if found {
 					pushErr(
 						fmt.Errorf(
-							"%w: '%s %s' already set to: '%s'",
+							"%w: '%s' for '%s' already set to: '%s'",
 							ErrAmbiguous,
 							a,
 							args[i],
@@ -158,7 +158,7 @@ func (a argFlag) values(args []string) ([]string, []string, error) {
 		if a.argIs(args[i]) {
 			if (i + 1) >= mi {
 				err = fmt.Errorf(
-					"%w: '%s value'",
+					"%w: '%s'",
 					ErrMissing,
 					a,
 				)

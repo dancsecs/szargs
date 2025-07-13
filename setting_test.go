@@ -28,8 +28,9 @@ import (
 )
 
 const (
-	tstEnv = "SZARGS_TESTING_ENVIRONMENT_VARIABLE"
-	tstArg = "-t"
+	tstEnv     = "SZARGS_TESTING_ENVIRONMENT_VARIABLE"
+	tstArgFlag = "[-t value]"
+	tstArg     = "-t"
 )
 
 /*
@@ -50,7 +51,7 @@ func TestSzargs_SettingString_MissingArgError(t *testing.T) {
 	})
 
 	result := args.SettingString(
-		tstArg, tstEnv, "def", "testName",
+		tstArgFlag, tstEnv, "def", "testName",
 	)
 
 	chk.Err(
@@ -58,7 +59,7 @@ func TestSzargs_SettingString_MissingArgError(t *testing.T) {
 		chk.ErrChain(
 			szargs.ErrInvalidFlag,
 			szargs.ErrMissing,
-			"'-t value'",
+			"'"+tstArgFlag+"'",
 		),
 	)
 	chk.Str(result, "")
@@ -74,7 +75,7 @@ func TestSzargs_SettingString_Default(t *testing.T) {
 	})
 
 	result := args.SettingString(
-		tstArg, tstEnv, "def", "testName",
+		tstArgFlag, tstEnv, "def", "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -95,7 +96,7 @@ func TestSzargs_SettingString_Env(t *testing.T) {
 	chk.SetEnv(tstEnv, "envValue")
 
 	result := args.SettingString(
-		tstArg, tstEnv, "def", "testName",
+		tstArgFlag, tstEnv, "def", "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -124,7 +125,7 @@ func TestSzargs_SettingString_Arg(t *testing.T) {
 	chk.SetEnv(tstEnv, "envValue")
 
 	result := args.SettingString(
-		tstArg, tstEnv, "def", "testName",
+		tstArgFlag, tstEnv, "def", "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -157,7 +158,7 @@ func TestSzargs_SettingFloat64_Invalid_Arg(t *testing.T) {
 	})
 
 	result := args.SettingFloat64(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -166,7 +167,7 @@ func TestSzargs_SettingFloat64_Invalid_Arg(t *testing.T) {
 			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidFloat64,
 			szargs.ErrSyntax,
-			tstArg,
+			tstArgFlag,
 			"'notANumber1'",
 		),
 	)
@@ -185,7 +186,7 @@ func TestSzargs_SettingFloat64_Invalid_Env(t *testing.T) {
 	chk.SetEnv(tstEnv, "notANumber")
 
 	result := args.SettingFloat64(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -212,7 +213,7 @@ func TestSzargs_SettingFloat64_Success(t *testing.T) {
 
 	// Default.
 	result := args.SettingFloat64(
-		tstArg, tstEnv, 222.222, "testName",
+		tstArgFlag, tstEnv, 222.222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -222,7 +223,7 @@ func TestSzargs_SettingFloat64_Success(t *testing.T) {
 	// Environment.
 	chk.SetEnv(tstEnv, "333.333")
 	result = args.SettingFloat64(
-		tstArg, tstEnv, 222.222, "testName",
+		tstArgFlag, tstEnv, 222.222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -237,7 +238,7 @@ func TestSzargs_SettingFloat64_Success(t *testing.T) {
 	})
 
 	result = args.SettingFloat64(
-		tstArg, tstEnv, 222.222, "testName",
+		tstArgFlag, tstEnv, 222.222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -264,7 +265,7 @@ func TestSzargs_SettingFloat32_Invalid_Arg(t *testing.T) {
 	})
 
 	result := args.SettingFloat32(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -273,7 +274,7 @@ func TestSzargs_SettingFloat32_Invalid_Arg(t *testing.T) {
 			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidFloat32,
 			szargs.ErrSyntax,
-			tstArg,
+			tstArgFlag,
 			"'notANumber1'",
 		),
 	)
@@ -292,7 +293,7 @@ func TestSzargs_SettingFloat32_Invalid_Env(t *testing.T) {
 	chk.SetEnv(tstEnv, "notANumber")
 
 	result := args.SettingFloat32(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -319,7 +320,7 @@ func TestSzargs_SettingFloat32_Success(t *testing.T) {
 
 	// Default.
 	result := args.SettingFloat32(
-		tstArg, tstEnv, 222.222, "testName",
+		tstArgFlag, tstEnv, 222.222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -329,7 +330,7 @@ func TestSzargs_SettingFloat32_Success(t *testing.T) {
 	// Environment.
 	chk.SetEnv(tstEnv, "333.333")
 	result = args.SettingFloat32(
-		tstArg, tstEnv, 222.222, "testName",
+		tstArgFlag, tstEnv, 222.222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -343,7 +344,7 @@ func TestSzargs_SettingFloat32_Success(t *testing.T) {
 		"444.444",
 	})
 	result = args.SettingFloat32(
-		tstArg, tstEnv, 222.222, "testName",
+		tstArgFlag, tstEnv, 222.222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -370,7 +371,7 @@ func TestSzargs_SettingInt64_Invalid_Arg(t *testing.T) {
 	})
 
 	result := args.SettingInt64(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -379,7 +380,7 @@ func TestSzargs_SettingInt64_Invalid_Arg(t *testing.T) {
 			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidInt64,
 			szargs.ErrSyntax,
-			tstArg,
+			tstArgFlag,
 			"'notANumber1'",
 		),
 	)
@@ -398,7 +399,7 @@ func TestSzargs_SettingInt64_Invalid_Env(t *testing.T) {
 	chk.SetEnv(tstEnv, "notANumber")
 
 	result := args.SettingInt64(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -425,7 +426,7 @@ func TestSzargs_SettingInt64_Success(t *testing.T) {
 
 	// Default.
 	result := args.SettingInt64(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -435,7 +436,7 @@ func TestSzargs_SettingInt64_Success(t *testing.T) {
 	// Environment.
 	chk.SetEnv(tstEnv, "333")
 	result = args.SettingInt64(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -449,7 +450,7 @@ func TestSzargs_SettingInt64_Success(t *testing.T) {
 		"444",
 	})
 	result = args.SettingInt64(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -476,7 +477,7 @@ func TestSzargs_SettingInt32_Invalid_Arg(t *testing.T) {
 	})
 
 	result := args.SettingInt32(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -485,7 +486,7 @@ func TestSzargs_SettingInt32_Invalid_Arg(t *testing.T) {
 			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidInt32,
 			szargs.ErrSyntax,
-			tstArg,
+			tstArgFlag,
 			"'notANumber1'",
 		),
 	)
@@ -504,7 +505,7 @@ func TestSzargs_SettingInt32_Invalid_Env(t *testing.T) {
 	chk.SetEnv(tstEnv, "notANumber")
 
 	result := args.SettingInt32(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -531,7 +532,7 @@ func TestSzargs_SettingInt32_Success(t *testing.T) {
 
 	// Default.
 	result := args.SettingInt32(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -541,7 +542,7 @@ func TestSzargs_SettingInt32_Success(t *testing.T) {
 	// Environment.
 	chk.SetEnv(tstEnv, "333")
 	result = args.SettingInt32(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -555,7 +556,7 @@ func TestSzargs_SettingInt32_Success(t *testing.T) {
 		"444",
 	})
 	result = args.SettingInt32(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -582,7 +583,7 @@ func TestSzargs_SettingInt16_Invalid_Arg(t *testing.T) {
 	})
 
 	result := args.SettingInt16(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -591,7 +592,7 @@ func TestSzargs_SettingInt16_Invalid_Arg(t *testing.T) {
 			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidInt16,
 			szargs.ErrSyntax,
-			tstArg,
+			tstArgFlag,
 			"'notANumber1'",
 		),
 	)
@@ -610,7 +611,7 @@ func TestSzargs_SettingInt16_Invalid_Env(t *testing.T) {
 	chk.SetEnv(tstEnv, "notANumber")
 
 	result := args.SettingInt16(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -637,7 +638,7 @@ func TestSzargs_SettingInt16_Success(t *testing.T) {
 
 	// Default.
 	result := args.SettingInt16(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -647,7 +648,7 @@ func TestSzargs_SettingInt16_Success(t *testing.T) {
 	// Environment.
 	chk.SetEnv(tstEnv, "333")
 	result = args.SettingInt16(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -661,7 +662,7 @@ func TestSzargs_SettingInt16_Success(t *testing.T) {
 		"444",
 	})
 	result = args.SettingInt16(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -688,7 +689,7 @@ func TestSzargs_SettingInt8_Invalid_Arg(t *testing.T) {
 	})
 
 	result := args.SettingInt8(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -697,7 +698,7 @@ func TestSzargs_SettingInt8_Invalid_Arg(t *testing.T) {
 			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidInt8,
 			szargs.ErrSyntax,
-			tstArg,
+			tstArgFlag,
 			"'notANumber1'",
 		),
 	)
@@ -716,7 +717,7 @@ func TestSzargs_SettingInt8_Invalid_Env(t *testing.T) {
 	chk.SetEnv(tstEnv, "notANumber")
 
 	result := args.SettingInt8(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -743,7 +744,7 @@ func TestSzargs_SettingInt8_Success(t *testing.T) {
 
 	// Default.
 	result := args.SettingInt8(
-		tstArg, tstEnv, 22, "testName",
+		tstArgFlag, tstEnv, 22, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -753,7 +754,7 @@ func TestSzargs_SettingInt8_Success(t *testing.T) {
 	// Environment.
 	chk.SetEnv(tstEnv, "33")
 	result = args.SettingInt8(
-		tstArg, tstEnv, 22, "testName",
+		tstArgFlag, tstEnv, 22, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -767,7 +768,7 @@ func TestSzargs_SettingInt8_Success(t *testing.T) {
 		"44",
 	})
 	result = args.SettingInt8(
-		tstArg, tstEnv, 22, "testName",
+		tstArgFlag, tstEnv, 22, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -794,7 +795,7 @@ func TestSzargs_SettingInt_Invalid_Arg(t *testing.T) {
 	})
 
 	result := args.SettingInt(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -803,7 +804,7 @@ func TestSzargs_SettingInt_Invalid_Arg(t *testing.T) {
 			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidInt,
 			szargs.ErrSyntax,
-			tstArg,
+			tstArgFlag,
 			"'notANumber1'",
 		),
 	)
@@ -822,7 +823,7 @@ func TestSzargs_SettingInt_Invalid_Env(t *testing.T) {
 	chk.SetEnv(tstEnv, "notANumber")
 
 	result := args.SettingInt(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -849,7 +850,7 @@ func TestSzargs_SettingInt_Success(t *testing.T) {
 
 	// Default.
 	result := args.SettingInt(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -859,7 +860,7 @@ func TestSzargs_SettingInt_Success(t *testing.T) {
 	// Environment.
 	chk.SetEnv(tstEnv, "333")
 	result = args.SettingInt(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -873,7 +874,7 @@ func TestSzargs_SettingInt_Success(t *testing.T) {
 		"444",
 	})
 	result = args.SettingInt(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -900,7 +901,7 @@ func TestSzargs_SettingUint64_Invalid_Arg(t *testing.T) {
 	})
 
 	result := args.SettingUint64(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -909,7 +910,7 @@ func TestSzargs_SettingUint64_Invalid_Arg(t *testing.T) {
 			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidUint64,
 			szargs.ErrSyntax,
-			tstArg,
+			tstArgFlag,
 			"'notANumber1'",
 		),
 	)
@@ -928,7 +929,7 @@ func TestSzargs_SettingUint64_Invalid_Env(t *testing.T) {
 	chk.SetEnv(tstEnv, "notANumber")
 
 	result := args.SettingUint64(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -955,7 +956,7 @@ func TestSzargs_SettingUint64_Success(t *testing.T) {
 
 	// Default.
 	result := args.SettingUint64(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -965,7 +966,7 @@ func TestSzargs_SettingUint64_Success(t *testing.T) {
 	// Environment.
 	chk.SetEnv(tstEnv, "333")
 	result = args.SettingUint64(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -979,7 +980,7 @@ func TestSzargs_SettingUint64_Success(t *testing.T) {
 		"444",
 	})
 	result = args.SettingUint64(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -1006,7 +1007,7 @@ func TestSzargs_SettingUint32_Invalid_Arg(t *testing.T) {
 	})
 
 	result := args.SettingUint32(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -1015,7 +1016,7 @@ func TestSzargs_SettingUint32_Invalid_Arg(t *testing.T) {
 			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidUint32,
 			szargs.ErrSyntax,
-			tstArg,
+			tstArgFlag,
 			"'notANumber1'",
 		),
 	)
@@ -1034,7 +1035,7 @@ func TestSzargs_SettingUint32_Invalid_Env(t *testing.T) {
 	chk.SetEnv(tstEnv, "notANumber")
 
 	result := args.SettingUint32(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -1061,7 +1062,7 @@ func TestSzargs_SettingUint32_Success(t *testing.T) {
 
 	// Default.
 	result := args.SettingUint32(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -1071,7 +1072,7 @@ func TestSzargs_SettingUint32_Success(t *testing.T) {
 	// Environment.
 	chk.SetEnv(tstEnv, "333")
 	result = args.SettingUint32(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -1085,7 +1086,7 @@ func TestSzargs_SettingUint32_Success(t *testing.T) {
 		"444",
 	})
 	result = args.SettingUint32(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -1112,7 +1113,7 @@ func TestSzargs_SettingUint16_Invalid_Arg(t *testing.T) {
 	})
 
 	result := args.SettingUint16(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -1121,7 +1122,7 @@ func TestSzargs_SettingUint16_Invalid_Arg(t *testing.T) {
 			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidUint16,
 			szargs.ErrSyntax,
-			tstArg,
+			tstArgFlag,
 			"'notANumber1'",
 		),
 	)
@@ -1140,7 +1141,7 @@ func TestSzargs_SettingUint16_Invalid_Env(t *testing.T) {
 	chk.SetEnv(tstEnv, "notANumber")
 
 	result := args.SettingUint16(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -1167,7 +1168,7 @@ func TestSzargs_SettingUint16_Success(t *testing.T) {
 
 	// Default.
 	result := args.SettingUint16(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -1177,7 +1178,7 @@ func TestSzargs_SettingUint16_Success(t *testing.T) {
 	// Environment.
 	chk.SetEnv(tstEnv, "333")
 	result = args.SettingUint16(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -1191,7 +1192,7 @@ func TestSzargs_SettingUint16_Success(t *testing.T) {
 		"444",
 	})
 	result = args.SettingUint16(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -1218,7 +1219,7 @@ func TestSzargs_SettingUint8_Invalid_Arg(t *testing.T) {
 	})
 
 	result := args.SettingUint8(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -1227,7 +1228,7 @@ func TestSzargs_SettingUint8_Invalid_Arg(t *testing.T) {
 			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidUint8,
 			szargs.ErrSyntax,
-			tstArg,
+			tstArgFlag,
 			"'notANumber1'",
 		),
 	)
@@ -1246,7 +1247,7 @@ func TestSzargs_SettingUint8_Invalid_Env(t *testing.T) {
 	chk.SetEnv(tstEnv, "notANumber")
 
 	result := args.SettingUint8(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -1273,7 +1274,7 @@ func TestSzargs_SettingUint8_Success(t *testing.T) {
 
 	// Default.
 	result := args.SettingUint8(
-		tstArg, tstEnv, 22, "testName",
+		tstArgFlag, tstEnv, 22, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -1283,7 +1284,7 @@ func TestSzargs_SettingUint8_Success(t *testing.T) {
 	// Environment.
 	chk.SetEnv(tstEnv, "33")
 	result = args.SettingUint8(
-		tstArg, tstEnv, 22, "testName",
+		tstArgFlag, tstEnv, 22, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -1297,7 +1298,7 @@ func TestSzargs_SettingUint8_Success(t *testing.T) {
 		"44",
 	})
 	result = args.SettingUint8(
-		tstArg, tstEnv, 22, "testName",
+		tstArgFlag, tstEnv, 22, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -1324,7 +1325,7 @@ func TestSzargs_SettingUint_Invalid_Arg(t *testing.T) {
 	})
 
 	result := args.SettingUint(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -1333,7 +1334,7 @@ func TestSzargs_SettingUint_Invalid_Arg(t *testing.T) {
 			szargs.ErrInvalidFlag,
 			szargs.ErrInvalidUint,
 			szargs.ErrSyntax,
-			tstArg,
+			tstArgFlag,
 			"'notANumber1'",
 		),
 	)
@@ -1352,7 +1353,7 @@ func TestSzargs_SettingUint_Invalid_Env(t *testing.T) {
 	chk.SetEnv(tstEnv, "notANumber")
 
 	result := args.SettingUint(
-		tstArg, tstEnv, 123, "testName",
+		tstArgFlag, tstEnv, 123, "testName",
 	)
 
 	chk.Err(
@@ -1379,7 +1380,7 @@ func TestSzargs_SettingUint_Success(t *testing.T) {
 
 	// Default.
 	result := args.SettingUint(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -1389,7 +1390,7 @@ func TestSzargs_SettingUint_Success(t *testing.T) {
 	// Environment.
 	chk.SetEnv(tstEnv, "333")
 	result = args.SettingUint(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())
@@ -1403,7 +1404,7 @@ func TestSzargs_SettingUint_Success(t *testing.T) {
 		"444",
 	})
 	result = args.SettingUint(
-		tstArg, tstEnv, 222, "testName",
+		tstArgFlag, tstEnv, 222, "testName",
 	)
 
 	chk.NoErr(args.Err())

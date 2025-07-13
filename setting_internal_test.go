@@ -26,22 +26,23 @@ import (
 )
 
 const (
-	tstEnv = "SZARGS_TESTING_ENVIRONMENT_VARIABLE"
-	tstArg = "-t"
+	tstEnv     = "SZARGS_TESTING_ENVIRONMENT_VARIABLE"
+	tstArgFlag = "[-t value]"
+	tstArg     = "-t"
 )
 
 func TestSzargs_ValueNoArgNoEnv(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, args, srcErr, err := setting(tstArg, tstEnv, "def", nil)
+	value, args, srcErr, err := setting(tstArgFlag, tstEnv, "def", nil)
 
 	chk.Str(value, "def")
 	chk.StrSlice(args, nil)
 	chk.NoErr(srcErr)
 	chk.NoErr(err)
 
-	value, args, srcErr, err = setting(tstArg, tstEnv, "def",
+	value, args, srcErr, err = setting(tstArgFlag, tstEnv, "def",
 		[]string{"arg1", "arg2"},
 	)
 
@@ -57,7 +58,7 @@ func TestSzargs_ValueArgAmbiguous(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, args, srcErr, err := setting(tstArg, tstEnv, "def",
+	value, args, srcErr, err := setting(tstArgFlag, tstEnv, "def",
 		[]string{tstArg, "first", "arg1", "arg2", tstArg, "second"},
 	)
 
@@ -69,7 +70,7 @@ func TestSzargs_ValueArgAmbiguous(t *testing.T) {
 	chk.Err(
 		err,
 		ErrAmbiguous.Error()+
-			": '-t second' already set to: 'first'",
+			": '[-t value]' for 'second' already set to: 'first'",
 	)
 }
 
@@ -77,7 +78,7 @@ func TestSzargs_ValueArgMissing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, args, srcErr, err := setting(tstArg, tstEnv, "def",
+	value, args, srcErr, err := setting(tstArgFlag, tstEnv, "def",
 		[]string{"arg1", "arg2", tstArg},
 	)
 
@@ -89,7 +90,7 @@ func TestSzargs_ValueArgMissing(t *testing.T) {
 	chk.Err(
 		err,
 		ErrMissing.Error()+
-			": '-t value'",
+			": '[-t value]'",
 	)
 }
 
@@ -99,7 +100,7 @@ func TestSzargs_ValueEnv(t *testing.T) {
 
 	chk.SetEnv(tstEnv, "env")
 
-	value, args, srcErr, err := setting(tstArg, tstEnv, "def",
+	value, args, srcErr, err := setting(tstArgFlag, tstEnv, "def",
 		[]string{"arg1", "arg2"},
 	)
 
@@ -117,7 +118,7 @@ func TestSzargs_ValueEnvAndArg(t *testing.T) {
 
 	chk.SetEnv(tstEnv, "env")
 
-	value, args, srcErr, err := setting(tstArg, tstEnv, "def",
+	value, args, srcErr, err := setting(tstArgFlag, tstEnv, "def",
 		[]string{"arg1", tstArg, "arg", "arg2"},
 	)
 
