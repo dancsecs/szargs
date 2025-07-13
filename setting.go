@@ -35,7 +35,7 @@ func setting(
 ) (string, []string, error, error) {
 	srcErr := ErrInvalidFlag
 
-	value, found, cleanArgs, err := Flag(flag).value(args)
+	value, found, cleanArgs, err := argFlag(flag).value(args)
 	if err != nil {
 		return "", args, srcErr, err
 	}

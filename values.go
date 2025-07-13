@@ -24,7 +24,7 @@ import "fmt"
 // returning all found in a typed slice.
 func (args *Args) ValuesString(flag, desc string) []string {
 	args.addUsage(flag, desc)
-	result, newArgs, err := Flag(flag).values(args.args)
+	result, newArgs, err := argFlag(flag).values(args.args)
 	args.args = newArgs
 	args.PushErr(err)
 
@@ -43,7 +43,7 @@ func (args *Args) ValuesFloat64(flag, desc string) []float64 {
 
 	args.addUsage(flag, desc)
 
-	matches, cleanedArgs, err = Flag(flag).values(args.Args())
+	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -89,7 +89,7 @@ func (args *Args) ValuesFloat32(flag, desc string) []float32 {
 
 	args.addUsage(flag, desc)
 
-	matches, cleanedArgs, err = Flag(flag).values(args.Args())
+	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -135,7 +135,7 @@ func (args *Args) ValuesInt64(flag, desc string) []int64 {
 
 	args.addUsage(flag, desc)
 
-	matches, cleanedArgs, err = Flag(flag).values(args.Args())
+	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -181,7 +181,7 @@ func (args *Args) ValuesInt32(flag, desc string) []int32 {
 
 	args.addUsage(flag, desc)
 
-	matches, cleanedArgs, err = Flag(flag).values(args.Args())
+	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -227,7 +227,7 @@ func (args *Args) ValuesInt16(flag, desc string) []int16 {
 
 	args.addUsage(flag, desc)
 
-	matches, cleanedArgs, err = Flag(flag).values(args.Args())
+	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -273,7 +273,7 @@ func (args *Args) ValuesInt8(flag, desc string) []int8 {
 
 	args.addUsage(flag, desc)
 
-	matches, cleanedArgs, err = Flag(flag).values(args.Args())
+	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -319,7 +319,7 @@ func (args *Args) ValuesInt(flag, desc string) []int {
 
 	args.addUsage(flag, desc)
 
-	matches, cleanedArgs, err = Flag(flag).values(args.Args())
+	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -365,7 +365,7 @@ func (args *Args) ValuesUint64(flag, desc string) []uint64 {
 
 	args.addUsage(flag, desc)
 
-	matches, cleanedArgs, err = Flag(flag).values(args.Args())
+	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -411,7 +411,7 @@ func (args *Args) ValuesUint32(flag, desc string) []uint32 {
 
 	args.addUsage(flag, desc)
 
-	matches, cleanedArgs, err = Flag(flag).values(args.Args())
+	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -457,7 +457,7 @@ func (args *Args) ValuesUint16(flag, desc string) []uint16 {
 
 	args.addUsage(flag, desc)
 
-	matches, cleanedArgs, err = Flag(flag).values(args.Args())
+	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -503,7 +503,7 @@ func (args *Args) ValuesUint8(flag, desc string) []uint8 {
 
 	args.addUsage(flag, desc)
 
-	matches, cleanedArgs, err = Flag(flag).values(args.Args())
+	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (
@@ -549,7 +549,7 @@ func (args *Args) ValuesUint(flag, desc string) []uint {
 
 	args.addUsage(flag, desc)
 
-	matches, cleanedArgs, err = Flag(flag).values(args.Args())
+	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
 	if err == nil { //nolint:nestif // Ok.
 		var (

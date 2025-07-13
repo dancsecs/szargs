@@ -31,10 +31,10 @@ var (
 	ErrUnexpected = errors.New("unexpected argument")
 )
 
-// Flag represents a single argument.
-type Flag string
+// argFlag represents a single argument.
+type argFlag string
 
-func (a Flag) argIs(arg string) bool {
+func (a argFlag) argIs(arg string) bool {
 	flagVersions := strings.Split(strings.Trim(string(a), "[]{}."), "|")
 	lastFlagVersion := len(flagVersions) - 1
 
@@ -55,7 +55,7 @@ func (a Flag) argIs(arg string) bool {
 
 // count scans argument array (args) removing and counting the number of
 // times the argument is encountered.
-func (a Flag) count(args []string) (int, []string) {
+func (a argFlag) count(args []string) (int, []string) {
 	count := 0
 	cleanedArgs := make([]string, 0, len(args))
 
@@ -72,7 +72,7 @@ func (a Flag) count(args []string) (int, []string) {
 
 // is scans the args counting and removing the arg from the list.  If the
 // argument appears more than once an ErrAmbiguous is returned.
-func (a Flag) is(args []string) (bool, []string, error) {
+func (a argFlag) is(args []string) (bool, []string, error) {
 	var count int
 
 	count, args = a.count(args)
@@ -93,7 +93,7 @@ func (a Flag) is(args []string) (bool, []string, error) {
 // it then the next arg as the value absorbing both the flag the value
 // from the argument list.  If there is no next arg or the flag appears more
 // than once an error is returned.
-func (a Flag) value(args []string) (string, bool, []string, error) {
+func (a argFlag) value(args []string) (string, bool, []string, error) {
 	found := false
 	value := ""
 	cleanedArgs := make([]string, 0, len(args))
@@ -149,7 +149,7 @@ func (a Flag) value(args []string) (string, bool, []string, error) {
 // Values scans the args looking for all instances of the specified flag.  If
 // it finds it then the next arg as the value absorbing both the flag the
 // value from the argument list.
-func (a Flag) values(args []string) ([]string, []string, error) {
+func (a argFlag) values(args []string) ([]string, []string, error) {
 	values := []string(nil)
 	cleanedArgs := make([]string, 0, len(args))
 	err := error(nil)

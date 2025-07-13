@@ -30,7 +30,7 @@ func TestSzArgs_ArgCount(t *testing.T) {
 	defer chk.Release()
 
 	var (
-		arg   = Flag("-v | --verbose")
+		arg   = argFlag("-v | --verbose")
 		count int
 		args  []string
 	)
@@ -84,7 +84,7 @@ func TestSzArgs_Is(t *testing.T) {
 
 	var (
 		err   error
-		arg   = Flag("-v")
+		arg   = argFlag("-v")
 		found bool
 		args  []string
 	)
@@ -132,14 +132,14 @@ func TestSzargs_ValueNonePresent(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, found, args, err := Flag("[-n theName]").value(nil)
+	value, found, args, err := argFlag("[-n theName]").value(nil)
 
 	chk.Str(value, "")
 	chk.False(found)
 	chk.StrSlice(args, nil)
 	chk.NoErr(err)
 
-	value, found, args, err = Flag("[-n theName]").value(
+	value, found, args, err = argFlag("[-n theName]").value(
 		[]string{"arg1", "arg2"},
 	)
 
@@ -155,7 +155,7 @@ func TestSzargs_ValueBeginning(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, found, args, err := Flag("[-n theName]").value(
+	value, found, args, err := argFlag("[-n theName]").value(
 		[]string{"-n", "theName"},
 	)
 
@@ -164,7 +164,7 @@ func TestSzargs_ValueBeginning(t *testing.T) {
 	chk.StrSlice(args, []string{})
 	chk.NoErr(err)
 
-	value, found, args, err = Flag("-n").value(
+	value, found, args, err = argFlag("-n").value(
 		[]string{"-n", "theName", "arg1", "arg2"},
 	)
 
@@ -178,7 +178,7 @@ func TestSzargs_ValueMiddle(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, found, args, err := Flag("-n").value(
+	value, found, args, err := argFlag("-n").value(
 		[]string{"arg1", "-n", "theName", "arg2"},
 	)
 
@@ -192,7 +192,7 @@ func TestSzargs_ValueEnd(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, found, args, err := Flag("-n").value(
+	value, found, args, err := argFlag("-n").value(
 		[]string{"arg1", "arg2", "-n", "theName"},
 	)
 
@@ -206,7 +206,7 @@ func TestSzargs_ValueDuplicate(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, found, args, err := Flag("-n").value(
+	value, found, args, err := argFlag("-n").value(
 		[]string{"-n", "firstName", "arg1", "arg2", "-n", "secondName"},
 	)
 
@@ -227,7 +227,7 @@ func TestSzargs_ValueTriplicate(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, found, args, err := Flag("-n").value(
+	value, found, args, err := argFlag("-n").value(
 		[]string{
 			"-n", "firstName",
 			"arg1",
@@ -258,7 +258,7 @@ func TestSzargs_ValueMissing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, found, args, err := Flag("-n").value(
+	value, found, args, err := argFlag("-n").value(
 		[]string{"arg1", "arg2", "-n"},
 	)
 
@@ -279,13 +279,13 @@ func TestSzargs_ValuesNonePresent(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, args, err := Flag("-n").values(nil)
+	value, args, err := argFlag("-n").values(nil)
 
 	chk.StrSlice(value, nil)
 	chk.StrSlice(args, nil)
 	chk.NoErr(err)
 
-	value, args, err = Flag("-n").values(
+	value, args, err = argFlag("-n").values(
 		[]string{"arg1", "arg2"},
 	)
 
@@ -300,7 +300,7 @@ func TestSzargs_ValuesAtBeginning(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, args, err := Flag("-n").values(
+	value, args, err := argFlag("-n").values(
 		[]string{"-n", "theName"},
 	)
 
@@ -308,7 +308,7 @@ func TestSzargs_ValuesAtBeginning(t *testing.T) {
 	chk.StrSlice(args, []string{})
 	chk.NoErr(err)
 
-	value, args, err = Flag("-n").values(
+	value, args, err = argFlag("-n").values(
 		[]string{"-n", "theName", "arg1", "arg2"},
 	)
 
@@ -321,7 +321,7 @@ func TestSzargs_ValuesMiddle(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, args, err := Flag("-n").values(
+	value, args, err := argFlag("-n").values(
 		[]string{"arg1", "-n", "theName", "arg2"},
 	)
 
@@ -334,7 +334,7 @@ func TestSzargs_ValuesEnd(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, args, err := Flag("-n").values(
+	value, args, err := argFlag("-n").values(
 		[]string{"arg1", "arg2", "-n", "theName"},
 	)
 
@@ -347,7 +347,7 @@ func TestSzargs_ValuesDuplicate(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, args, err := Flag("-n").values(
+	value, args, err := argFlag("-n").values(
 		[]string{"-n", "firstName", "arg1", "arg2", "-n", "secondName"},
 	)
 
@@ -363,7 +363,7 @@ func TestSzargs_ValuesMissing(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
 	defer chk.Release()
 
-	value, args, err := Flag("-n").values(
+	value, args, err := argFlag("-n").values(
 		[]string{"arg1", "arg2", "-n"},
 	)
 

@@ -25,7 +25,7 @@ package szargs
 // arg array is returned.
 func (args *Args) ValueString(flag, desc string) (string, bool) {
 	args.addUsage(flag, desc)
-	result, found, newArgs, err := Flag(flag).value(args.args)
+	result, found, newArgs, err := argFlag(flag).value(args.args)
 	args.args = newArgs
 	args.PushErr(err)
 
@@ -47,7 +47,7 @@ func (args *Args) ValueFloat64(flag, desc string) (float64, bool) {
 
 	args.addUsage(flag, desc)
 
-	arg, found, newArgs, err := Flag(flag).value(args.args)
+	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
 	if err == nil && found {
 		result, err = parseFloat64(flag, arg)
@@ -77,7 +77,7 @@ func (args *Args) ValueFloat32(flag, desc string) (float32, bool) {
 
 	args.addUsage(flag, desc)
 
-	arg, found, newArgs, err := Flag(flag).value(args.args)
+	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
 	if err == nil && found {
 		result, err = parseFloat32(flag, arg)
@@ -107,7 +107,7 @@ func (args *Args) ValueInt64(flag, desc string) (int64, bool) {
 
 	args.addUsage(flag, desc)
 
-	arg, found, newArgs, err := Flag(flag).value(args.args)
+	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
 	if err == nil && found {
 		result, err = parseInt64(flag, arg)
@@ -137,7 +137,7 @@ func (args *Args) ValueInt32(flag, desc string) (int32, bool) {
 
 	args.addUsage(flag, desc)
 
-	arg, found, newArgs, err := Flag(flag).value(args.args)
+	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
 	if err == nil && found {
 		result, err = parseInt32(flag, arg)
@@ -167,7 +167,7 @@ func (args *Args) ValueInt16(flag, desc string) (int16, bool) {
 
 	args.addUsage(flag, desc)
 
-	arg, found, newArgs, err := Flag(flag).value(args.args)
+	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
 	if err == nil && found {
 		result, err = parseInt16(flag, arg)
@@ -197,7 +197,7 @@ func (args *Args) ValueInt8(flag, desc string) (int8, bool) {
 
 	args.addUsage(flag, desc)
 
-	arg, found, newArgs, err := Flag(flag).value(args.args)
+	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
 	if err == nil && found {
 		result, err = parseInt8(flag, arg)
@@ -227,7 +227,7 @@ func (args *Args) ValueInt(flag, desc string) (int, bool) {
 
 	args.addUsage(flag, desc)
 
-	arg, found, newArgs, err := Flag(flag).value(args.args)
+	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
 	if err == nil && found {
 		result, err = parseInt(flag, arg)
@@ -257,7 +257,7 @@ func (args *Args) ValueUint64(flag, desc string) (uint64, bool) {
 
 	args.addUsage(flag, desc)
 
-	arg, found, newArgs, err := Flag(flag).value(args.args)
+	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
 	if err == nil && found {
 		result, err = parseUint64(flag, arg)
@@ -287,7 +287,7 @@ func (args *Args) ValueUint32(flag, desc string) (uint32, bool) {
 
 	args.addUsage(flag, desc)
 
-	arg, found, newArgs, err := Flag(flag).value(args.args)
+	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
 	if err == nil && found {
 		result, err = parseUint32(flag, arg)
@@ -317,7 +317,7 @@ func (args *Args) ValueUint16(flag, desc string) (uint16, bool) {
 
 	args.addUsage(flag, desc)
 
-	arg, found, newArgs, err := Flag(flag).value(args.args)
+	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
 	if err == nil && found {
 		result, err = parseUint16(flag, arg)
@@ -347,7 +347,7 @@ func (args *Args) ValueUint8(flag, desc string) (uint8, bool) {
 
 	args.addUsage(flag, desc)
 
-	arg, found, newArgs, err := Flag(flag).value(args.args)
+	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
 	if err == nil && found {
 		result, err = parseUint8(flag, arg)
@@ -377,7 +377,7 @@ func (args *Args) ValueUint(flag, desc string) (uint, bool) {
 
 	args.addUsage(flag, desc)
 
-	arg, found, newArgs, err := Flag(flag).value(args.args)
+	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
 	if err == nil && found {
 		result, err = parseUint(flag, arg)
