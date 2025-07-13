@@ -49,7 +49,7 @@ func TestSzargs_Last(t *testing.T) {
 
 	arg = args.last("TestArg", "TestDesc")
 
-	chk.Str(arg, "")
+	chk.Str(arg, "arg1")
 	chk.Err(
 		args.Err(),
 		"unexpected argument: [arg2]",

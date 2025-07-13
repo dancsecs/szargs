@@ -31,11 +31,7 @@ func (args *Args) last(name, desc string) string {
 
 	args.Done()
 
-	if args.Err() == nil {
-		return value
-	}
-
-	return ""
+	return value
 }
 
 // LastString extracts the next positional argument returning an error if none

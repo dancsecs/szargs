@@ -71,7 +71,7 @@ func TestSzargs_LastString_NotLast(t *testing.T) {
 			"[anotherArg]",
 		),
 	)
-	chk.Str(result, "")
+	chk.Str(result, "309")
 }
 
 func TestSzargs_LastString_Success(t *testing.T) {

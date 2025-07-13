@@ -35,7 +35,7 @@ var (
 type Flag string
 
 func (a Flag) argIs(arg string) bool {
-	s := strings.Trim(string(a), "[]{}")
+	s := strings.Trim(string(a), "[]{}.")
 	for _, v := range strings.Split(s, "|") {
 		if strings.TrimSpace(v) == arg {
 			return true
