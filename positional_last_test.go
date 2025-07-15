@@ -1582,3 +1582,98 @@ func TestSzargs_LastUint_Success(t *testing.T) {
 	chk.NoErr(args.Err())
 	chk.Uint(result, 309)
 }
+
+/*
+ ***************************************************************************
+ *
+ *  Test option positional value.
+ *
+ ***************************************************************************
+ */
+
+func TestSzargs_LastOption_Missing(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
+	result := args.LastOption(
+		"TestArg", []string{"a", "b"}, "the arg being tested",
+	)
+
+	chk.Err(
+		args.Err(),
+		chk.ErrChain(
+			szargs.ErrMissing,
+			"TestArg",
+		),
+	)
+	chk.Str(result, "")
+}
+
+func TestSzargs_LastOption_InvalidSyntax(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+		"notANumber",
+	})
+
+	result := args.LastOption(
+		"TestArg", []string{"a", "b"}, "the arg being tested",
+	)
+
+	chk.Err(
+		args.Err(),
+		chk.ErrChain(
+			szargs.ErrInvalidOption,
+			"'notANumber' "+
+				"(TestArg must be one of [a b])",
+		),
+	)
+	chk.Str(result, "")
+}
+
+func TestSzargs_LastOption_NotLast(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+		"a",
+		"anotherArg",
+	})
+
+	result := args.LastOption(
+		"TestArg", []string{"a", "b"}, "the arg being tested",
+	)
+
+	chk.Err(
+		args.Err(),
+		chk.ErrChain(
+			szargs.ErrUnexpected,
+			"[anotherArg]",
+		),
+	)
+	chk.Str(result, "")
+}
+
+func TestSzargs_LastOption_Success(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+		"b",
+	})
+
+	result := args.LastOption(
+		"TestArg", []string{"a", "b"}, "the arg being tested",
+	)
+
+	chk.NoErr(args.Err())
+	chk.Str(result, "b")
+}

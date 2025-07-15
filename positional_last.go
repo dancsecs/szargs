@@ -282,3 +282,25 @@ func (args *Args) LastUint(name, desc string) uint {
 
 	return result
 }
+
+// LastOption extracts the next positional argument returning an error if none
+// are present or it is not the last, otherwise it parses and returns the
+// named data type.
+func (args *Args) LastOption(
+	name string, validOptions []string, desc string,
+) string {
+	var (
+		arg    string
+		result string
+		err    error
+	)
+
+	arg = args.last(name, desc)
+
+	if args.Err() == nil {
+		result, err = parseOption(name, arg, validOptions)
+		args.PushErr(err)
+	}
+
+	return result
+}

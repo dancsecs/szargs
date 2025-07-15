@@ -319,3 +319,28 @@ func (args *Args) NextUint(name, desc string) uint {
 
 	return result
 }
+
+// NextOption extracts the next positional argument returning an error if none
+// are present, otherwise it parses and returns the named data type.
+func (args *Args) NextOption(
+	name string, validOptions []string, desc string,
+) string {
+	var (
+		arg    string
+		result string
+		err    error
+	)
+
+	args.addUsage(name, desc)
+
+	arg, newArgs, err := next(name, args.args)
+
+	if err == nil {
+		result, err = parseOption(name, arg, validOptions)
+	}
+
+	args.args = newArgs
+	args.PushErr(err)
+
+	return result
+}

@@ -45,6 +45,24 @@ func makeParseErr(rootErr, err error, name, str string) error {
 	return fmt.Errorf("%w: %w: %s: '%s'", rootErr, parseErr, name, str)
 }
 
+func parseOption(
+	name, str string, validOptions []string,
+) (string, error) {
+	for _, validOption := range validOptions {
+		if str == validOption {
+			return str, nil
+		}
+	}
+
+	return "", fmt.Errorf(
+		"%w: '%s' (%s must be one of %v)",
+		ErrInvalidOption,
+		str,
+		name,
+		validOptions,
+	)
+}
+
 func parseFloat64(name, str string) (float64, error) {
 	result, err := strconv.ParseFloat(str, bits64)
 	if err != nil {

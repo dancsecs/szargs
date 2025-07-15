@@ -1457,3 +1457,82 @@ func TestSzargs_ValueUint_Success(t *testing.T) {
 		},
 	)
 }
+
+/*
+ ***************************************************************************
+ *
+ *  Test uint argument value.
+ *
+ ***************************************************************************
+ */
+
+func TestSzargs_ValueOption_Missing(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
+	result, found := args.ValueOption(
+		"-t", []string{"a", "b"}, "the test flag",
+	)
+
+	chk.NoErr(args.Err())
+	chk.False(found)
+	chk.Str(result, "")
+	chk.StrSlice(args.Args(), nil)
+}
+
+func TestSzargs_ValueOption_InvalidSyntax(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+		"-t",
+		"notANumber",
+	})
+
+	result, found := args.ValueOption(
+		"-t", []string{"a", "b"}, "the test flag",
+	)
+
+	chk.Err(
+		args.Err(),
+		chk.ErrChain(
+			szargs.ErrInvalidOption,
+			"'notANumber' "+
+				"(-t must be one of [a b])",
+		),
+	)
+	chk.False(found)
+	chk.Str(result, "")
+	chk.StrSlice(args.Args(), nil)
+}
+
+func TestSzargs_ValueOption_Success(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+		"-t",
+		"b",
+		"anotherArg",
+	})
+
+	result, found := args.ValueOption(
+		"-t", []string{"a", "b"}, "the test flag",
+	)
+
+	chk.NoErr(args.Err())
+	chk.True(found)
+	chk.Str(result, "b")
+	chk.StrSlice(
+		args.Args(),
+		[]string{
+			"anotherArg",
+		},
+	)
+}

@@ -1073,3 +1073,80 @@ func TestSzargs_ValuesUint_Success(t *testing.T) {
 		},
 	)
 }
+
+/*
+ ***************************************************************************
+ *
+ *  Test option argument value.
+ *
+ ***************************************************************************
+ */
+
+func TestSzargs_ValuesOption_Missing(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
+	result := args.ValuesOption("-t", []string{"a", "b"}, "the test flag")
+
+	chk.NoErr(args.Err())
+	chk.StrSlice(result, nil)
+	chk.StrSlice(args.Args(), nil)
+}
+
+func TestSzargs_ValuesOption_Invalid(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+		"-t",
+		"notAnOption1",
+		"-t",
+		"notAnOption2",
+	})
+
+	result := args.ValuesOption("-t", []string{"a", "b"}, "the test flag")
+
+	chk.Err(
+		args.Err(),
+		chk.ErrChain(
+			szargs.ErrInvalidOption,
+			"'notAnOption1' "+
+				"(-t must be one of [a b])",
+			szargs.ErrInvalidOption,
+			"'notAnOption2' "+
+				"(-t must be one of [a b])",
+		),
+	)
+	chk.StrSlice(result, nil)
+	chk.StrSlice(args.Args(), nil)
+}
+
+func TestSzargs_ValuesOption_Success(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+		"-t",
+		"a",
+		"anotherArg",
+		"-t",
+		"b",
+	})
+
+	result := args.ValuesOption("-t", []string{"a", "b"}, "the test flag")
+
+	chk.NoErr(args.Err())
+	chk.StrSlice(result, []string{"a", "b"})
+	chk.StrSlice(
+		args.Args(),
+		[]string{
+			"anotherArg",
+		},
+	)
+}

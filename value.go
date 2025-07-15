@@ -391,3 +391,35 @@ func (args *Args) ValueUint(flag, desc string) (uint, bool) {
 
 	return result, found
 }
+
+// ValueOption scans the args looking for the specified flag.  If it finds
+// it then the next arg as the value absorbing both the flag the value
+// from the argument list.  If there is no next arg or the flag appears more
+// than once an error is returned.  If an error occurs then the original
+// arg array is returned.
+func (args *Args) ValueOption(
+	flag string, validOptions []string, desc string,
+) (string, bool) {
+	var (
+		arg    string
+		found  bool
+		result string
+		err    error
+	)
+
+	args.addUsage(flag, desc)
+
+	arg, found, newArgs, err := argFlag(flag).value(args.args)
+
+	if err == nil && found {
+		result, err = parseOption(flag, arg, validOptions)
+		if err != nil {
+			found = false
+		}
+	}
+
+	args.args = newArgs
+	args.PushErr(err)
+
+	return result, found
+}

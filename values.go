@@ -582,3 +582,51 @@ func (args *Args) ValuesUint(flag, desc string) []uint {
 
 	return nil
 }
+
+// ValuesOption scans the args looking for all instances of the specified flag
+// returning all found in a typed slice.
+func (args *Args) ValuesOption(
+	flag string, validOptions []string, desc string,
+) []string {
+	var (
+		matches     []string
+		cleanedArgs []string
+		result      []string
+		err         error
+	)
+
+	args.addUsage(flag, desc)
+
+	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
+
+	if err == nil { //nolint:nestif // Ok.
+		var (
+			argItem string
+			argErr  error
+		)
+
+		result = make([]string, len(matches))
+
+		for i, arg := range matches {
+			argItem, argErr = parseOption(flag, arg, validOptions)
+			if argErr != nil {
+				if err == nil {
+					err = argErr
+				} else {
+					err = fmt.Errorf("%w: %w", err, argErr)
+				}
+			} else {
+				result[i] = argItem
+			}
+		}
+	}
+
+	args.args = cleanedArgs
+	args.PushErr(err)
+
+	if err == nil {
+		return result
+	}
+
+	return nil
+}

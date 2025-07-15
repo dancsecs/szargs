@@ -1433,3 +1433,83 @@ func TestSzargs_NextUint_Success(t *testing.T) {
 		},
 	)
 }
+
+/*
+ ***************************************************************************
+ *
+ *  Test option positional value.
+ *
+ ***************************************************************************
+ */
+
+func TestSzargs_NextOption_Missing(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
+	result := args.NextOption(
+		"TestArg", []string{"a", "b"}, "the arg being tested",
+	)
+
+	chk.Err(
+		args.Err(),
+		chk.ErrChain(
+			szargs.ErrMissing,
+			"TestArg",
+		),
+	)
+	chk.Str(result, "")
+	chk.StrSlice(args.Args(), nil)
+}
+
+func TestSzargs_NextOption_InvalidSyntax(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+		"notANumber",
+	})
+
+	result := args.NextOption(
+		"TestArg", []string{"a", "b"}, "the arg being tested",
+	)
+
+	chk.Err(
+		args.Err(),
+		chk.ErrChain(
+			szargs.ErrInvalidOption,
+			"'notANumber' "+
+				"(TestArg must be one of [a b])",
+		),
+	)
+	chk.Str(result, "")
+	chk.StrSlice(args.Args(), nil)
+}
+
+func TestSzargs_NextOption_Success(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+		"b",
+		"anotherArg",
+	})
+
+	result := args.NextOption(
+		"TestArg", []string{"a", "b"}, "the arg being tested",
+	)
+
+	chk.NoErr(args.Err())
+	chk.Str(result, "b")
+	chk.StrSlice(
+		args.Args(),
+		[]string{
+			"anotherArg",
+		},
+	)
+}
