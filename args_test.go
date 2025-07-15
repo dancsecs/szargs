@@ -124,6 +124,7 @@ func TestSzargs_New_AmbiguousIsName(t *testing.T) {
 		},
 	)
 
+	chk.True(args.HasError())
 	chk.Err(
 		args.Err(),
 		chk.ErrChain(

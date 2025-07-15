@@ -92,6 +92,11 @@ func (args *Args) Err() error {
 	return args.err
 }
 
+// HasError returns any errors encountered while parsing the arguments.
+func (args *Args) HasError() bool {
+	return args.err != nil
+}
+
 // Args returns a copy of the current argument list.
 func (args *Args) Args() []string {
 	cpy := make([]string, len(args.args))
