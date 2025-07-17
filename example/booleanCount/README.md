@@ -27,11 +27,12 @@ This example demos the counting of boolean flags.  Each matching flag is
 removed as encountered and added to the final count.  No errors are generated
 by this method.
 
-<!--- gotomd::Bgn::dcls::./../../Args.Count -->
+<!--- gotomd::Bgn::dcln::./../../Args.Count -->
 ```go
+// Count returns the number of times the flag appears.
 func (args *Args) Count(flag, desc string) int
 ```
-<!--- gotomd::End::dcls::./../../Args.Count -->
+<!--- gotomd::End::dcln::./../../Args.Count -->
 
 ---
 

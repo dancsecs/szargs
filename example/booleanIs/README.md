@@ -27,11 +27,12 @@ This example demos the identification of a single boolean flags.  If found the
 matching flag is removed as encountered.  An ambiguous error will be
 generated if the flag appears more than once.
 
-<!--- gotomd::Bgn::dcls::./../../Args.Is -->
+<!--- gotomd::Bgn::dcln::./../../Args.Is -->
 ```go
+// Is returns true if the flag is present one and only one time.
 func (args *Args) Is(flag, desc string) bool
 ```
-<!--- gotomd::End::dcls::./../../Args.Is -->
+<!--- gotomd::End::dcln::./../../Args.Is -->
 
 ---
 
