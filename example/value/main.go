@@ -1,4 +1,6 @@
 // Package main implements a simple example of using szargs.
+//
+//nolint:forbidigo // OK to print to os.Stdout.
 package main
 
 import (
@@ -26,19 +28,19 @@ func main() {
 
 	args.Done() // All arguments should have consumed.
 
-	if nameFound {
-		_, _ = fmt.Fprintf(os.Stdout, "Name Found: %s.\n", name)
+	if args.HasError() { //nolint:nestif // Ok for the demo.
+		fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage())
 	} else {
-		_, _ = fmt.Fprintln(os.Stdout, "Name Not Found.")
-	}
+		if nameFound {
+			fmt.Printf("Name Found: %s.\n", name)
+		} else {
+			fmt.Println("Name Not Found.")
+		}
 
-	if numFound {
-		_, _ = fmt.Fprintf(os.Stdout, "Byte Found: %d.\n", num)
-	} else {
-		_, _ = fmt.Fprintln(os.Stdout, "Byte Not Found.")
-	}
-
-	if args.HasError() {
-		_, _ = fmt.Fprintln(os.Stderr, "Error: "+args.Err().Error())
+		if numFound {
+			fmt.Printf("Byte Found: %d.\n", num)
+		} else {
+			fmt.Println("Byte Not Found.")
+		}
 	}
 }

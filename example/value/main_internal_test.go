@@ -25,6 +25,23 @@ import (
 	"github.com/dancsecs/sztestlog"
 )
 
+const usageText = "" +
+	"programName" +
+	"\n" +
+	"A simple demo of value flags." +
+	"\n\n" +
+	"Usage: programName" +
+	" [-n | --name] [-b | --byte]" +
+	"\n\n" +
+	"[-n | --name]" +
+	"\n" +
+	"The name string value." +
+	"\n\n" +
+	"[-b | --byte]" +
+	"\n" +
+	"The byte (0-255) value." +
+	""
+
 func Test_PASS_NothingToDoAdd(t *testing.T) {
 	chk := sztestlog.CaptureAll(t)
 	defer chk.Release()
@@ -89,11 +106,10 @@ func Test_FAIL_UnknownArgument(t *testing.T) {
 			szargs.ErrUnexpected,
 			"[unknownArgument]",
 		),
+		"",
+		usageText,
 	)
-	chk.Stdout(
-		"Name Not Found.",
-		"Byte Not Found.",
-	)
+	chk.Stdout()
 }
 
 func Test_FAIL_InvalidExtraByte(t *testing.T) {
@@ -111,9 +127,8 @@ func Test_FAIL_InvalidExtraByte(t *testing.T) {
 			szargs.ErrAmbiguous,
 			"'[-b | --byte]' for '35' already set to: '22'",
 		),
+		"",
+		usageText,
 	)
-	chk.Stdout(
-		"Name Not Found.",
-		"Byte Not Found.",
-	)
+	chk.Stdout()
 }
