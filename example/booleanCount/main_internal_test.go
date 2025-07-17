@@ -25,6 +25,19 @@ import (
 	"github.com/dancsecs/sztestlog"
 )
 
+const usageText = "" +
+	"programName" +
+	"\n" +
+	"A simple utility to demo counting boolean flags." +
+	"\n\n" +
+	"Usage: programName" +
+	" [-c | --count ...]" +
+	"\n\n" +
+	"[-c | --count ...]" +
+	"\n" +
+	"How many times?" +
+	""
+
 func Test_PASS_NothingToDoAdd(t *testing.T) {
 	chk := sztestlog.CaptureAll(t)
 	defer chk.Release()
@@ -76,8 +89,8 @@ func Test_FAIL_UnknownArgument(t *testing.T) {
 			szargs.ErrUnexpected,
 			"[unknownArgument]",
 		),
+		"",
+		usageText,
 	)
-	chk.Stdout(
-		"How many: 0",
-	)
+	chk.Stdout()
 }
