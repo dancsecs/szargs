@@ -18,14 +18,26 @@
 
 /*
 Package szargs provides simple methods of setting variables based on command
-line arguments ([]string) and environment variables. Arguments come in two
-types:  Flagged and positional.
+line arguments ([]string) and environment variables. Arguments come in three
+types:  Flagged, positional and settings.
 
-Flagged arguments are generally prefixed with a single dash "-" for single
+Flagged arguments are generally prefixed with a single dash "-" for a single
 letter flag or a double dash "--" for an extended spelled out flag.  A flag
 can be stand alone in the case of a boolean such as "-v" indicating a verbose
 setting or can be followed by and argument such as "--dir theDirectory".  Once
 all flags have been processed then the remaining arguments can be identified
 by their ordering.
+
+Positional Arguments are defined by their relative position in the argument
+list once all of the flagged arguments have been removed.  There are two forms
+the Next and the Last variations with the last insuring that there are no more
+arguments in the list.
+
+Settings combine a flagged argument, an environment variable and a default
+permitting a setting to be defined as a default that can be overridden by an
+environment variable setting that can also be overridden by a command line
+flagged argument.
+
+Each area provides for built in parsing to standard go data types.
 */
 package szargs

@@ -97,6 +97,11 @@ func (args *Args) HasError() bool {
 	return args.err != nil
 }
 
+// HasNext returns true if any arguments remain unabsorbed.
+func (args *Args) HasNext() bool {
+	return len(args.args) > 0
+}
+
 // Args returns a copy of the current argument list.
 func (args *Args) Args() []string {
 	cpy := make([]string, len(args.args))
@@ -110,15 +115,15 @@ func (args *Args) Usage() string {
 	return args.programName + "\n" +
 		args.programDesc + "\n" +
 		"\n" +
-		args.programName + args.usageHeader +
+		"Usage: " + args.programName + args.usageHeader +
 		args.usageBody
 }
 
 // Count returns the number of times the flag appears.
-func (args *Args) Count(flag, description string) int {
+func (args *Args) Count(flag, desc string) int {
 	var count int
 
-	args.addUsage(flag, description)
+	args.addUsage(flag, desc)
 
 	count, args.args = argFlag(flag).count(args.args)
 
@@ -126,13 +131,13 @@ func (args *Args) Count(flag, description string) int {
 }
 
 // Is returns true if the flag is present one and only one time.
-func (args *Args) Is(flag, description string) bool {
+func (args *Args) Is(flag, desc string) bool {
 	var (
 		found bool
 		err   error
 	)
 
-	args.addUsage(flag, description)
+	args.addUsage(flag, desc)
 
 	found, args.args, err = argFlag(flag).is(args.args)
 	if err != nil {

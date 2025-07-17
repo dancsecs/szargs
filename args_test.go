@@ -43,7 +43,7 @@ func TestSzargs_New_NoArgs(t *testing.T) {
 			"NotDefined",
 			"description",
 			"",
-			"NotDefined",
+			"Usage: NotDefined",
 		},
 	)
 
@@ -74,7 +74,7 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 			"noProgName",
 			"description",
 			"",
-			"noProgName [ -v | --verbose] [-f|--flag]",
+			"Usage: noProgName [ -v | --verbose] [-f|--flag]",
 			"",
 			"[ -v | --verbose]",
 			"how chatty should I be",
@@ -114,7 +114,7 @@ func TestSzargs_New_AmbiguousIsName(t *testing.T) {
 			"noProgName",
 			"description",
 			"",
-			"noProgName [ -v | --verbose] [-f|--flag]",
+			"Usage: noProgName [ -v | --verbose] [-f|--flag]",
 			"",
 			"[ -v | --verbose]",
 			"how chatty should I be",
@@ -124,6 +124,7 @@ func TestSzargs_New_AmbiguousIsName(t *testing.T) {
 		},
 	)
 
+	chk.True(args.HasNext())
 	chk.True(args.HasError())
 	chk.Err(
 		args.Err(),
