@@ -1,4 +1,6 @@
 // Package main implements a simple example of using szargs.
+//
+//nolint:forbidigo // OK to print to os.Stdout.
 package main
 
 import (
@@ -10,7 +12,7 @@ import (
 
 func main() {
 	args := szargs.New(
-		"A simple utility to demo identifying a boolean flags.",
+		"A simple utility to demo identifying a boolean flag.",
 		os.Args,
 	)
 
@@ -21,13 +23,13 @@ func main() {
 
 	args.Done() // All arguments should have consumed.
 
-	if isTrue {
-		_, _ = fmt.Fprintln(os.Stdout, "Is true.")
-	} else {
-		_, _ = fmt.Fprintln(os.Stdout, "Is NOT true.")
-	}
-
 	if args.HasError() {
-		_, _ = fmt.Fprintln(os.Stderr, "Error: "+args.Err().Error())
+		fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage())
+	} else {
+		if isTrue {
+			fmt.Println("Is true.")
+		} else {
+			fmt.Println("Is NOT true.")
+		}
 	}
 }

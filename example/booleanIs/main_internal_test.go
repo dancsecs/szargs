@@ -25,6 +25,19 @@ import (
 	"github.com/dancsecs/sztestlog"
 )
 
+const usageText = "" +
+	"programName" +
+	"\n" +
+	"A simple utility to demo identifying a boolean flag." +
+	"\n\n" +
+	"Usage: programName" +
+	" [-t | --true]" +
+	"\n\n" +
+	"[-t | --true]" +
+	"\n" +
+	"A single flag indicating true." +
+	""
+
 func Test_PASS_NothingToDoAdd(t *testing.T) {
 	chk := sztestlog.CaptureAll(t)
 	defer chk.Release()
@@ -86,10 +99,10 @@ func Test_FAIL_UnknownArgument(t *testing.T) {
 			szargs.ErrUnexpected,
 			"[unknownArgument]",
 		),
+		"",
+		usageText,
 	)
-	chk.Stdout(
-		"Is NOT true.",
-	)
+	chk.Stdout()
 }
 
 func Test_FAIL_InvalidExtraTrue(t *testing.T) {
@@ -107,8 +120,8 @@ func Test_FAIL_InvalidExtraTrue(t *testing.T) {
 			szargs.ErrAmbiguous,
 			"'[-t | --true]' found 2 times",
 		),
+		"",
+		usageText,
 	)
-	chk.Stdout(
-		"Is NOT true.",
-	)
+	chk.Stdout()
 }
