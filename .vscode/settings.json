@@ -24,8 +24,10 @@
         "contextcheck",
         "copyloopvar",
         "cyclop",
+        "dcln",
         "deadcode", // Deprecated
         // "decorder",
+        "dcls",
         "depguard",
         "dogsled",        
         "dupl",
@@ -40,6 +42,9 @@
         "exhaustivestruct", // Deprecated
         "exhaustruct",
         "exportloopref",
+        "Fprint",
+        "Fprintf",
+        "Fprintln",
         "forbidigo",
         "forcetypeassert",
         "funlen",
@@ -104,7 +109,9 @@
         "protogetter",       
         // "reassign",       
         // "revive",        
-        "rowserrcheck",       
+        "rowserrcheck", 
+        "sayf",
+        "sayErrf",      
         "scopelint", // Deprecated
         "sloglint",
         "spancheck",
