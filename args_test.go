@@ -52,6 +52,29 @@ func TestSzargs_New_NoArgs(t *testing.T) {
 	chk.Stdout()
 }
 
+func TestSzargs_New_PushArgs(t *testing.T) {
+	chk := sztestlog.CaptureAll(t)
+	defer chk.Release()
+
+	args := szargs.New("description", []string{"programName"})
+
+	if !args.HasNext() {
+		args.PushArg("theDefaultOptionalArg")
+	}
+
+	arg := args.NextString("theOptionalArg", "An optional string argument.")
+
+	chk.Str(arg, "theDefaultOptionalArg")
+
+	args.Done()
+
+	chk.NoErr(args.Err())
+
+	chk.Log()
+	chk.Stderr()
+	chk.Stdout()
+}
+
 func TestSzargs_New_JustProgramName(t *testing.T) {
 	chk := sztestlog.CaptureAll(t)
 	defer chk.Release()

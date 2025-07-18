@@ -102,6 +102,11 @@ func (args *Args) HasNext() bool {
 	return len(args.args) > 0
 }
 
+// PushArg places the supplied argument to the end of the internal ags list.
+func (args *Args) PushArg(arg string) {
+	args.args = append(args.args, arg)
+}
+
 // Args returns a copy of the current argument list.
 func (args *Args) Args() []string {
 	cpy := make([]string, len(args.args))
