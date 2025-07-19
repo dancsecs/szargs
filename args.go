@@ -92,8 +92,8 @@ func (args *Args) Err() error {
 	return args.err
 }
 
-// HasError returns any errors encountered while parsing the arguments.
-func (args *Args) HasError() bool {
+// HasErr returns any errors encountered while parsing the arguments.
+func (args *Args) HasErr() bool {
 	return args.err != nil
 }
 

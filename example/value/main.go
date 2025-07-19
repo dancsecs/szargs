@@ -28,7 +28,7 @@ func main() {
 
 	args.Done() // All arguments should have consumed.
 
-	if args.HasError() { //nolint:nestif // Ok for the demo.
+	if args.HasErr() { //nolint:nestif // Ok for the demo.
 		fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage())
 	} else {
 		if nameFound {

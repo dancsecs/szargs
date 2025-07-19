@@ -35,7 +35,7 @@ func main() {
 
 	args.Done() // All arguments should have consumed.
 
-	if args.HasError() {
+	if args.HasErr() {
 		fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage())
 	} else {
 		fmt.Printf("Using '%s' for temperatures.", temp)
