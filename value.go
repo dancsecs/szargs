@@ -106,12 +106,12 @@ func (args *Args) ValueFloat32(flag, desc string) (float32, bool) {
 	return result, found
 }
 
-// ValueInt64 scans for a specific flagged argument and parses its value as an
+// ValueInt64 scans for a specific flagged argument and parses its value as a
 // signed 64 bit integer. The flag and its value are removed from the
 // argument list.
 //
 // If the flag appears more than once, lacks a following value, or if the
-// value has invalid syntax or is out of range for a int64, an error is
+// value has invalid syntax or is out of range for an int64, an error is
 // registered.
 //
 // Returns the parsed value and a boolean indicating whether the flag was
@@ -141,12 +141,12 @@ func (args *Args) ValueInt64(flag, desc string) (int64, bool) {
 	return result, found
 }
 
-// ValueInt32 scans for a specific flagged argument and parses its value as an
+// ValueInt32 scans for a specific flagged argument and parses its value as a
 // signed 32 bit integer. The flag and its value are removed from the
 // argument list.
 //
 // If the flag appears more than once, lacks a following value, or if the
-// value has invalid syntax or is out of range for a int32, an error is
+// value has invalid syntax or is out of range for an int32, an error is
 // registered.
 //
 // Returns the parsed value and a boolean indicating whether the flag was
@@ -176,12 +176,12 @@ func (args *Args) ValueInt32(flag, desc string) (int32, bool) {
 	return result, found
 }
 
-// ValueInt16 scans for a specific flagged argument and parses its value as an
+// ValueInt16 scans for a specific flagged argument and parses its value as a
 // signed 16 bit integer. The flag and its value are removed from the
 // argument list.
 //
 // If the flag appears more than once, lacks a following value, or if the
-// value has invalid syntax or is out of range for a int16, an error is
+// value has invalid syntax or is out of range for an int16, an error is
 // registered.
 //
 // Returns the parsed value and a boolean indicating whether the flag was
@@ -211,12 +211,12 @@ func (args *Args) ValueInt16(flag, desc string) (int16, bool) {
 	return result, found
 }
 
-// ValueInt8 scans for a specific flagged argument and parses its value as an
+// ValueInt8 scans for a specific flagged argument and parses its value as a
 // signed 8 bit integer. The flag and its value are removed from the
 // argument list.
 //
 // If the flag appears more than once, lacks a following value, or if the
-// value has invalid syntax or is out of range for a int8, an error is
+// value has invalid syntax or is out of range for an int8, an error is
 // registered.
 //
 // Returns the parsed value and a boolean indicating whether the flag was
@@ -246,12 +246,12 @@ func (args *Args) ValueInt8(flag, desc string) (int8, bool) {
 	return result, found
 }
 
-// ValueInt scans for a specific flagged argument and parses its value as an
+// ValueInt scans for a specific flagged argument and parses its value as a
 // signed integer. The flag and its value are removed from the argument
 // list.
 //
 // If the flag appears more than once, lacks a following value, or if the
-// value has invalid syntax or is out of range for a int, an error is
+// value has invalid syntax or is out of range for an int, an error is
 // registered.
 //
 // Returns the parsed value and a boolean indicating whether the flag was

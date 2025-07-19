@@ -33,8 +33,11 @@ func next(name string, args []string) (string, []string, error) {
 	return args[0], args[1:], nil
 }
 
-// NextString extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextString removes and returns the next argument from the argument list.
+//
+// If no arguments remain, an error is registered.
+//
+// Returns the next argument value as a string.
 func (args *Args) NextString(name, desc string) string {
 	args.addUsage(name, desc)
 	result, newArgs, err := next(name, args.args)
@@ -44,8 +47,13 @@ func (args *Args) NextString(name, desc string) string {
 	return result
 }
 
-// NextFloat64 extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextFloat64 removes and returns the next argument from the argument list,
+// parsing it as a 64 bit floating point number.
+//
+// If no arguments remain, or if the value has invalid syntax or is out of
+// range for a float64, an error is registered.
+//
+// Returns the next argument value parsed as a float64.
 func (args *Args) NextFloat64(name, desc string) float64 {
 	var (
 		arg    string
@@ -67,8 +75,13 @@ func (args *Args) NextFloat64(name, desc string) float64 {
 	return result
 }
 
-// NextFloat32 extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextFloat32 removes and returns the next argument from the argument list,
+// parsing it as a 32 bit floating point number.
+//
+// If no arguments remain, or if the value has invalid syntax or is out of
+// range for a float32, an error is registered.
+//
+// Returns the next argument value parsed as a float32.
 func (args *Args) NextFloat32(name, desc string) float32 {
 	var (
 		arg    string
@@ -90,8 +103,13 @@ func (args *Args) NextFloat32(name, desc string) float32 {
 	return result
 }
 
-// NextInt64 extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextInt64 removes and returns the next argument from the argument list,
+// parsing it as a signed 64 bit integer.
+//
+// If no arguments remain, or if the value has invalid syntax or is out of
+// range for an int64, an error is registered.
+//
+// Returns the next argument value parsed as an int64.
 func (args *Args) NextInt64(name, desc string) int64 {
 	var (
 		arg    string
@@ -113,8 +131,13 @@ func (args *Args) NextInt64(name, desc string) int64 {
 	return result
 }
 
-// NextInt32 extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextInt32 removes and returns the next argument from the argument list,
+// parsing it as a signed 32 bit integer.
+//
+// If no arguments remain, or if the value has invalid syntax or is out of
+// range for an int32, an error is registered.
+//
+// Returns the next argument value parsed as an int32.
 func (args *Args) NextInt32(name, desc string) int32 {
 	var (
 		arg    string
@@ -136,8 +159,13 @@ func (args *Args) NextInt32(name, desc string) int32 {
 	return result
 }
 
-// NextInt16 extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextInt16 removes and returns the next argument from the argument list,
+// parsing it as a signed 16 bit integer.
+//
+// If no arguments remain, or if the value has invalid syntax or is out of
+// range for an int16, an error is registered.
+//
+// Returns the next argument value parsed as an int16.
 func (args *Args) NextInt16(name, desc string) int16 {
 	var (
 		arg    string
@@ -159,8 +187,13 @@ func (args *Args) NextInt16(name, desc string) int16 {
 	return result
 }
 
-// NextInt8 extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextInt8 removes and returns the next argument from the argument list,
+// parsing it as a signed 8 bit integer.
+//
+// If no arguments remain, or if the value has invalid syntax or is out of
+// range for an int8, an error is registered.
+//
+// Returns the next argument value parsed as an int8.
 func (args *Args) NextInt8(name, desc string) int8 {
 	var (
 		arg    string
@@ -182,8 +215,13 @@ func (args *Args) NextInt8(name, desc string) int8 {
 	return result
 }
 
-// NextInt extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextInt removes and returns the next argument from the argument list,
+// parsing it as n signed integer.
+//
+// If no arguments remain, or if the value has invalid syntax or is out of
+// range for an int, an error is registered.
+//
+// Returns the next argument value parsed as an int.
 func (args *Args) NextInt(name, desc string) int {
 	var (
 		arg    string
@@ -205,8 +243,13 @@ func (args *Args) NextInt(name, desc string) int {
 	return result
 }
 
-// NextUint64 extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextUint64 removes and returns the next argument from the argument list,
+// parsing it as an unsigned 64 bit integer.
+//
+// If no arguments remain, or if the value has invalid syntax or is out of
+// range for a uint64, an error is registered.
+//
+// Returns the next argument value parsed as a uint64.
 func (args *Args) NextUint64(name, desc string) uint64 {
 	var (
 		arg    string
@@ -228,8 +271,13 @@ func (args *Args) NextUint64(name, desc string) uint64 {
 	return result
 }
 
-// NextUint32 extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextUint32 removes and returns the next argument from the argument list,
+// parsing it as an unsigned 32 bit integer.
+//
+// If no arguments remain, or if the value has invalid syntax or is out of
+// range for a uint32, an error is registered.
+//
+// Returns the next argument value parsed as a uint32.
 func (args *Args) NextUint32(name, desc string) uint32 {
 	var (
 		arg    string
@@ -251,8 +299,13 @@ func (args *Args) NextUint32(name, desc string) uint32 {
 	return result
 }
 
-// NextUint16 extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextUint16 removes and returns the next argument from the argument list,
+// parsing it as an unsigned 16 bit integer.
+//
+// If no arguments remain, or if the value has invalid syntax or is out of
+// range for a uint16, an error is registered.
+//
+// Returns the next argument value parsed as a uint16.
 func (args *Args) NextUint16(name, desc string) uint16 {
 	var (
 		arg    string
@@ -274,8 +327,13 @@ func (args *Args) NextUint16(name, desc string) uint16 {
 	return result
 }
 
-// NextUint8 extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextUint8 removes and returns the next argument from the argument list,
+// parsing it as an unsigned 8 bit integer.
+//
+// If no arguments remain, or if the value has invalid syntax or is out of
+// range for a uint8, an error is registered.
+//
+// Returns the next argument value parsed as a uint8.
 func (args *Args) NextUint8(name, desc string) uint8 {
 	var (
 		arg    string
@@ -297,8 +355,13 @@ func (args *Args) NextUint8(name, desc string) uint8 {
 	return result
 }
 
-// NextUint extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextUint removes and returns the next argument from the argument list,
+// parsing it as an unsigned integer.
+//
+// If no arguments remain, or if the value has invalid syntax or is out of
+// range for a uint, an error is registered.
+//
+// Returns the next argument value parsed as a uint.
 func (args *Args) NextUint(name, desc string) uint {
 	var (
 		arg    string
@@ -320,8 +383,13 @@ func (args *Args) NextUint(name, desc string) uint {
 	return result
 }
 
-// NextOption extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextOption removes and returns the next argument from the argument list.
+// The value must match one of the entries in validOptions.
+//
+// If no arguments remain, or if the value is not found in validOptions,
+// an error is registered.
+//
+// Returns the next argument value.
 func (args *Args) NextOption(
 	name string, validOptions []string, desc string,
 ) string {
