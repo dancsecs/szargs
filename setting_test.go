@@ -1411,3 +1411,132 @@ func TestSzargs_SettingUint_Success(t *testing.T) {
 	chk.Uint(result, 444)
 	chk.StrSlice(args.Args(), nil)
 }
+
+/*
+ ***************************************************************************
+ *
+ *  Test option setting.
+ *
+ ***************************************************************************
+ */
+
+func TestSzargs_SettingOption_Invalid_Arg(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+		"-t",
+		"notAnOption",
+	})
+
+	result := args.SettingOption(
+		tstArgFlag, tstEnv, "abc", []string{"abc", "def"}, "testName",
+	)
+
+	chk.Err(
+		args.Err(),
+		chk.ErrChain(
+			szargs.ErrInvalidFlag,
+			szargs.ErrInvalidOption,
+			"'notAnOption' "+
+				"([-t value] must be one of [abc def])",
+		),
+	)
+	chk.Str(result, "")
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
+}
+
+func TestSzargs_SettingOption_Invalid_Default(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
+	result := args.SettingOption(
+		tstArgFlag, tstEnv, "notAnOption", []string{"abc", "def"}, "testName",
+	)
+
+	chk.Err(
+		args.Err(),
+		chk.ErrChain(
+			szargs.ErrInvalidDefault,
+			szargs.ErrInvalidOption,
+			"'notAnOption' "+
+				"(default must be one of [abc def])",
+		),
+	)
+	chk.Str(result, "")
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
+}
+
+func TestSzargs_SettingOption_Invalid_Env(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
+	chk.SetEnv(tstEnv, "notAnOption")
+
+	result := args.SettingOption(
+		tstArgFlag, tstEnv, "abc", []string{"abc", "def"}, "testName",
+	)
+
+	chk.Err(
+		args.Err(),
+		chk.ErrChain(
+			szargs.ErrInvalidEnv,
+			szargs.ErrInvalidOption,
+			"'notAnOption' ("+
+				tstEnv+" must be one of [abc def])",
+		),
+	)
+	chk.Str(result, "")
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
+}
+
+func TestSzargs_SettingOption_Success(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
+	// Default.
+	result := args.SettingOption(
+		tstArgFlag, tstEnv, "abc", []string{"abc", "def", "ghi"}, "testName",
+	)
+
+	chk.NoErr(args.Err())
+	chk.Str(result, "abc")
+	chk.StrSlice(args.Args(), nil)
+
+	// Environment.
+	chk.SetEnv(tstEnv, "def")
+	result = args.SettingOption(
+		tstArgFlag, tstEnv, "abc", []string{"abc", "def", "ghi"}, "testName",
+	)
+
+	chk.NoErr(args.Err())
+	chk.Str(result, "def")
+	chk.StrSlice(args.Args(), nil)
+
+	// Argument
+	args = szargs.New("program description", []string{
+		"programName",
+		"-t",
+		"ghi",
+	})
+	result = args.SettingOption(
+		tstArgFlag, tstEnv, "abc", []string{"abc", "def", "ghi"}, "testName",
+	)
+
+	chk.NoErr(args.Err())
+	chk.Str(result, "ghi")
+	chk.StrSlice(args.Args(), nil)
+}

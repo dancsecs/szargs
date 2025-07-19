@@ -40,6 +40,7 @@ var (
 	ErrInvalidUint8   = errors.New("invalid uint8")
 	ErrInvalidUint    = errors.New("invalid uint")
 	ErrInvalidOption  = errors.New("invalid option")
+	ErrInvalidDefault = errors.New("invalid default")
 	ErrInvalidFlag    = errors.New("invalid flag")
 	ErrInvalidEnv     = errors.New("invalid environment variable")
 )

@@ -39,7 +39,7 @@ func TestSzargs_ValueNoArgNoEnv(t *testing.T) {
 
 	chk.Str(value, "def")
 	chk.StrSlice(args, nil)
-	chk.NoErr(srcErr)
+	chk.Err(srcErr, ErrInvalidDefault.Error())
 	chk.NoErr(err)
 
 	value, args, srcErr, err = setting(tstArgFlag, tstEnv, "def",
@@ -50,7 +50,7 @@ func TestSzargs_ValueNoArgNoEnv(t *testing.T) {
 	chk.StrSlice(args,
 		[]string{"arg1", "arg2"},
 	)
-	chk.NoErr(srcErr)
+	chk.Err(srcErr, ErrInvalidDefault.Error())
 	chk.NoErr(err)
 }
 

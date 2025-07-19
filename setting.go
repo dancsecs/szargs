@@ -42,7 +42,7 @@ func setting(
 
 	if !found {
 		value = def
-		srcErr = nil
+		srcErr = ErrInvalidDefault
 
 		if env != "" {
 			envValue, ok := os.LookupEnv(env)
@@ -602,6 +602,52 @@ func (args *Args) SettingUint(
 
 			result, err = parseUint(parseName, value)
 		}
+	}
+
+	args.args = cleanedArgs
+
+	if err != nil {
+		args.PushErr(srcErr)
+		args.PushErr(err)
+	}
+
+	return result
+}
+
+// SettingOption scans the args looking for arg.  If it is not found then it
+// looks for an environment variable and if this does not exist then it will
+// return the specified default.
+func (args *Args) SettingOption(
+	flag, env string, def string, validOptions []string, desc string,
+) string {
+	var (
+		value       string
+		cleanedArgs []string
+		result      string
+		parseName   string
+		srcErr      error
+		err         error
+	)
+
+	args.addUsage(flag, desc)
+
+	value, cleanedArgs, srcErr, err = setting(
+		flag, env, defaultStandIn, args.Args(),
+	)
+
+	if err == nil { //nolint:nestif // Ok.
+		if value == defaultStandIn {
+			parseName = "default"
+			value = def
+		} else {
+			if errors.Is(srcErr, ErrInvalidEnv) {
+				parseName = env
+			} else {
+				parseName = flag
+			}
+		}
+
+		result, err = parseOption(parseName, value, validOptions)
 	}
 
 	args.args = cleanedArgs
