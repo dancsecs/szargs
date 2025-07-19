@@ -29,15 +29,23 @@ the following functions are demoed in this example.
 
 <!--- gotomd::Bgn::dcln::./../../Args.NextString Args.NextUint Args.Done -->
 ```go
-// NextString extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextString removes and returns the next argument from the argument list.
+// 
+// If no arguments remain, an error is registered.
+// 
+// Returns the next argument value as a string.
 func (args *Args) NextString(name, desc string) string
 
-// NextUint extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextUint removes and returns the next argument from the argument list,
+// parsing it as an unsigned integer.
+// 
+// If no arguments remain, or if the value has invalid syntax or is out of
+// range for a uint, an error is registered.
+// 
+// Returns the next argument value parsed as a uint.
 func (args *Args) NextUint(name, desc string) uint
 
-// Done returns an error if there are any remaining arguments.
+// Done registers an error if there are any remaining arguments.
 func (args *Args) Done()
 ```
 <!--- gotomd::End::dcln::./../../Args.NextString Args.NextUint Args.Done -->
@@ -99,7 +107,7 @@ func main() {
 
     args.Done() // All arguments should have consumed.
 
-    if args.HasError() {
+    if args.HasErr() {
         fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage())
     } else {
         for range optional {

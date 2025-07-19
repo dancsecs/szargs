@@ -18,7 +18,7 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
-# Example Flag Values
+# Example Flagged Values
 
 
 ## Overview
@@ -30,8 +30,14 @@ range.
 
 <!--- gotomd::Bgn::dcln::./../../Args.ValuesString -->
 ```go
-// ValuesString scans the args looking for all instances of the specified flag
-// returning all found in a typed slice.
+// ValuesString scans for repeated instances of the specified flag and
+// captures the following values as a slice of strings. The flags and values
+// are removed from the argument list.
+// 
+// If any instance of the flag lacks a following value, an error is
+// registered.
+// 
+// Returns a slice of the captured string values.
 func (args *Args) ValuesString(flag, desc string) []string
 ```
 <!--- gotomd::End::dcln::./../../Args.ValuesString -->
@@ -111,7 +117,7 @@ func main() {
 
     args.Done() // All arguments should have consumed.
 
-    if args.HasError() {
+    if args.HasErr() {
         fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage())
     } else {
         fmt.Printf("%d Name(s) Found: %v.\n", len(nameList), nameList)
@@ -121,7 +127,7 @@ func main() {
 ```
 <!--- gotomd::End::file::./main.go -->
 
-[Top of Page](#example-flag-values) --
+[Top of Page](#example-flagged-values) --
 [Szargs Contents](../../README.md#contents)
 
 ### PASS: No Arguments
@@ -139,7 +145,7 @@ go run .
 ---
 <!--- gotomd::End::run::./. -->
 
-[Top of Page](#example-flag-values) --
+[Top of Page](#example-flagged-values) --
 [Szargs Contents](../../README.md#contents)
 
 ### PASS: Single Long Form
@@ -157,7 +163,7 @@ go run . --name theName --byte 23
 ---
 <!--- gotomd::End::run::./. --name theName --byte 23 -->
 
-[Top of Page](#example-flag-values) --
+[Top of Page](#example-flagged-values) --
 [Szargs Contents](../../README.md#contents)
 
 ### PASS: Single Short Form
@@ -175,7 +181,7 @@ go run . -n anotherName -b 42
 ---
 <!--- gotomd::End::run::./. -n anotherName -b 42 -->
 
-[Top of Page](#example-flag-values) --
+[Top of Page](#example-flagged-values) --
 [Szargs Contents](../../README.md#contents)
 
 
@@ -194,7 +200,7 @@ go run . -n aName --name anotherName -b 42 --byte 23
 ---
 <!--- gotomd::End::run::./. -n aName --name anotherName -b 42 --byte 23 -->
 
-[Top of Page](#example-flag-values) --
+[Top of Page](#example-flagged-values) --
 [Szargs Contents](../../README.md#contents)
 
 
@@ -226,5 +232,5 @@ The byte (0-255) for the values.
 ---
 <!--- gotomd::End::run::./. extraUnknownArgument -->
 
-[Top of Page](#example-flag-values) --
+[Top of Page](#example-flagged-values) --
 [Szargs Contents](../../README.md#contents)

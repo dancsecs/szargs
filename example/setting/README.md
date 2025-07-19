@@ -29,12 +29,17 @@ overridden by a command line argument.
 
 <!--- gotomd::Bgn::dcln::./../../Args.SettingOption Args.Done -->
 ```go
-// SettingOption scans the args looking for arg.  If it is not found then it
-// looks for an environment variable and if this does not exist then it will
-// return the specified default.
+// SettingOption returns a configuration value based on a default,
+// optionally overridden by an environment variable, and further overridden
+// by a flagged command-line argument.
+// 
+// If the final value is not found in the list of validOptions,
+// an error is registered.
+// 
+// Returns the final selected value.
 func (args *Args) SettingOption(flag, env string, def string, validOptions []string, desc string) string
 
-// Done returns an error if there are any remaining arguments.
+// Done registers an error if there are any remaining arguments.
 func (args *Args) Done()
 ```
 <!--- gotomd::End::dcln::./../../Args.SettingOption Args.Done -->
@@ -98,7 +103,7 @@ func main() {
 
     args.Done() // All arguments should have consumed.
 
-    if args.HasError() {
+    if args.HasErr() {
         fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage())
     } else {
         fmt.Printf("Using '%s' for temperatures.", temp)

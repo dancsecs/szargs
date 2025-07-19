@@ -56,9 +56,11 @@ func setting(
 	return value, cleanArgs, srcErr, nil
 }
 
-// SettingString scans the args looking for arg.  If it is not found then it
-// looks for an environment variable and if this does not exist then it will
-// return the specified default.
+// SettingString returns a configuration value based on a default,
+// optionally overridden by an environment variable, and further overridden
+// by a flagged command-line argument.
+//
+// Returns the final selected string value.
 func (args *Args) SettingString(
 	flag, env, def, desc string,
 ) string {
@@ -74,9 +76,15 @@ func (args *Args) SettingString(
 	return result
 }
 
-// SettingFloat64 scans the args looking for arg.  If it is not found then it
-// looks for an environment variable and if this does not exist then it will
-// return the specified default.
+// SettingFloat64 returns a configuration value based on a default, optionally
+// overridden by an environment variable, and further overridden by a flagged
+// command-line argument. The value is parsed as a 64 bit floating point
+// number.
+//
+// If the final value has invalid syntax or is out of range for a float64, an
+// error is registered.
+//
+// Returns the final parsed float64 value.
 func (args *Args) SettingFloat64(
 	flag, env string, def float64, desc string,
 ) float64 {
@@ -119,9 +127,15 @@ func (args *Args) SettingFloat64(
 	return result
 }
 
-// SettingFloat32 scans the args looking for arg.  If it is not found then it
-// looks for an environment variable and if this does not exist then it will
-// return the specified default.
+// SettingFloat32 returns a configuration value based on a default, optionally
+// overridden by an environment variable, and further overridden by a flagged
+// command-line argument. The value is parsed as a 32 bit floating point
+// number.
+//
+// If the final value has invalid syntax or is out of range for a float32, an
+// error is registered.
+//
+// Returns the final parsed float32 value.
 func (args *Args) SettingFloat32(
 	flag, env string, def float32, desc string,
 ) float32 {
@@ -164,9 +178,14 @@ func (args *Args) SettingFloat32(
 	return result
 }
 
-// SettingInt64 scans the args looking for arg.  If it is not found then it
-// looks for an environment variable and if this does not exist then it will
-// return the specified default.
+// SettingInt64 returns a configuration value based on a default, optionally
+// overridden by an environment variable, and further overridden by a flagged
+// command-line argument. The value is parsed as a signed 64 bit integer.
+//
+// If the final value has invalid syntax or is out of range for an int64, an
+// error is registered.
+//
+// Returns the final parsed int64 value.
 func (args *Args) SettingInt64(
 	flag, env string, def int64, desc string,
 ) int64 {
@@ -209,9 +228,14 @@ func (args *Args) SettingInt64(
 	return result
 }
 
-// SettingInt32 scans the args looking for arg.  If it is not found then it
-// looks for an environment variable and if this does not exist then it will
-// return the specified default.
+// SettingInt32 returns a configuration value based on a default, optionally
+// overridden by an environment variable, and further overridden by a flagged
+// command-line argument. The value is parsed as a signed 32 bit integer.
+//
+// If the final value has invalid syntax or is out of range for an int32, an
+// error is registered.
+//
+// Returns the final parsed int32 value.
 func (args *Args) SettingInt32(
 	flag, env string, def int32, desc string,
 ) int32 {
@@ -254,9 +278,14 @@ func (args *Args) SettingInt32(
 	return result
 }
 
-// SettingInt16 scans the args looking for arg.  If it is not found then it
-// looks for an environment variable and if this does not exist then it will
-// return the specified default.
+// SettingInt16 returns a configuration value based on a default, optionally
+// overridden by an environment variable, and further overridden by a flagged
+// command-line argument. The value is parsed as a signed 16 bit integer.
+//
+// If the final value has invalid syntax or is out of range for an int16, an
+// error is registered.
+//
+// Returns the final parsed int16 value.
 func (args *Args) SettingInt16(
 	flag, env string, def int16, desc string,
 ) int16 {
@@ -299,9 +328,14 @@ func (args *Args) SettingInt16(
 	return result
 }
 
-// SettingInt8 scans the args looking for arg.  If it is not found then it
-// looks for an environment variable and if this does not exist then it will
-// return the specified default.
+// SettingInt8 returns a configuration value based on a default, optionally
+// overridden by an environment variable, and further overridden by a flagged
+// command-line argument. The value is parsed as a signed 8 bit integer.
+//
+// If the final value has invalid syntax or is out of range for an int8, an
+// error is registered.
+//
+// Returns the final parsed int8 value.
 func (args *Args) SettingInt8(
 	flag, env string, def int8, desc string,
 ) int8 {
@@ -344,9 +378,14 @@ func (args *Args) SettingInt8(
 	return result
 }
 
-// SettingInt scans the args looking for arg.  If it is not found then it
-// looks for an environment variable and if this does not exist then it will
-// return the specified default.
+// SettingInt returns a configuration value based on a default, optionally
+// overridden by an environment variable, and further overridden by a flagged
+// command-line argument. The value is parsed as a signed integer.
+//
+// If the final value has invalid syntax or is out of range for an int, an
+// error is registered.
+//
+// Returns the final parsed int value.
 func (args *Args) SettingInt(
 	flag, env string, def int, desc string,
 ) int {
@@ -389,9 +428,14 @@ func (args *Args) SettingInt(
 	return result
 }
 
-// SettingUint64 scans the args looking for arg.  If it is not found then it
-// looks for an environment variable and if this does not exist then it will
-// return the specified default.
+// SettingUint64 returns a configuration value based on a default, optionally
+// overridden by an environment variable, and further overridden by a flagged
+// command-line argument. The value is parsed as an unsigned 64 bit integer.
+//
+// If the final value has invalid syntax or is out of range for a uint64, an
+// error is registered.
+//
+// Returns the final parsed uint64 value.
 func (args *Args) SettingUint64(
 	flag, env string, def uint64, desc string,
 ) uint64 {
@@ -434,9 +478,14 @@ func (args *Args) SettingUint64(
 	return result
 }
 
-// SettingUint32 scans the args looking for arg.  If it is not found then it
-// looks for an environment variable and if this does not exist then it will
-// return the specified default.
+// SettingUint32 returns a configuration value based on a default, optionally
+// overridden by an environment variable, and further overridden by a flagged
+// command-line argument. The value is parsed as an unsigned 32 bit integer.
+//
+// If the final value has invalid syntax or is out of range for a uint32, an
+// error is registered.
+//
+// Returns the final parsed uint32 value.
 func (args *Args) SettingUint32(
 	flag, env string, def uint32, desc string,
 ) uint32 {
@@ -479,9 +528,14 @@ func (args *Args) SettingUint32(
 	return result
 }
 
-// SettingUint16 scans the args looking for arg.  If it is not found then it
-// looks for an environment variable and if this does not exist then it will
-// return the specified default.
+// SettingUint16 returns a configuration value based on a default, optionally
+// overridden by an environment variable, and further overridden by a flagged
+// command-line argument. The value is parsed as an unsigned 16 bit integer.
+//
+// If the final value has invalid syntax or is out of range for a uint16, an
+// error is registered.
+//
+// Returns the final parsed uint16 value.
 func (args *Args) SettingUint16(
 	flag, env string, def uint16, desc string,
 ) uint16 {
@@ -524,9 +578,14 @@ func (args *Args) SettingUint16(
 	return result
 }
 
-// SettingUint8 scans the args looking for arg.  If it is not found then it
-// looks for an environment variable and if this does not exist then it will
-// return the specified default.
+// SettingUint8 returns a configuration value based on a default, optionally
+// overridden by an environment variable, and further overridden by a flagged
+// command-line argument. The value is parsed as an unsigned 8 bit integer.
+//
+// If the final value has invalid syntax or is out of range for a uint8, an
+// error is registered.
+//
+// Returns the final parsed uint8 value.
 func (args *Args) SettingUint8(
 	flag, env string, def uint8, desc string,
 ) uint8 {
@@ -569,9 +628,14 @@ func (args *Args) SettingUint8(
 	return result
 }
 
-// SettingUint scans the args looking for arg.  If it is not found then it
-// looks for an environment variable and if this does not exist then it will
-// return the specified default.
+// SettingUint returns a configuration value based on a default, optionally
+// overridden by an environment variable, and further overridden by a flagged
+// command-line argument. The value is parsed as an unsigned integer.
+//
+// If the final value has invalid syntax or is out of range for a uint, an
+// error is registered.
+//
+// Returns the final parsed uint value.
 func (args *Args) SettingUint(
 	flag, env string, def uint, desc string,
 ) uint {
@@ -614,9 +678,14 @@ func (args *Args) SettingUint(
 	return result
 }
 
-// SettingOption scans the args looking for arg.  If it is not found then it
-// looks for an environment variable and if this does not exist then it will
-// return the specified default.
+// SettingOption returns a configuration value based on a default,
+// optionally overridden by an environment variable, and further overridden
+// by a flagged command-line argument.
+//
+// If the final value is not found in the list of validOptions,
+// an error is registered.
+//
+// Returns the final selected value.
 func (args *Args) SettingOption(
 	flag, env string, def string, validOptions []string, desc string,
 ) string {

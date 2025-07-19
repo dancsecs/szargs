@@ -34,21 +34,31 @@ program.  It demonstrates the following szargs functions:
 // Count returns the number of times the flag appears.
 func (args *Args) Count(flag, desc string) int
 
-// ValueFloat64 scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.  If an error occurs then the original
-// arg array is returned.
+// ValueFloat64 scans for a specific flagged argument and parses its value as
+// a 64 bit floating point number. The flag and its value are removed from the
+// argument list.
+// 
+// If the flag appears more than once, lacks a following value, or if the
+// value has invalid syntax or is out of range for a float64, an error is
+// registered.
+// 
+// Returns the parsed value and a boolean indicating whether the flag was
+// found.
 func (args *Args) ValueFloat64(flag, desc string) (float64, bool)
 
 // HasNext returns true if any arguments remain unabsorbed.
 func (args *Args) HasNext() bool
 
-// NextOption extracts the next positional argument returning an error if none
-// are present, otherwise it parses and returns the named data type.
+// NextOption removes and returns the next argument from the argument list.
+// The value must match one of the entries in validOptions.
+// 
+// If no arguments remain, or if the value is not found in validOptions,
+// an error is registered.
+// 
+// Returns the next argument value.
 func (args *Args) NextOption(name string, validOptions []string, desc string) string
 
-// Done returns an error if there are any remaining arguments.
+// Done registers an error if there are any remaining arguments.
 func (args *Args) Done()
 ```
 <!--- gotomd::End::dcln::./../../Args.Count Args.ValueFloat64 Args.HasNext Args.NextOption Args.Done -->

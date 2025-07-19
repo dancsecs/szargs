@@ -18,7 +18,7 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
-# Example Flag Value
+# Example Flagged Value
 
 
 ## Overview
@@ -30,11 +30,15 @@ then it must pass rules regarding its syntax and range.
 
 <!--- gotomd::Bgn::dcln::./../../Args.ValueString -->
 ```go
-// ValueString scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.  If an error occurs then the original
-// arg array is returned.
+// ValueString scans for a specific flagged argument and captures its
+// following value as a string. The flag and its value are removed from the
+// argument list.
+// 
+// If the flag appears more than once or lacks a following value, an error is
+// registered.
+// 
+// Returns the string value and a boolean indicating whether the flag was
+// found.
 func (args *Args) ValueString(flag, desc string) (string, bool)
 ```
 <!--- gotomd::End::dcln::./../../Args.ValueString -->
@@ -114,7 +118,7 @@ func main() {
 
     args.Done() // All arguments should have consumed.
 
-    if args.HasError() { //nolint:nestif // Ok for the demo.
+    if args.HasErr() { //nolint:nestif // Ok for the demo.
         fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage())
     } else {
         if nameFound {
@@ -133,7 +137,7 @@ func main() {
 ```
 <!--- gotomd::End::file::./main.go -->
 
-[Top of Page](#example-flag-value) --
+[Top of Page](#example-flagged-value) --
 [Szargs Contents](../../README.md#contents)
 
 ### PASS: No Arguments
@@ -151,7 +155,7 @@ Byte Not Found.
 ---
 <!--- gotomd::End::run::./. -->
 
-[Top of Page](#example-flag-value) --
+[Top of Page](#example-flagged-value) --
 [Szargs Contents](../../README.md#contents)
 
 ### PASS: Single Long Form
@@ -169,7 +173,7 @@ Byte Found: 23.
 ---
 <!--- gotomd::End::run::./. --name theName --byte 23 -->
 
-[Top of Page](#example-flag-value) --
+[Top of Page](#example-flagged-value) --
 [Szargs Contents](../../README.md#contents)
 
 ### PASS: Single Short Form
@@ -187,7 +191,7 @@ Byte Found: 42.
 ---
 <!--- gotomd::End::run::./. -n anotherName -b 42 -->
 
-[Top of Page](#example-flag-value) --
+[Top of Page](#example-flagged-value) --
 [Szargs Contents](../../README.md#contents)
 
 
@@ -220,7 +224,7 @@ The byte (0-255) value.
 ---
 <!--- gotomd::End::run::./. --name first -n second --byte 1 -b 2 -->
 
-[Top of Page](#example-flag-value) --
+[Top of Page](#example-flagged-value) --
 [Szargs Contents](../../README.md#contents)
 
 ### FAIL: Extra Unknown Argument
@@ -251,5 +255,5 @@ The byte (0-255) value.
 ---
 <!--- gotomd::End::run::./. extraUnknownArgument -->
 
-[Top of Page](#example-flag-value) --
+[Top of Page](#example-flagged-value) --
 [Szargs Contents](../../README.md#contents)
