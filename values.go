@@ -20,8 +20,14 @@ package szargs
 
 import "fmt"
 
-// ValuesString scans the args looking for all instances of the specified flag
-// returning all found in a typed slice.
+// ValuesString scans for repeated instances of the specified flag and
+// captures the following values as a slice of strings. The flags and values
+// are removed from the argument list.
+//
+// If any instance of the flag lacks a following value, an error is
+// registered.
+//
+// Returns a slice of the captured string values.
 func (args *Args) ValuesString(flag, desc string) []string {
 	args.addUsage(flag, desc)
 	result, newArgs, err := argFlag(flag).values(args.args)
@@ -31,8 +37,14 @@ func (args *Args) ValuesString(flag, desc string) []string {
 	return result
 }
 
-// ValuesFloat64 scans the args looking for all instances of the specified flag
-// returning all found in a typed slice.
+// ValuesFloat64 scans for repeated instances of the specified flag and parses
+// the following values as 64 bit floating point numbers. The flags and values
+// are removed from the argument list.
+//
+// If any flag lacks a following value, or if a value has invalid syntax or is
+// out of range for a float64, an error is registered.
+//
+// Returns a slice of the parsed float64 values.
 func (args *Args) ValuesFloat64(flag, desc string) []float64 {
 	var (
 		matches     []string
@@ -77,8 +89,14 @@ func (args *Args) ValuesFloat64(flag, desc string) []float64 {
 	return nil
 }
 
-// ValuesFloat32 scans the args looking for all instances of the specified flag
-// returning all found in a typed slice.
+// ValuesFloat32 scans for repeated instances of the specified flag and parses
+// the following values as 32 bit floating point numbers. The flags and values
+// are removed from the argument list.
+//
+// If any flag lacks a following value, or if a value has invalid syntax or is
+// out of range for a float32, an error is registered.
+//
+// Returns a slice of the parsed float32 values.
 func (args *Args) ValuesFloat32(flag, desc string) []float32 {
 	var (
 		matches     []string
@@ -123,8 +141,14 @@ func (args *Args) ValuesFloat32(flag, desc string) []float32 {
 	return nil
 }
 
-// ValuesInt64 scans the args looking for all instances of the specified flag
-// returning all found in a typed slice.
+// ValuesInt64 scans for repeated instances of the specified flag and parses
+// the following values as signed 64 bit integers. The flags and values are
+// removed from the argument list.
+//
+// If any flag lacks a following value, or if a value has invalid syntax or is
+// out of range for an int64, an error is registered.
+//
+// Returns a slice of the parsed int64 values.
 func (args *Args) ValuesInt64(flag, desc string) []int64 {
 	var (
 		matches     []string
@@ -169,8 +193,14 @@ func (args *Args) ValuesInt64(flag, desc string) []int64 {
 	return nil
 }
 
-// ValuesInt32 scans the args looking for all instances of the specified flag
-// returning all found in a typed slice.
+// ValuesInt32 scans for repeated instances of the specified flag and parses
+// the following values as signed 32 bit integers. The flags and values are
+// removed from the argument list.
+//
+// If any flag lacks a following value, or if a value has invalid syntax or is
+// out of range for an int32, an error is registered.
+//
+// Returns a slice of the parsed int32 values.
 func (args *Args) ValuesInt32(flag, desc string) []int32 {
 	var (
 		matches     []string
@@ -215,8 +245,14 @@ func (args *Args) ValuesInt32(flag, desc string) []int32 {
 	return nil
 }
 
-// ValuesInt16 scans the args looking for all instances of the specified flag
-// returning all found in a typed slice.
+// ValuesInt16 scans for repeated instances of the specified flag and parses
+// the following values as signed 16 bit integers. The flags and values are
+// removed from the argument list.
+//
+// If any flag lacks a following value, or if a value has invalid syntax or is
+// out of range for an int16, an error is registered.
+//
+// Returns a slice of the parsed int16 values.
 func (args *Args) ValuesInt16(flag, desc string) []int16 {
 	var (
 		matches     []string
@@ -261,8 +297,14 @@ func (args *Args) ValuesInt16(flag, desc string) []int16 {
 	return nil
 }
 
-// ValuesInt8 scans the args looking for all instances of the specified flag
-// returning all found in a typed slice.
+// ValuesInt8 scans for repeated instances of the specified flag and parses
+// the following values as signed 8 bit integers. The flags and values are
+// removed from the argument list.
+//
+// If any flag lacks a following value, or if a value has invalid syntax or is
+// out of range for an int8, an error is registered.
+//
+// Returns a slice of the parsed int8 values.
 func (args *Args) ValuesInt8(flag, desc string) []int8 {
 	var (
 		matches     []string
@@ -307,8 +349,14 @@ func (args *Args) ValuesInt8(flag, desc string) []int8 {
 	return nil
 }
 
-// ValuesInt scans the args looking for all instances of the specified flag
-// returning all found in a typed slice.
+// ValuesInt scans for repeated instances of the specified flag and parses
+// the following values as signed integers. The flags and values are removed
+// from the argument list.
+//
+// If any flag lacks a following value, or if a value has invalid syntax or is
+// out of range for an int, an error is registered.
+//
+// Returns a slice of the parsed int values.
 func (args *Args) ValuesInt(flag, desc string) []int {
 	var (
 		matches     []string
@@ -353,8 +401,14 @@ func (args *Args) ValuesInt(flag, desc string) []int {
 	return nil
 }
 
-// ValuesUint64 scans the args looking for all instances of the specified flag
-// returning all found in a typed slice.
+// ValuesUint64 scans for repeated instances of the specified flag and parses
+// the following values as unsigned 64 bit integers. The flags and values are
+// removed from the argument list.
+//
+// If any flag lacks a following value, or if a value has invalid syntax or is
+// out of range for a uint64, an error is registered.
+//
+// Returns a slice of the parsed uint64 values.
 func (args *Args) ValuesUint64(flag, desc string) []uint64 {
 	var (
 		matches     []string
@@ -399,8 +453,14 @@ func (args *Args) ValuesUint64(flag, desc string) []uint64 {
 	return nil
 }
 
-// ValuesUint32 scans the args looking for all instances of the specified flag
-// returning all found in a typed slice.
+// ValuesUint32 scans for repeated instances of the specified flag and parses
+// the following values as unsigned 32 bit integers. The flags and values are
+// removed from the argument list.
+//
+// If any flag lacks a following value, or if a value has invalid syntax or is
+// out of range for a uint32, an error is registered.
+//
+// Returns a slice of the parsed uint32 values.
 func (args *Args) ValuesUint32(flag, desc string) []uint32 {
 	var (
 		matches     []string
@@ -445,8 +505,14 @@ func (args *Args) ValuesUint32(flag, desc string) []uint32 {
 	return nil
 }
 
-// ValuesUint16 scans the args looking for all instances of the specified flag
-// returning all found in a typed slice.
+// ValuesUint16 scans for repeated instances of the specified flag and parses
+// the following values as unsigned 16 bit integers. The flags and values are
+// removed from the argument list.
+//
+// If any flag lacks a following value, or if a value has invalid syntax or is
+// out of range for a uint16, an error is registered.
+//
+// Returns a slice of the parsed uint16 values.
 func (args *Args) ValuesUint16(flag, desc string) []uint16 {
 	var (
 		matches     []string
@@ -491,8 +557,14 @@ func (args *Args) ValuesUint16(flag, desc string) []uint16 {
 	return nil
 }
 
-// ValuesUint8 scans the args looking for all instances of the specified flag
-// returning all found in a typed slice.
+// ValuesUint8 scans for repeated instances of the specified flag and parses
+// the following values as unsigned 8 bit integers. The flags and values are
+// removed from the argument list.
+//
+// If any flag lacks a following value, or if a value has invalid syntax or is
+// out of range for a uint8, an error is registered.
+//
+// Returns a slice of the parsed uint8 values.
 func (args *Args) ValuesUint8(flag, desc string) []uint8 {
 	var (
 		matches     []string
@@ -537,8 +609,14 @@ func (args *Args) ValuesUint8(flag, desc string) []uint8 {
 	return nil
 }
 
-// ValuesUint scans the args looking for all instances of the specified flag
-// returning all found in a typed slice.
+// ValuesUint scans for repeated instances of the specified flag and parses
+// the following values as unsigned integers. The flags and values are removed
+// from the argument list.
+//
+// If any flag lacks a following value, or if a value has invalid syntax or is
+// out of range for a uint, an error is registered.
+//
+// Returns a slice of the parsed uint values.
 func (args *Args) ValuesUint(flag, desc string) []uint {
 	var (
 		matches     []string
@@ -583,8 +661,14 @@ func (args *Args) ValuesUint(flag, desc string) []uint {
 	return nil
 }
 
-// ValuesOption scans the args looking for all instances of the specified flag
-// returning all found in a typed slice.
+// ValuesOption scans for repeated instances of the specified flag and
+// captures the following values. Each value must appear in the provided list
+// of validOptions. The flags and values are removed from the argument list.
+//
+// If any flag lacks a following value, or if a value is not found in
+// validOptions, an error is registered.
+//
+// Returns a slice of the captured values.
 func (args *Args) ValuesOption(
 	flag string, validOptions []string, desc string,
 ) []string {

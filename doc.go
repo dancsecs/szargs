@@ -17,27 +17,34 @@
 */
 
 /*
-Package szargs provides simple methods of setting variables based on command
-line arguments ([]string) and environment variables. Arguments come in three
-types:  Flagged, positional and settings.
+Package szargs provides a minimal and consistent interface for retrieving
+settings from command-line arguments ([]string) and environment variables.
 
-Flagged arguments are generally prefixed with a single dash "-" for a single
-letter flag or a double dash "--" for an extended spelled out flag.  A flag
-can be stand alone in the case of a boolean such as "-v" indicating a verbose
-setting or can be followed by and argument such as "--dir theDirectory".  Once
-all flags have been processed then the remaining arguments can be identified
-by their ordering.
+It supports three types of arguments:
+  - Flagged: Identified by a single dash (e.g., "-v") for short flags, or a
+    double dash (e.g., "--dir") for long-form flags. Flags may be standalone
+    booleans or followed by a value.
+  - Positional: Identified by their order in the argument list after all
+    flagged arguments have been processed. Positional arguments can be
+    retrieved in two forms: Next (in order) or Last (ensuring no trailing
+    arguments remain).
+  - Settings: A composite configuration mechanism that combines a default
+    value, an environment variable, and a flagged argument—allowing each to
+    override the previous in precedence: default < env < flag.
 
-Positional Arguments are defined by their relative position in the argument
-list once all of the flagged arguments have been removed.  There are two forms
-the Next and the Last variations with the last insuring that there are no more
-arguments in the list.
+The package includes built-in parsers for standard Go data types.
 
-Settings combine a flagged argument, an environment variable and a default
-permitting a setting to be defined as a default that can be overridden by an
-environment variable setting that can also be overridden by a command line
-flagged argument.
+Usage centers around the Args type, created using:
 
-Each area provides for built in parsing to standard go data types.
+	szargs.New(programDesc string, programArgs []string)
+
+The `programArgs` slice must include the program name as the first element;
+this is ignored during argument parsing.
+
+After retrieving all relevant arguments, the `Args.Done()` method must be
+called to report an error if any unprocessed arguments remain.
+
+NOTE: Documentation reviewed and polished with the assistance of ChatGPT from
+OpenAI.
 */
 package szargs

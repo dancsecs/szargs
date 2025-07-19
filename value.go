@@ -18,11 +18,15 @@
 
 package szargs
 
-// ValueString scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.  If an error occurs then the original
-// arg array is returned.
+// ValueString scans for a specific flagged argument and captures its
+// following value as a string. The flag and its value are removed from the
+// argument list.
+//
+// If the flag appears more than once or lacks a following value, an error is
+// registered.
+//
+// Returns the string value and a boolean indicating whether the flag was
+// found.
 func (args *Args) ValueString(flag, desc string) (string, bool) {
 	args.addUsage(flag, desc)
 	result, found, newArgs, err := argFlag(flag).value(args.args)
@@ -32,11 +36,16 @@ func (args *Args) ValueString(flag, desc string) (string, bool) {
 	return result, found
 }
 
-// ValueFloat64 scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.  If an error occurs then the original
-// arg array is returned.
+// ValueFloat64 scans for a specific flagged argument and parses its value as
+// a 64 bit floating point number. The flag and its value are removed from the
+// argument list.
+//
+// If the flag appears more than once, lacks a following value, or if the
+// value has invalid syntax or is out of range for a float64, an error is
+// registered.
+//
+// Returns the parsed value and a boolean indicating whether the flag was
+// found.
 func (args *Args) ValueFloat64(flag, desc string) (float64, bool) {
 	var (
 		arg    string
@@ -62,11 +71,16 @@ func (args *Args) ValueFloat64(flag, desc string) (float64, bool) {
 	return result, found
 }
 
-// ValueFloat32 scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.  If an error occurs then the original
-// arg array is returned.
+// ValueFloat32 scans for a specific flagged argument and parses its value as
+// a 32 bit floating point number. The flag and its value are removed from the
+// argument list.
+//
+// If the flag appears more than once, lacks a following value, or if the
+// value has invalid syntax or is out of range for a float32, an error is
+// registered.
+//
+// Returns the parsed value and a boolean indicating whether the flag was
+// found.
 func (args *Args) ValueFloat32(flag, desc string) (float32, bool) {
 	var (
 		arg    string
@@ -92,11 +106,16 @@ func (args *Args) ValueFloat32(flag, desc string) (float32, bool) {
 	return result, found
 }
 
-// ValueInt64 scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.  If an error occurs then the original
-// arg array is returned.
+// ValueInt64 scans for a specific flagged argument and parses its value as an
+// signed 64 bit integer. The flag and its value are removed from the
+// argument list.
+//
+// If the flag appears more than once, lacks a following value, or if the
+// value has invalid syntax or is out of range for a int64, an error is
+// registered.
+//
+// Returns the parsed value and a boolean indicating whether the flag was
+// found.
 func (args *Args) ValueInt64(flag, desc string) (int64, bool) {
 	var (
 		arg    string
@@ -122,11 +141,16 @@ func (args *Args) ValueInt64(flag, desc string) (int64, bool) {
 	return result, found
 }
 
-// ValueInt32 scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.  If an error occurs then the original
-// arg array is returned.
+// ValueInt32 scans for a specific flagged argument and parses its value as an
+// signed 32 bit integer. The flag and its value are removed from the
+// argument list.
+//
+// If the flag appears more than once, lacks a following value, or if the
+// value has invalid syntax or is out of range for a int32, an error is
+// registered.
+//
+// Returns the parsed value and a boolean indicating whether the flag was
+// found.
 func (args *Args) ValueInt32(flag, desc string) (int32, bool) {
 	var (
 		arg    string
@@ -152,11 +176,16 @@ func (args *Args) ValueInt32(flag, desc string) (int32, bool) {
 	return result, found
 }
 
-// ValueInt16 scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.  If an error occurs then the original
-// arg array is returned.
+// ValueInt16 scans for a specific flagged argument and parses its value as an
+// signed 16 bit integer. The flag and its value are removed from the
+// argument list.
+//
+// If the flag appears more than once, lacks a following value, or if the
+// value has invalid syntax or is out of range for a int16, an error is
+// registered.
+//
+// Returns the parsed value and a boolean indicating whether the flag was
+// found.
 func (args *Args) ValueInt16(flag, desc string) (int16, bool) {
 	var (
 		arg    string
@@ -182,11 +211,16 @@ func (args *Args) ValueInt16(flag, desc string) (int16, bool) {
 	return result, found
 }
 
-// ValueInt8 scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.  If an error occurs then the original
-// arg array is returned.
+// ValueInt8 scans for a specific flagged argument and parses its value as an
+// signed 8 bit integer. The flag and its value are removed from the
+// argument list.
+//
+// If the flag appears more than once, lacks a following value, or if the
+// value has invalid syntax or is out of range for a int8, an error is
+// registered.
+//
+// Returns the parsed value and a boolean indicating whether the flag was
+// found.
 func (args *Args) ValueInt8(flag, desc string) (int8, bool) {
 	var (
 		arg    string
@@ -212,11 +246,16 @@ func (args *Args) ValueInt8(flag, desc string) (int8, bool) {
 	return result, found
 }
 
-// ValueInt scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.  If an error occurs then the original
-// arg array is returned.
+// ValueInt scans for a specific flagged argument and parses its value as an
+// signed integer. The flag and its value are removed from the argument
+// list.
+//
+// If the flag appears more than once, lacks a following value, or if the
+// value has invalid syntax or is out of range for a int, an error is
+// registered.
+//
+// Returns the parsed value and a boolean indicating whether the flag was
+// found.
 func (args *Args) ValueInt(flag, desc string) (int, bool) {
 	var (
 		arg    string
@@ -242,11 +281,16 @@ func (args *Args) ValueInt(flag, desc string) (int, bool) {
 	return result, found
 }
 
-// ValueUint64 scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.  If an error occurs then the original
-// arg array is returned.
+// ValueUint64 scans for a specific flagged argument and parses its value as
+// an unsigned 64 bit integer. The flag and its value are removed from the
+// argument list.
+//
+// If the flag appears more than once, lacks a following value, or if the
+// value has invalid syntax or is out of range for a uint64, an error is
+// registered.
+//
+// Returns the parsed value and a boolean indicating whether the flag was
+// found.
 func (args *Args) ValueUint64(flag, desc string) (uint64, bool) {
 	var (
 		arg    string
@@ -272,11 +316,16 @@ func (args *Args) ValueUint64(flag, desc string) (uint64, bool) {
 	return result, found
 }
 
-// ValueUint32 scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.  If an error occurs then the original
-// arg array is returned.
+// ValueUint32 scans for a specific flagged argument and parses its value as
+// an unsigned 32 bit integer. The flag and its value are removed from the
+// argument list.
+//
+// If the flag appears more than once, lacks a following value, or if the
+// value has invalid syntax or is out of range for a uint32, an error is
+// registered.
+//
+// Returns the parsed value and a boolean indicating whether the flag was
+// found.
 func (args *Args) ValueUint32(flag, desc string) (uint32, bool) {
 	var (
 		arg    string
@@ -302,11 +351,16 @@ func (args *Args) ValueUint32(flag, desc string) (uint32, bool) {
 	return result, found
 }
 
-// ValueUint16 scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.  If an error occurs then the original
-// arg array is returned.
+// ValueUint16 scans for a specific flagged argument and parses its value as
+// an unsigned 16 bit integer. The flag and its value are removed from the
+// argument list.
+//
+// If the flag appears more than once, lacks a following value, or if the
+// value has invalid syntax or is out of range for a uint16, an error is
+// registered.
+//
+// Returns the parsed value and a boolean indicating whether the flag was
+// found.
 func (args *Args) ValueUint16(flag, desc string) (uint16, bool) {
 	var (
 		arg    string
@@ -332,11 +386,16 @@ func (args *Args) ValueUint16(flag, desc string) (uint16, bool) {
 	return result, found
 }
 
-// ValueUint8 scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.  If an error occurs then the original
-// arg array is returned.
+// ValueUint8 scans for a specific flagged argument and parses its value as an
+// unsigned 8 bit integer. The flag and its value are removed from the
+// argument list.
+//
+// If the flag appears more than once, lacks a following value, or if the
+// value has invalid syntax or is out of range for a uint8, an error is
+// registered.
+//
+// Returns the parsed value and a boolean indicating whether the flag was
+// found.
 func (args *Args) ValueUint8(flag, desc string) (uint8, bool) {
 	var (
 		arg    string
@@ -362,11 +421,16 @@ func (args *Args) ValueUint8(flag, desc string) (uint8, bool) {
 	return result, found
 }
 
-// ValueUint scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.  If an error occurs then the original
-// arg array is returned.
+// ValueUint scans for a specific flagged argument and parses its value as an
+// unsigned integer. The flag and its value are removed from the argument
+// list.
+//
+// If the flag appears more than once, lacks a following value, or if the
+// value has invalid syntax or is out of range for a uint, an error is
+// registered.
+//
+// Returns the parsed value and a boolean indicating whether the flag was
+// found.
 func (args *Args) ValueUint(flag, desc string) (uint, bool) {
 	var (
 		arg    string
@@ -392,11 +456,15 @@ func (args *Args) ValueUint(flag, desc string) (uint, bool) {
 	return result, found
 }
 
-// ValueOption scans the args looking for the specified flag.  If it finds
-// it then the next arg as the value absorbing both the flag the value
-// from the argument list.  If there is no next arg or the flag appears more
-// than once an error is returned.  If an error occurs then the original
-// arg array is returned.
+// ValueOption scans for a specific flagged argument (e.g., "--mode value")
+// and captures its associated value. The flag and its value are removed from
+// the argument list.
+//
+// If the flag appears more than once, or if it lacks a following value, an
+// error is registered. If the value is not found in the provided list of
+// validOptions, an error is also registered.
+//
+// Returns the value and a boolean indicating whether the flag was found.
 func (args *Args) ValueOption(
 	flag string, validOptions []string, desc string,
 ) (string, bool) {

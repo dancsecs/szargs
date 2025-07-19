@@ -76,7 +76,7 @@ func (args *Args) addUsage(item, desc string) {
 	}
 }
 
-// PushErr adds the provided error if not nil to the Args error stack.
+// PushErr registers the provided error if not nil to the Args error stack.
 func (args *Args) PushErr(err error) {
 	if err != nil {
 		if args.err == nil {
@@ -87,12 +87,13 @@ func (args *Args) PushErr(err error) {
 	}
 }
 
-// Err returns any errors encountered while parsing the arguments.
+// Err returns any errors encountered or registered while parsing the
+// arguments.
 func (args *Args) Err() error {
 	return args.err
 }
 
-// HasErr returns any errors encountered while parsing the arguments.
+// HasErr returns true if any errors have been encountered or registered.
 func (args *Args) HasErr() bool {
 	return args.err != nil
 }
@@ -152,7 +153,7 @@ func (args *Args) Is(flag, desc string) bool {
 	return found
 }
 
-// Done returns an error if there are any remaining arguments.
+// Done registers an error if there are any remaining arguments.
 func (args *Args) Done() {
 	if len(args.args) > 0 {
 		args.PushErr(
