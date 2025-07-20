@@ -21,6 +21,8 @@ package szargs
 import (
 	"errors"
 	"os"
+	"slices"
+	"strings"
 )
 
 const defaultStandIn = "~~--default--~~"
@@ -724,6 +726,51 @@ func (args *Args) SettingOption(
 	if err != nil {
 		args.PushErr(srcErr)
 		args.PushErr(err)
+	}
+
+	return result
+}
+
+// SettingIs returns true if a specified environment variable is set to a
+// truthy value, or if a corresponding boolean command-line flag is present.
+//
+// Unlike other Setting methods, there is no default.
+//
+// The environment variable is considered true if it is set to one of: "",
+// "T", "Y", "TRUE", "YES", "ON" or "1" (case-insensitive). Any other value is
+// considered false.
+//
+// The command-line flag override takes no value—its presence alone indicates
+// true.
+//
+// Returns the resulting boolean value.
+func (args *Args) SettingIs(flag, env string, desc string) bool {
+	var (
+		value  string
+		result bool
+	)
+
+	args.addUsage(flag, desc)
+
+	result = args.Is(flag, desc)
+
+	if !args.HasErr() && !result && env != "" {
+		envValue, ok := os.LookupEnv(env)
+		if ok {
+			value = strings.ToLower(envValue)
+			result = slices.Contains(
+				[]string{
+					"",
+					"t",
+					"true",
+					"y",
+					"yes",
+					"on",
+					"1",
+				},
+				value,
+			)
+		}
 	}
 
 	return result

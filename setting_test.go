@@ -1540,3 +1540,87 @@ func TestSzargs_SettingOption_Success(t *testing.T) {
 	chk.Str(result, "ghi")
 	chk.StrSlice(args.Args(), nil)
 }
+
+/*
+ ***************************************************************************
+ *
+ *  Test is setting.
+ *
+ ***************************************************************************
+ */
+
+func TestSzargs_SettingIs_Invalid_Arg(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+		"-t",
+		"-t",
+	})
+
+	result := args.SettingIs(
+		"[-t]", tstEnv, "testName",
+	)
+
+	chk.Err(
+		args.Err(),
+		chk.ErrChain(
+			szargs.ErrAmbiguous,
+			"'[-t]' found 2 times",
+		),
+	)
+	chk.False(result)
+	chk.StrSlice(args.Args(), nil) // Argument extracted.
+}
+
+func TestSzargs_SettingIs_Success(t *testing.T) {
+	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	defer chk.Release()
+
+	args := szargs.New("program description", []string{
+		"programName",
+	})
+
+	// Default.
+	result := args.SettingIs(
+		"[-t]", tstEnv, "testName",
+	)
+
+	chk.NoErr(args.Err())
+	chk.False(result)
+	chk.StrSlice(args.Args(), nil)
+
+	// Environment.
+	chk.SetEnv(tstEnv, "TRUE")
+	result = args.SettingIs(
+		"[-t]", tstEnv, "testName",
+	)
+
+	chk.NoErr(args.Err())
+	chk.True(result)
+	chk.StrSlice(args.Args(), nil)
+
+	// Environment.
+	chk.SetEnv(tstEnv, "False")
+	result = args.SettingIs(
+		"[-t]", tstEnv, "testName",
+	)
+
+	chk.NoErr(args.Err())
+	chk.False(result)
+	chk.StrSlice(args.Args(), nil)
+
+	// Argument
+	args = szargs.New("program description", []string{
+		"programName",
+		"-t",
+	})
+	result = args.SettingIs(
+		"[-t]", tstEnv, "testName",
+	)
+
+	chk.NoErr(args.Err())
+	chk.True(result)
+	chk.StrSlice(args.Args(), nil)
+}
