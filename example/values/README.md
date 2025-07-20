@@ -28,8 +28,14 @@ found the matching flags and arguments are removed as encountered. If a
 specialized value is named then it must pass rules regarding its syntax and
 range.
 
-<!--- gotomd::Bgn::dcln::./../../Args.ValuesString -->
+It demonstrates the following szargs functions:
+
+<!--- gotomd::Bgn::dcln::./../../New Args.ValuesString Args.ValuesUint8 Args.Done Args.HasErr Args.Err Args.Usage -->
 ```go
+// New creates a new Args object based in the arguments passed.  The first
+// element of the arguments must be the program name.
+func New(programDesc string, args []string) *Args
+
 // ValuesString scans for repeated instances of the specified flag and
 // captures the following values as a slice of strings. The flags and values
 // are removed from the argument list.
@@ -39,41 +45,40 @@ range.
 // 
 // Returns a slice of the captured string values.
 func (args *Args) ValuesString(flag, desc string) []string
-```
-<!--- gotomd::End::dcln::./../../Args.ValuesString -->
 
-and its specific versions:
-
-<!--- gotomd::Bgn::dcls::./../../Args.ValuesFloat64 Args.ValuesFloat32 Args.ValuesInt64 Args.ValuesInt32 Args.ValuesInt16 Args.ValuesInt8 Args.ValuesInt Args.ValuesUint64 Args.ValuesUint32 Args.ValuesUint16 Args.ValuesUint8 Args.ValuesUint Args.ValuesOption -->
-```go
-func (args *Args) ValuesFloat64(flag, desc string) []float64
-func (args *Args) ValuesFloat32(flag, desc string) []float32
-func (args *Args) ValuesInt64(flag, desc string) []int64
-func (args *Args) ValuesInt32(flag, desc string) []int32
-func (args *Args) ValuesInt16(flag, desc string) []int16
-func (args *Args) ValuesInt8(flag, desc string) []int8
-func (args *Args) ValuesInt(flag, desc string) []int
-func (args *Args) ValuesUint64(flag, desc string) []uint64
-func (args *Args) ValuesUint32(flag, desc string) []uint32
-func (args *Args) ValuesUint16(flag, desc string) []uint16
+// ValuesUint8 scans for repeated instances of the specified flag and parses
+// the following values as unsigned 8 bit integers. The flags and values are
+// removed from the argument list.
+// 
+// If any flag lacks a following value, or if a value has invalid syntax or is
+// out of range for a uint8, an error is registered.
+// 
+// Returns a slice of the parsed uint8 values.
 func (args *Args) ValuesUint8(flag, desc string) []uint8
-func (args *Args) ValuesUint(flag, desc string) []uint
-func (args *Args) ValuesOption(flag string, validOptions []string, desc string) []string
+
+// Done registers an error if there are any remaining arguments.
+func (args *Args) Done()
+
+// HasErr returns true if any errors have been encountered or registered.
+func (args *Args) HasErr() bool
+
+// Err returns any errors encountered or registered while parsing the
+// arguments.
+func (args *Args) Err() error
+
+// Usage returns a usage message based on the parsed arguments.
+func (args *Args) Usage() string
 ```
-<!--- gotomd::End::dcls::./../../Args.ValuesFloat64 Args.ValuesFloat32 Args.ValuesInt64 Args.ValuesInt32 Args.ValuesInt16 Args.ValuesInt8 Args.ValuesInt Args.ValuesUint64 Args.ValuesUint32 Args.ValuesUint16 Args.ValuesUint8 Args.ValuesUint Args.ValuesOption -->
-
-
-
----
+<!--- gotomd::End::dcln::./../../New Args.ValuesString Args.ValuesUint8 Args.Done Args.HasErr Args.Err Args.Usage -->
 
 ## Contents
 
 - [Source (main.go)](#source)
-    - [Example: PASS: No Arguments](#pass-no-arguments)
-    - [Example: PASS: Single Long Form](#pass-single-long-form)
-    - [Example: PASS: Single Short Form](#pass-single-short-form)
-    - [Example: PASS: Multiple Mixed Forms](#pass-multiple-mixed-forms)
-    - [Example: FAIL: Extra Unknown Argument](#fail-extra-unknown-argument)
+    - [Example: **PASS**: No Arguments](#pass-no-arguments)
+    - [Example: **PASS**: Single Long Form](#pass-single-long-form)
+    - [Example: **PASS**: Single Short Form](#pass-single-short-form)
+    - [Example: **PASS**: Multiple Mixed Forms](#pass-multiple-mixed-forms)
+    - [Example: **FAIL**: Extra Unknown Argument](#fail-extra-unknown-argument)
 
 ## Source
 
@@ -130,7 +135,7 @@ func main() {
 [Top of Page](#example-flagged-values) --
 [Szargs Contents](../../README.md#contents)
 
-### PASS: No Arguments
+### **PASS**: No Arguments
 
 <!--- gotomd::Bgn::run::./. -->
 ---
@@ -148,7 +153,7 @@ go run .
 [Top of Page](#example-flagged-values) --
 [Szargs Contents](../../README.md#contents)
 
-### PASS: Single Long Form
+### **PASS**: Single Long Form
 
 <!--- gotomd::Bgn::run::./. --name theName --byte 23 -->
 ---
@@ -166,7 +171,7 @@ go run . --name theName --byte 23
 [Top of Page](#example-flagged-values) --
 [Szargs Contents](../../README.md#contents)
 
-### PASS: Single Short Form
+### **PASS**: Single Short Form
 
 <!--- gotomd::Bgn::run::./. -n anotherName -b 42 -->
 ---
@@ -185,7 +190,7 @@ go run . -n anotherName -b 42
 [Szargs Contents](../../README.md#contents)
 
 
-### PASS: Multiple Mixed Forms
+### **PASS**: Multiple Mixed Forms
 
 <!--- gotomd::Bgn::run::./. -n aName --name anotherName -b 42 --byte 23 -->
 ---
@@ -204,7 +209,7 @@ go run . -n aName --name anotherName -b 42 --byte 23
 [Szargs Contents](../../README.md#contents)
 
 
-### FAIL: Extra Unknown Argument
+### **FAIL**: Extra Unknown Argument
 
 The error is generated by the ```args.Done()``` statement causing both the
 error and a usage statement to be returned.

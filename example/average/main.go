@@ -50,7 +50,7 @@ func main() {
 	args.Done()
 
 	// Report parsing errors or process the arguments.
-	if args.Err() != nil {
+	if args.HasErr() {
 		fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage())
 	} else {
 		process(numbers, operation)

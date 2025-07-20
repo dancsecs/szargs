@@ -55,6 +55,9 @@ this is ignored during argument parsing.
 After retrieving all relevant arguments, the `Args.Done()` method must be
 called to report an error if any unprocessed arguments remain.
 
+This utility reflects a preference for simplicity and clarity in tooling. If
+it helps your project flow a little more smoothly, it's done its job.
+
 NOTE: Documentation reviewed and polished with the assistance of ChatGPT from
 OpenAI.
 <!--- gotomd::End::doc::./package -->
@@ -66,22 +69,31 @@ OpenAI.
 
 - [Usage](#usage)
   - [Example: Average](example/average/README.md#example-average)
+    - Description: Calculates the average of input values.
 
 - [Boolean Flags](#boolean-flags)
   - [Example: Boolean Is](example/booleanIs/README.md#example-boolean-is)
+    - Description: Demonstrates use of single boolean flag.
   - [Example: Boolean Count](example/booleanCount/README.md#example-boolean-count)
+    - Description: Demonstrates use of counting multiple boolean flags.
 
 - [Value Flagged Arguments](#value-flagged-arguments)
   - [Example: Flagged Value](example/value/README.md#example-flagged-value)
+    - Description: Demonstrates use of typed flagged arguments.
 
 - [Value Flagged Slices](#value-flagged-slices)
   - [Example: Flagged Values](example/values/README.md#example-flagged-values)
+    - Description: Demonstrates use of multiple typed flagged arguments.
 
 - [Positional Arguments](#positional-arguments)
   - [Example: Next](example/next/README.md#example-positional-arguments)
+    - Description: Demonstrates use of positional arguments.
 
 - [Settings](#settings)
   - [Example: Settings](example/setting/README.md#example-settings)
+    - Description: Demonstrates use of settings with environment overrides.
+
+- [Version](#version)
 
 ## Usage
 
@@ -144,7 +156,7 @@ Relating to the raw argument list:
 // HasNext returns true if any arguments remain unabsorbed.
 func (args *Args) HasNext() bool
 
-// PushArg places the supplied argument to the end of the internal ags list.
+// PushArg places the supplied argument to the end of the internal args list.
 func (args *Args) PushArg(arg string)
 
 // Args returns a copy of the current argument list.
@@ -192,7 +204,7 @@ func (args *Args) Count(flag, desc string) int
 
 ## Value Flagged Arguments
 
-A flagged argument has two components the flag followed by the value. It may
+A flagged argument has two components: the flag followed by the value. It may
 only appear once in the argument list.  The basic string functions are:
 
 <!--- gotomd::Bgn::dcln::./Args.ValueString Args.ValueOption -->
@@ -245,9 +257,9 @@ func (args *Args) ValueUint(flag, desc string) (uint, bool)
 
 ## Value Flagged Slices
 
-A flagged argument has two components the flag followed by the value. Multiple
-instances may be provided with all the values collected and returned in a
-slice. The basic string functions are:
+A flagged argument has two components: the flag followed by the value.
+Multiple instances may be provided with all the values collected and returned
+in a slice. The basic string functions are:
 
 <!--- gotomd::Bgn::dcln::./Args.ValuesString Args.ValuesOption -->
 ```go
@@ -296,10 +308,10 @@ func (args *Args) ValuesUint(flag, desc string) []uint
 
 ## Positional Arguments
 
-A positional argument depends on its location in the argument list.  There is
-no attempt to distinguish flagged arguments from positional ones so the
-removal of flagged arguments before positional ones is recommended.  The basic
-string functions are:
+A positional argument depends on its location in the argument list.  Since
+flagged arguments are not automatically distinguished from positional ones, it
+is recommended to extract all flagged arguments first—before retrieving
+positional ones.  The basic string functions are:
 
 <!--- gotomd::Bgn::dcln::./Args.NextString Args.NextOption -->
 ```go
@@ -349,7 +361,7 @@ A setting implements an argument that has a default that can be overridden by
 an system environment variable which can be overridden by a flagged value. The
 basic string functions are:
 
-<!--- gotomd::Bgn::dcln::./Args.SettingString Args.SettingOption -->
+<!--- gotomd::Bgn::dcln::./Args.SettingString Args.SettingOption  Args.SettingIs -->
 ```go
 // SettingString returns a configuration value based on a default,
 // optionally overridden by an environment variable, and further overridden
@@ -367,8 +379,23 @@ func (args *Args) SettingString(flag, env, def, desc string) string
 // 
 // Returns the final selected value.
 func (args *Args) SettingOption(flag, env string, def string, validOptions []string, desc string) string
+
+// SettingIs returns true if a specified environment variable is set to a
+// truthy value, or if a corresponding boolean command-line flag is present.
+// 
+// Unlike other Setting methods, there is no default.
+// 
+// The environment variable is considered true if it is set to one of: "",
+// "T", "Y", "TRUE", "YES", "ON" or "1" (case-insensitive). Any other value is
+// considered false.
+// 
+// The command-line flag override takes no value—its presence alone indicates
+// true.
+// 
+// Returns the resulting boolean value.
+func (args *Args) SettingIs(flag, env string, desc string) bool
 ```
-<!--- gotomd::End::dcln::./Args.SettingString Args.SettingOption -->
+<!--- gotomd::End::dcln::./Args.SettingString Args.SettingOption  Args.SettingIs -->
 
 with numeric versions for basic go data types
 
@@ -389,5 +416,12 @@ func (args *Args) SettingUint(flag, env string, def uint, desc string) uint
 ```
 <!--- gotomd::End::dcls::./Args.SettingFloat64 Args.SettingFloat32 Args.SettingInt64 Args.SettingInt32 Args.SettingInt16 Args.SettingInt8 Args.SettingInt Args.SettingUint64 Args.SettingUint32 Args.SettingUint16 Args.SettingUint8 Args.SettingUint -->
 
+
+[Contents](#contents)
+
+## Version
+
+- Current: v0.0.6
+- Go Version: 1.23+
 
 [Contents](#contents)

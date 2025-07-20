@@ -44,6 +44,9 @@ this is ignored during argument parsing.
 After retrieving all relevant arguments, the `Args.Done()` method must be
 called to report an error if any unprocessed arguments remain.
 
+This utility reflects a preference for simplicity and clarity in tooling. If
+it helps your project flow a little more smoothly, it's done its job.
+
 NOTE: Documentation reviewed and polished with the assistance of ChatGPT from
 OpenAI.
 */

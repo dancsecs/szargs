@@ -28,8 +28,14 @@ and its argument are removed as encountered.  An ambiguous error will be
 generated if the flag appears more than once.  If a specialized value is named
 then it must pass rules regarding its syntax and range.
 
-<!--- gotomd::Bgn::dcln::./../../Args.ValueString -->
+It demonstrates the following szargs functions:
+
+<!--- gotomd::Bgn::dcln::./../../New Args.ValueString Args.ValueUint8 Args.Done Args.HasErr Args.Err Args.Usage -->
 ```go
+// New creates a new Args object based in the arguments passed.  The first
+// element of the arguments must be the program name.
+func New(programDesc string, args []string) *Args
+
 // ValueString scans for a specific flagged argument and captures its
 // following value as a string. The flag and its value are removed from the
 // argument list.
@@ -40,41 +46,42 @@ then it must pass rules regarding its syntax and range.
 // Returns the string value and a boolean indicating whether the flag was
 // found.
 func (args *Args) ValueString(flag, desc string) (string, bool)
-```
-<!--- gotomd::End::dcln::./../../Args.ValueString -->
 
-and its specific versions:
-
-<!--- gotomd::Bgn::dcls::./../../Args.ValueFloat64 Args.ValueFloat32 Args.ValueInt64 Args.ValueInt32 Args.ValueInt16 Args.ValueInt8 Args.ValueInt Args.ValueUint64 Args.ValueUint32 Args.ValueUint16 Args.ValueUint8 Args.ValueUint Args.ValueOption -->
-```go
-func (args *Args) ValueFloat64(flag, desc string) (float64, bool)
-func (args *Args) ValueFloat32(flag, desc string) (float32, bool)
-func (args *Args) ValueInt64(flag, desc string) (int64, bool)
-func (args *Args) ValueInt32(flag, desc string) (int32, bool)
-func (args *Args) ValueInt16(flag, desc string) (int16, bool)
-func (args *Args) ValueInt8(flag, desc string) (int8, bool)
-func (args *Args) ValueInt(flag, desc string) (int, bool)
-func (args *Args) ValueUint64(flag, desc string) (uint64, bool)
-func (args *Args) ValueUint32(flag, desc string) (uint32, bool)
-func (args *Args) ValueUint16(flag, desc string) (uint16, bool)
+// ValueUint8 scans for a specific flagged argument and parses its value as an
+// unsigned 8 bit integer. The flag and its value are removed from the
+// argument list.
+// 
+// If the flag appears more than once, lacks a following value, or if the
+// value has invalid syntax or is out of range for a uint8, an error is
+// registered.
+// 
+// Returns the parsed value and a boolean indicating whether the flag was
+// found.
 func (args *Args) ValueUint8(flag, desc string) (uint8, bool)
-func (args *Args) ValueUint(flag, desc string) (uint, bool)
-func (args *Args) ValueOption(flag string, validOptions []string, desc string) (string, bool)
+
+// Done registers an error if there are any remaining arguments.
+func (args *Args) Done()
+
+// HasErr returns true if any errors have been encountered or registered.
+func (args *Args) HasErr() bool
+
+// Err returns any errors encountered or registered while parsing the
+// arguments.
+func (args *Args) Err() error
+
+// Usage returns a usage message based on the parsed arguments.
+func (args *Args) Usage() string
 ```
-<!--- gotomd::End::dcls::./../../Args.ValueFloat64 Args.ValueFloat32 Args.ValueInt64 Args.ValueInt32 Args.ValueInt16 Args.ValueInt8 Args.ValueInt Args.ValueUint64 Args.ValueUint32 Args.ValueUint16 Args.ValueUint8 Args.ValueUint Args.ValueOption -->
-
-
-
----
+<!--- gotomd::End::dcln::./../../New Args.ValueString Args.ValueUint8 Args.Done Args.HasErr Args.Err Args.Usage -->
 
 ## Contents
 
 - [Source (main.go)](#source)
-    - [Example: PASS: No Arguments](#pass-no-arguments)
-    - [Example: PASS: Single Long Form](#pass-single-long-form)
-    - [Example: PASS: Single Short Form](#pass-single-short-form)
-    - [Example: FAIL: Ambiguous Argument](#fail-ambiguous-argument)
-    - [Example: FAIL: Extra Unknown Argument](#fail-extra-unknown-argument)
+    - [Example: **PASS**: No Arguments](#pass-no-arguments)
+    - [Example: **PASS**: Single Long Form](#pass-single-long-form)
+    - [Example: **PASS**: Single Short Form](#pass-single-short-form)
+    - [Example: **FAIL**: Ambiguous Argument](#fail-ambiguous-argument)
+    - [Example: **FAIL**: Extra Unknown Argument](#fail-extra-unknown-argument)
 
 ## Source
 
@@ -140,7 +147,7 @@ func main() {
 [Top of Page](#example-flagged-value) --
 [Szargs Contents](../../README.md#contents)
 
-### PASS: No Arguments
+### **PASS**: No Arguments
 
 <!--- gotomd::Bgn::run::./. -->
 ---
@@ -158,7 +165,7 @@ Byte Not Found.
 [Top of Page](#example-flagged-value) --
 [Szargs Contents](../../README.md#contents)
 
-### PASS: Single Long Form
+### **PASS**: Single Long Form
 
 <!--- gotomd::Bgn::run::./. --name theName --byte 23 -->
 ---
@@ -176,7 +183,7 @@ Byte Found: 23.
 [Top of Page](#example-flagged-value) --
 [Szargs Contents](../../README.md#contents)
 
-### PASS: Single Short Form
+### **PASS**: Single Short Form
 
 <!--- gotomd::Bgn::run::./. -n anotherName -b 42 -->
 ---
@@ -195,7 +202,7 @@ Byte Found: 42.
 [Szargs Contents](../../README.md#contents)
 
 
-### FAIL: Ambiguous Argument
+### **FAIL**: Ambiguous Argument
 
 The error is because a true flag appeared more than once.  A second error is
 generated by the ```args.Done()``` statement causing both the error and a
@@ -227,7 +234,7 @@ The byte (0-255) value.
 [Top of Page](#example-flagged-value) --
 [Szargs Contents](../../README.md#contents)
 
-### FAIL: Extra Unknown Argument
+### **FAIL**: Extra Unknown Argument
 
 The error is generated by the ```args.Done()``` statement causing both the
 error and a usage statement to be returned.

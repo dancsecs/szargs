@@ -27,27 +27,34 @@ This larger example demos several aspects of using the szargs library.  It
 performs one of two operations (specified in an optional positional argument)
 on a list of float64 values passed as flagged arguments.  Further it uses a
 boolean count to set a verbose level to increase the chattiness of the
-program.  It demonstrates the following szargs functions:
+program.
 
-<!--- gotomd::Bgn::dcln::./../../Args.Count Args.ValueFloat64 Args.HasNext Args.NextOption Args.Done -->
+It demonstrates the following szargs functions:
+
+<!--- gotomd::Bgn::dcln::./../../New Args.Count Args.ValuesFloat64 Args.HasNext Args.PushArg Args.NextOption Args.Done Args.HasErr Args.Err Args.Usage -->
 ```go
+// New creates a new Args object based in the arguments passed.  The first
+// element of the arguments must be the program name.
+func New(programDesc string, args []string) *Args
+
 // Count returns the number of times the flag appears.
 func (args *Args) Count(flag, desc string) int
 
-// ValueFloat64 scans for a specific flagged argument and parses its value as
-// a 64 bit floating point number. The flag and its value are removed from the
-// argument list.
+// ValuesFloat64 scans for repeated instances of the specified flag and parses
+// the following values as 64 bit floating point numbers. The flags and values
+// are removed from the argument list.
 // 
-// If the flag appears more than once, lacks a following value, or if the
-// value has invalid syntax or is out of range for a float64, an error is
-// registered.
+// If any flag lacks a following value, or if a value has invalid syntax or is
+// out of range for a float64, an error is registered.
 // 
-// Returns the parsed value and a boolean indicating whether the flag was
-// found.
-func (args *Args) ValueFloat64(flag, desc string) (float64, bool)
+// Returns a slice of the parsed float64 values.
+func (args *Args) ValuesFloat64(flag, desc string) []float64
 
 // HasNext returns true if any arguments remain unabsorbed.
 func (args *Args) HasNext() bool
+
+// PushArg places the supplied argument to the end of the internal args list.
+func (args *Args) PushArg(arg string)
 
 // NextOption removes and returns the next argument from the argument list.
 // The value must match one of the entries in validOptions.
@@ -60,26 +67,34 @@ func (args *Args) NextOption(name string, validOptions []string, desc string) st
 
 // Done registers an error if there are any remaining arguments.
 func (args *Args) Done()
-```
-<!--- gotomd::End::dcln::./../../Args.Count Args.ValueFloat64 Args.HasNext Args.NextOption Args.Done -->
 
----
+// HasErr returns true if any errors have been encountered or registered.
+func (args *Args) HasErr() bool
+
+// Err returns any errors encountered or registered while parsing the
+// arguments.
+func (args *Args) Err() error
+
+// Usage returns a usage message based on the parsed arguments.
+func (args *Args) Usage() string
+```
+<!--- gotomd::End::dcln::./../../New Args.Count Args.ValuesFloat64 Args.HasNext Args.PushArg Args.NextOption Args.Done Args.HasErr Args.Err Args.Usage -->
 
 ## Contents
 
 - [Source (main.go)](#source)
-    - [Example: PASS: No Arguments](#pass-no-arguments)
-    - [Example: PASS: Just Operation Add](#pass-just-operation-add)
-    - [Example: PASS: Just operation Average](#pass-just-operation-average)
-    - [Example: PASS: One Number Defaulting To Add](#pass-one-number-defaulting-to-add)
-    - [Example: PASS: Two Numbers Defaulting To Add](#pass-two-numbers-defaulting-to-add)
-    - [Example: PASS: One Number Average](#pass-one-number-average)
-    - [Example: PASS: Two Number Average](#pass-two-number-average)
-    - [Example: PASS: Three Number Add](#pass-three-number-average)
-    - [Example: PASS: Three Number Average](#pass-three-number-average)
-    - [Example: FAIL: Extra Unknown Argument](#fail-extra-unknown-argument)
-    - [Example: FAIL: Invalid Operation](#fail-invalid-operation)
-    - [Example: FAIL: Invalid Number](#fail-invalid-number)
+    - [Example: **PASS**: No Arguments](#pass-no-arguments)
+    - [Example: **PASS**: Just Operation Add](#pass-just-operation-add)
+    - [Example: **PASS**: Just operation Average](#pass-just-operation-average)
+    - [Example: **PASS**: One Number Defaulting To Add](#pass-one-number-defaulting-to-add)
+    - [Example: **PASS**: Two Numbers Defaulting To Add](#pass-two-numbers-defaulting-to-add)
+    - [Example: **PASS**: One Number Average](#pass-one-number-average)
+    - [Example: **PASS**: Two Number Average](#pass-two-number-average)
+    - [Example: **PASS**: Three Number Add](#pass-three-number-average)
+    - [Example: **PASS**: Three Number Average](#pass-three-number-average)
+    - [Example: **FAIL**: Extra Unknown Argument](#fail-extra-unknown-argument)
+    - [Example: **FAIL**: Invalid Operation](#fail-invalid-operation)
+    - [Example: **FAIL**: Invalid Number](#fail-invalid-number)
 
 
 ## Source
@@ -215,7 +230,7 @@ func main() {
     args.Done()
 
     // Report parsing errors or process the arguments.
-    if args.Err() != nil {
+    if args.HasErr() {
         fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage())
     } else {
         process(numbers, operation)
@@ -228,7 +243,9 @@ func main() {
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
-### PASS: No Arguments
+### **PASS**: No Arguments
+
+An empty list sums and averages to zero for simplicity. No error is reported.
 
 <!--- gotomd::Bgn::run::./. -->
 ---
@@ -245,7 +262,7 @@ Sum: 0.000000
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
-### PASS: Just Operation Add
+### **PASS**: Just Operation Add
 
 <!--- gotomd::Bgn::run::./. add -->
 ---
@@ -262,7 +279,7 @@ Sum: 0.000000
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
-### PASS: Just Operation Average
+### **PASS**: Just Operation Average
 
 <!--- gotomd::Bgn::run::./. average -->
 ---
@@ -279,7 +296,7 @@ Avg: 0.000000
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
-### PASS: One Number Defaulting To Add
+### **PASS**: One Number Defaulting To Add
 
 <!--- gotomd::Bgn::run::./. -n 1000 -->
 ---
@@ -296,7 +313,7 @@ Sum: 1000.000000
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
-### PASS: Two Numbers Defaulting To Add
+### **PASS**: Two Numbers Defaulting To Add
 
 <!--- gotomd::Bgn::run::./. --number 1 -n 2 -->
 ---
@@ -313,7 +330,7 @@ Sum: 3.000000
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
-### PASS: One Number Average
+### **PASS**: One Number Average
 
 <!--- gotomd::Bgn::run::./. --number 512 average -->
 ---
@@ -330,7 +347,7 @@ Avg: 512.000000
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
-### PASS: Two Number Average
+### **PASS**: Two Number Average
 
 <!--- gotomd::Bgn::run::./. -n 100 -n 200 average -->
 ---
@@ -347,7 +364,7 @@ Avg: 150.000000
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
-### PASS: Three Number Add
+### **PASS**: Three Number Add
 
 <!--- gotomd::Bgn::run::./. --number 23 --number 56 -n 22 add -->
 ---
@@ -364,7 +381,7 @@ Sum: 101.000000
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
-### PASS: Three Number Average
+### **PASS**: Three Number Average
 
 <!--- gotomd::Bgn::run::./. -n 23 -n 56 -n 22 average -->
 ---
@@ -381,7 +398,7 @@ Avg: 33.666667
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
-### FAIL: Extra Unknown Argument
+### **FAIL**: Extra Unknown Argument
 
 <!--- gotomd::Bgn::run::./. add extraUnknownArgument -->
 ---
@@ -413,7 +430,7 @@ The operation (add or average) defaulting to add.
 [Szargs Contents](../../README.md#contents)
 
 
-### FAIL: Invalid operation
+### **FAIL**: Invalid operation
 
 <!--- gotomd::Bgn::run::./. invalidOperation -->
 ---
@@ -445,7 +462,7 @@ The operation (add or average) defaulting to add.
 [Szargs Contents](../../README.md#contents)
 
 
-### FAIL: Invalid Number
+### **FAIL**: Invalid Number
 
 
 <!--- gotomd::Bgn::run::./. -n invalidNumber -->

@@ -103,7 +103,7 @@ func (args *Args) HasNext() bool {
 	return len(args.args) > 0
 }
 
-// PushArg places the supplied argument to the end of the internal ags list.
+// PushArg places the supplied argument to the end of the internal args list.
 func (args *Args) PushArg(arg string) {
 	args.args = append(args.args, arg)
 }
