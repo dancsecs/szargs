@@ -355,7 +355,7 @@ func (args *Args) NextUint(name, desc string) uint
 
 [Contents](#contents)
 
-## Argument Settings
+## Settings
 
 A setting implements an argument that has a default that can be overridden by
 an system environment variable which can be overridden by a flagged value. The
