@@ -21,8 +21,11 @@ package szargs
 import (
 	"fmt"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
+
+const lineWidth = 80
 
 // Args provides a single point to access and extract program arguments.
 type Args struct {
@@ -33,6 +36,21 @@ type Args struct {
 	programDesc  string
 	args         []string
 	err          error
+}
+
+var reIsGroup = regexp.MustCompile(`^-[A-Za-z]+$`)
+
+func makeArgList(arg string) []string {
+	if reIsGroup.MatchString(arg) {
+		list := make([]string, 0, len(arg)-1)
+		for _, option := range arg[1:] {
+			list = append(list, "-"+string(option))
+		}
+
+		return list
+	}
+
+	return []string{arg}
 }
 
 // New creates a new Args object based in the arguments passed.  The first
@@ -52,14 +70,13 @@ func New(programDesc string, args []string) *Args {
 
 	var myArgs []string
 
-	if len(args) > 1 {
-		myArgs = make([]string, len(args)-1)
-		copy(myArgs, args[1:])
+	for _, arg := range args[1:] {
+		myArgs = append(myArgs, makeArgList(arg)...)
 	}
 
 	return &Args{
 		usageDefined: make(map[string]bool),
-		usageHeader:  "",
+		usageHeader:  "Usage: " + filepath.Base(args[0]),
 		usageBody:    "",
 		programName:  filepath.Base(args[0]),
 		programDesc:  programDesc,
@@ -68,10 +85,40 @@ func New(programDesc string, args []string) *Args {
 	}
 }
 
+func (args *Args) addBodyLine(lineToAdd string) {
+	lineAsAdded := "   " // Just three for first added word will make it four.
+	for _, wrd := range strings.Split(
+		strings.TrimSpace(lineToAdd),
+		" ",
+	) {
+		if len(lineAsAdded)+len(wrd) < lineWidth {
+			lineAsAdded += " " + wrd
+		} else {
+			args.usageBody += lineAsAdded + "\n"
+			lineAsAdded = "    " + wrd
+		}
+	}
+
+	args.usageBody += lineAsAdded + "\n"
+}
+
 func (args *Args) addUsage(item, desc string) {
 	if !args.usageDefined[item] {
-		args.usageHeader += " " + item
-		args.usageBody += "\n\n" + item + "\n" + desc
+		lines := strings.Split(args.usageHeader, "\n")
+		line := lines[len(lines)-1]
+
+		if len(line)+len(item) < lineWidth {
+			args.usageHeader += " " + item
+		} else {
+			args.usageHeader += "\n    " + item
+		}
+
+		args.usageBody += "\n\n  - " + item + "</br>"
+		for _, line = range strings.Split(desc, "\n") {
+			args.usageBody += "\n"
+			args.addBodyLine(line)
+		}
+
 		args.usageDefined[item] = true
 	}
 }
@@ -121,7 +168,7 @@ func (args *Args) Usage() string {
 	return args.programName + "\n" +
 		args.programDesc + "\n" +
 		"\n" +
-		"Usage: " + args.programName + args.usageHeader +
+		args.usageHeader +
 		args.usageBody
 }
 

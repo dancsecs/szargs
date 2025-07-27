@@ -43,7 +43,7 @@ func TestSzargs_New_NoArgs(t *testing.T) {
 			"NotDefined",
 			"description",
 			"",
-			"Usage: NotDefined",
+			"",
 		},
 	)
 
@@ -75,6 +75,7 @@ func TestSzargs_New_PushArgs(t *testing.T) {
 	chk.Stdout()
 }
 
+//nolint:funlen // Ok.
 func TestSzargs_New_JustProgramName(t *testing.T) {
 	chk := sztestlog.CaptureAll(t)
 	defer chk.Release()
@@ -86,7 +87,19 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 		0,
 	)
 
-	chk.False(args.Is("[-f|--flag]", "a test flag"))
+	chk.False(
+		args.Is(
+			"[-f|--flag]",
+			"a test flag\n"+
+				"And a needlessly long sentence to over the eighty byte "+
+				"threshold so we can see a result of wrapping a line at "+
+				" eighty characters."+
+				"",
+		),
+	)
+	chk.False(args.Is("[-g|--group]", "a group flag"))
+	chk.False(args.Is("[-h|--human]", "a human flag"))
+	chk.False(args.Is("[-o|--over]", "an over flag"))
 
 	args.Done()
 	chk.NoErr(args.Err())
@@ -97,13 +110,33 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 			"noProgName",
 			"description",
 			"",
-			"Usage: noProgName [ -v | --verbose] [-f|--flag]",
+			"Usage: noProgName [ -v | --verbose] [-f|--flag] [-g|--group] " +
+				"[-h|--human]",
+			"    [-o|--over]",
 			"",
-			"[ -v | --verbose]",
-			"how chatty should I be",
+			"  - [ -v | --verbose]</br>",
+			"    how chatty should I be",
 			"",
-			"[-f|--flag]",
-			"a test flag",
+			"",
+			"  - [-f|--flag]</br>",
+			"    a test flag",
+			"",
+			"    And a needlessly long sentence to over the eighty byte " +
+				"threshold so we can",
+			"    see a result of wrapping a line at  eighty characters.",
+			"",
+			"",
+			"  - [-g|--group]</br>",
+			"    a group flag",
+			"",
+			"",
+			"  - [-h|--human]</br>",
+			"    a human flag",
+			"",
+			"",
+			"  - [-o|--over]</br>",
+			"    an over flag",
+			"",
 		},
 	)
 
@@ -139,11 +172,13 @@ func TestSzargs_New_AmbiguousIsName(t *testing.T) {
 			"",
 			"Usage: noProgName [ -v | --verbose] [-f|--flag]",
 			"",
-			"[ -v | --verbose]",
-			"how chatty should I be",
+			"  - [ -v | --verbose]</br>",
+			"    how chatty should I be",
 			"",
-			"[-f|--flag]",
-			"a test flag",
+			"",
+			"  - [-f|--flag]</br>",
+			"    a test flag",
+			"",
 		},
 	)
 
@@ -158,6 +193,32 @@ func TestSzargs_New_AmbiguousIsName(t *testing.T) {
 			"[FirstOccurrence SecondOccurrence]",
 		),
 	)
+
+	chk.Log()
+	chk.Stderr()
+	chk.Stdout()
+}
+
+func TestSzargs_Group(t *testing.T) {
+	chk := sztestlog.CaptureAll(t)
+	defer chk.Release()
+
+	args := szargs.New("description", []string{
+		"noProgName",
+		"-abcdef",
+	})
+
+	chk.True(args.Is("-a", "test a"))
+	chk.True(args.Is("-b", "test b"))
+	chk.True(args.Is("-c", "test c"))
+	chk.True(args.Is("-d", "test d"))
+	chk.True(args.Is("-e", "test e"))
+	chk.True(args.Is("-f", "test f"))
+	chk.False(args.Is("-g", "test g"))
+
+	args.Done()
+
+	chk.NoErr(args.Err())
 
 	chk.Log()
 	chk.Stderr()
