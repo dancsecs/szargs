@@ -25,7 +25,7 @@ import (
 	"strings"
 )
 
-const lineWidth = 80
+const lineWidth = 78
 
 // Args provides a single point to access and extract program arguments.
 type Args struct {
