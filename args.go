@@ -25,13 +25,14 @@ import (
 	"strings"
 )
 
-const lineWidth = 78
+const defaultLineWidth = 75
 
 // Args provides a single point to access and extract program arguments.
 type Args struct {
 	usageDefined map[string]bool
 	usageHeader  string
 	usageBody    string
+	lineWidth    int
 	programName  string
 	programDesc  string
 	args         []string
@@ -63,6 +64,7 @@ func New(programDesc string, args []string) *Args {
 			usageBody:    "",
 			programName:  "NotDefined",
 			programDesc:  programDesc,
+			lineWidth:    defaultLineWidth,
 			args:         nil,
 			err:          ErrNoArgs,
 		}
@@ -80,6 +82,7 @@ func New(programDesc string, args []string) *Args {
 		usageBody:    "",
 		programName:  filepath.Base(args[0]),
 		programDesc:  programDesc,
+		lineWidth:    defaultLineWidth,
 		args:         myArgs,
 		err:          nil,
 	}
@@ -91,7 +94,7 @@ func (args *Args) addBodyLine(lineToAdd string) {
 		strings.TrimSpace(lineToAdd),
 		" ",
 	) {
-		if len(lineAsAdded)+len(wrd) < lineWidth {
+		if len(lineAsAdded)+len(wrd) < args.lineWidth {
 			lineAsAdded += " " + wrd
 		} else {
 			args.usageBody += lineAsAdded + "\n"
@@ -107,7 +110,7 @@ func (args *Args) addUsage(item, desc string) {
 		lines := strings.Split(args.usageHeader, "\n")
 		line := lines[len(lines)-1]
 
-		if len(line)+len(item) < lineWidth {
+		if len(line)+len(item) < args.lineWidth {
 			args.usageHeader += " " + item
 		} else {
 			args.usageHeader += "\n    " + item
@@ -163,7 +166,16 @@ func (args *Args) Args() []string {
 	return cpy
 }
 
-// Usage returns a usage message based on the parsed arguments.
+// UsageWidth sets the width the usage message.  Must be called before any
+// options or arguments are removed otherwise the width will only apply to
+// subsequent additions.
+func (args *Args) UsageWidth(newLineWidth int) {
+	args.lineWidth = newLineWidth
+}
+
+//	Usage returns a usage message based on the parsed
+//
+// arguments.
 func (args *Args) Usage() string {
 	return args.programName + "\n" +
 		args.programDesc + "\n" +

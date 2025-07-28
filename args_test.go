@@ -82,6 +82,8 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 
 	args := szargs.New("description", []string{"noProgName"})
 
+	args.UsageWidth(78) // Otherwise -f description changes.
+
 	chk.Int(
 		args.Count("[ -v | --verbose]", "how chatty should I be"),
 		0,
