@@ -29,14 +29,15 @@ const defaultLineWidth = 75
 
 // Args provides a single point to access and extract program arguments.
 type Args struct {
-	usageDefined map[string]bool
-	usageHeader  string
-	usageBody    string
-	lineWidth    int
-	programName  string
-	programDesc  string
-	args         []string
-	err          error
+	usageDefined  map[string]bool
+	usageHeader   string
+	usageSynopsis []string
+	usageBody     string
+	lineWidth     int
+	programName   string
+	programDesc   string
+	args          []string
+	err           error
 }
 
 var reIsGroup = regexp.MustCompile(`^-[A-Za-z]+$`)
@@ -59,14 +60,15 @@ func makeArgList(arg string) []string {
 func New(programDesc string, args []string) *Args {
 	if len(args) < 1 {
 		return &Args{
-			usageDefined: make(map[string]bool),
-			usageHeader:  "",
-			usageBody:    "",
-			programName:  "NotDefined",
-			programDesc:  programDesc,
-			lineWidth:    defaultLineWidth,
-			args:         nil,
-			err:          ErrNoArgs,
+			usageDefined:  make(map[string]bool),
+			usageHeader:   "    NotDefined",
+			usageSynopsis: nil,
+			usageBody:     "",
+			programName:   "NotDefined",
+			programDesc:   programDesc,
+			lineWidth:     defaultLineWidth,
+			args:          nil,
+			err:           ErrNoArgs,
 		}
 	}
 
@@ -77,14 +79,15 @@ func New(programDesc string, args []string) *Args {
 	}
 
 	return &Args{
-		usageDefined: make(map[string]bool),
-		usageHeader:  "Usage: " + filepath.Base(args[0]),
-		usageBody:    "",
-		programName:  filepath.Base(args[0]),
-		programDesc:  programDesc,
-		lineWidth:    defaultLineWidth,
-		args:         myArgs,
-		err:          nil,
+		usageDefined:  make(map[string]bool),
+		usageHeader:   "    " + filepath.Base(args[0]),
+		usageSynopsis: nil,
+		usageBody:     "",
+		programName:   filepath.Base(args[0]),
+		programDesc:   programDesc,
+		lineWidth:     defaultLineWidth,
+		args:          myArgs,
+		err:           nil,
 	}
 }
 
@@ -94,7 +97,7 @@ func (args *Args) addBodyLine(lineToAdd string) {
 		strings.TrimSpace(lineToAdd),
 		" ",
 	) {
-		if len(lineAsAdded)+len(wrd) < args.lineWidth {
+		if len(lineAsAdded)+len(wrd)+1 < args.lineWidth {
 			lineAsAdded += " " + wrd
 		} else {
 			args.usageBody += lineAsAdded + "\n"
@@ -110,7 +113,7 @@ func (args *Args) addUsage(item, desc string) {
 		lines := strings.Split(args.usageHeader, "\n")
 		line := lines[len(lines)-1]
 
-		if len(line)+len(item) < args.lineWidth {
+		if len(line)+len(item)+1 < args.lineWidth {
 			args.usageHeader += " " + item
 		} else {
 			args.usageHeader += "\n    " + item
@@ -177,11 +180,27 @@ func (args *Args) UsageWidth(newLineWidth int) {
 //
 // arguments.
 func (args *Args) Usage() string {
+	var header string
+
+	if len(args.usageSynopsis) > 0 {
+		header = "Usage:"
+		for _, s := range args.usageSynopsis {
+			header += "\n    " + args.programName + " " + s
+		}
+	} else {
+		header = "Usage:\n" + args.usageHeader
+	}
+
 	return args.programName + "\n" +
 		args.programDesc + "\n" +
 		"\n" +
-		args.usageHeader +
+		header +
 		args.usageBody
+}
+
+// AddSynopsis includes another static synopsis message.
+func (args *Args) AddSynopsis(s string) {
+	args.usageSynopsis = append(args.usageSynopsis, s)
 }
 
 // Count returns the number of times the flag appears.

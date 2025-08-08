@@ -43,7 +43,8 @@ func TestSzargs_New_NoArgs(t *testing.T) {
 			"NotDefined",
 			"description",
 			"",
-			"",
+			"Usage:",
+			"    NotDefined",
 		},
 	)
 
@@ -101,6 +102,7 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 	)
 	chk.False(args.Is("[-g|--group]", "a group flag"))
 	chk.False(args.Is("[-h|--human]", "a human flag"))
+	chk.False(args.Is("[-q|--quick_mode]", "magic mystery method"))
 	chk.False(args.Is("[-o|--over]", "an over flag"))
 
 	args.Done()
@@ -112,9 +114,10 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 			"noProgName",
 			"description",
 			"",
-			"Usage: noProgName [ -v | --verbose] [-f|--flag] [-g|--group] " +
+			"Usage:",
+			"    noProgName [ -v | --verbose] [-f|--flag] [-g|--group] " +
 				"[-h|--human]",
-			"    [-o|--over]",
+			"    [-q|--quick_mode] [-o|--over]",
 			"",
 			"  - [ -v | --verbose]</br>",
 			"    how chatty should I be",
@@ -124,8 +127,8 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 			"    a test flag",
 			"",
 			"    And a needlessly long sentence to over the eighty byte " +
-				"threshold so we can",
-			"    see a result of wrapping a line at  eighty characters.",
+				"threshold so we",
+			"    can see a result of wrapping a line at  eighty characters.",
 			"",
 			"",
 			"  - [-g|--group]</br>",
@@ -134,6 +137,10 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 			"",
 			"  - [-h|--human]</br>",
 			"    a human flag",
+			"",
+			"",
+			"  - [-q|--quick_mode]</br>",
+			"    magic mystery method",
 			"",
 			"",
 			"  - [-o|--over]</br>",
@@ -172,7 +179,8 @@ func TestSzargs_New_AmbiguousIsName(t *testing.T) {
 			"noProgName",
 			"description",
 			"",
-			"Usage: noProgName [ -v | --verbose] [-f|--flag]",
+			"Usage:",
+			"    noProgName [ -v | --verbose] [-f|--flag]",
 			"",
 			"  - [ -v | --verbose]</br>",
 			"    how chatty should I be",
@@ -221,6 +229,102 @@ func TestSzargs_Group(t *testing.T) {
 	args.Done()
 
 	chk.NoErr(args.Err())
+
+	chk.Log()
+	chk.Stderr()
+	chk.Stdout()
+}
+
+func TestSzargs_Synopsis(t *testing.T) {
+	chk := sztestlog.CaptureAll(t)
+	defer chk.Release()
+
+	args := szargs.New("description", []string{
+		"noProgName",
+		"-v",
+	})
+
+	args.AddSynopsis("[OPTION ...] [PATH ...]")
+
+	chk.Int(
+		args.Count("[ -v | --verbose]", "how chatty should I be"),
+		1,
+	)
+
+	chk.False(args.Is("[-f|--flag]", "a test flag"))
+
+	args.Done()
+
+	chk.StrSlice(
+		strings.Split(args.Usage(), "\n"),
+		[]string{
+			"noProgName",
+			"description",
+			"",
+			"Usage:",
+			"    noProgName [OPTION ...] [PATH ...]",
+			"",
+			"  - [ -v | --verbose]</br>",
+			"    how chatty should I be",
+			"",
+			"",
+			"  - [-f|--flag]</br>",
+			"    a test flag",
+			"",
+		},
+	)
+
+	chk.False(args.HasNext())
+	chk.False(args.HasErr())
+
+	chk.Log()
+	chk.Stderr()
+	chk.Stdout()
+}
+
+func TestSzargs_SynopsisTwo(t *testing.T) {
+	chk := sztestlog.CaptureAll(t)
+	defer chk.Release()
+
+	args := szargs.New("description", []string{
+		"noProgName",
+		"-v",
+	})
+
+	args.AddSynopsis("[OPTION ...] [PATH ...]")
+	args.AddSynopsis("help [OPTION]")
+
+	chk.Int(
+		args.Count("[ -v | --verbose]", "how chatty should I be"),
+		1,
+	)
+
+	chk.False(args.Is("[-f|--flag]", "a test flag"))
+
+	args.Done()
+
+	chk.StrSlice(
+		strings.Split(args.Usage(), "\n"),
+		[]string{
+			"noProgName",
+			"description",
+			"",
+			"Usage:",
+			"    noProgName [OPTION ...] [PATH ...]",
+			"    noProgName help [OPTION]",
+			"",
+			"  - [ -v | --verbose]</br>",
+			"    how chatty should I be",
+			"",
+			"",
+			"  - [-f|--flag]</br>",
+			"    a test flag",
+			"",
+		},
+	)
+
+	chk.False(args.HasNext())
+	chk.False(args.HasErr())
 
 	chk.Log()
 	chk.Stderr()
