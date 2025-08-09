@@ -92,7 +92,7 @@ func New(programDesc string, args []string) *Args {
 }
 
 func (args *Args) addBodyLine(lineToAdd string) {
-	lineAsAdded := "   " // Just three for first added word will make it four.
+	lineAsAdded := "       " // Just 7. First added word will make it 8.
 	for _, wrd := range strings.Split(
 		strings.TrimSpace(lineToAdd),
 		" ",
@@ -101,7 +101,7 @@ func (args *Args) addBodyLine(lineToAdd string) {
 			lineAsAdded += " " + wrd
 		} else {
 			args.usageBody += lineAsAdded + "\n"
-			lineAsAdded = "    " + wrd
+			lineAsAdded = "        " + wrd
 		}
 	}
 
@@ -116,10 +116,16 @@ func (args *Args) addUsage(item, desc string) {
 		if len(line)+len(item)+1 < args.lineWidth {
 			args.usageHeader += " " + item
 		} else {
-			args.usageHeader += "\n    " + item
+			args.usageHeader += "" +
+				"\n" +
+				strings.Repeat(
+					" ",
+					5+len(args.programName), //nolint:mnd // Ok.
+				) +
+				item
 		}
 
-		args.usageBody += "\n\n  - " + item + "</br>"
+		args.usageBody += "\n\n    " + item
 		for _, line = range strings.Split(desc, "\n") {
 			args.usageBody += "\n"
 			args.addBodyLine(line)
@@ -176,23 +182,32 @@ func (args *Args) UsageWidth(newLineWidth int) {
 	args.lineWidth = newLineWidth
 }
 
-//	Usage returns a usage message based on the parsed
+//		Usage returns a usage message based on the parsed arguments.
+//	   /*
+//	   # Usage
 //
-// arguments.
+//	   Golang to 'github' markdown.
+//
+//	       gotomd [options] [path ...]
+//
+//	   	[-v | --verbose ...]
+//	   		Provide more information when processing.
+//
+//	   */
 func (args *Args) Usage() string {
 	var header string
 
 	if len(args.usageSynopsis) > 0 {
-		header = "Usage:"
 		for _, s := range args.usageSynopsis {
 			header += "\n    " + args.programName + " " + s
 		}
 	} else {
-		header = "Usage:\n" + args.usageHeader
+		header = "\n" + args.usageHeader
 	}
 
-	return args.programName + "\n" +
-		args.programDesc + "\n" +
+	return "# Usage: " + args.programName +
+		"\n\n" +
+		args.programDesc +
 		"\n" +
 		header +
 		args.usageBody
