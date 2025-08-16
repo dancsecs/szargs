@@ -257,3 +257,8 @@ func (args *Args) Done() {
 		)
 	}
 }
+
+// ProgramName returns the configured program name.
+func (args *Args) ProgramName() string {
+	return args.programName
+}
