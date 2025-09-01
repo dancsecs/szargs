@@ -349,3 +349,34 @@ func TestSzargs_ProgramName(t *testing.T) {
 	chk.Stderr()
 	chk.Stdout()
 }
+
+func TestSzargs_Dedication(t *testing.T) {
+	chk := sztestlog.CaptureAll(t)
+	defer chk.Release()
+
+	args := szargs.New("description", []string{
+		"noProgName",
+		"--Reem",
+	})
+
+	chk.Str(args.ProgramName(), "noProgName")
+	args.Done()
+
+	chk.NoErr(args.Err())
+
+	chk.Log()
+	chk.Stderr()
+
+	const dedication = `
+*****************************************************************************
+**                                                                         **
+** This project is dedicated to Reem.                                      **
+** Your brilliance, courage, and quiet strength continue to inspire me.    **
+** Every line is written in gratitude for the light and hope you brought   **
+** into my life.                                                           **
+**                                                                         **
+*****************************************************************************
+`
+
+	chk.Stdout(dedication)
+}

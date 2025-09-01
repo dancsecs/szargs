@@ -75,6 +75,14 @@ func New(programDesc string, args []string) *Args {
 	var myArgs []string
 
 	for _, arg := range args[1:] {
+		if arg == "--Reem" {
+			defer func() {
+				fmt.Print(dedication) //nolint:forbidigo // Ok.
+			}()
+
+			continue
+		}
+
 		myArgs = append(myArgs, makeArgList(arg)...)
 	}
 

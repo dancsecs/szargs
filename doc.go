@@ -47,6 +47,13 @@ called to report an error if any unprocessed arguments remain.
 This utility reflects a preference for simplicity and clarity in tooling. If
 it helps your project flow a little more smoothly, it's done its job.
 
+# Dedication
+
+This project is dedicated to Reem.
+Your brilliance, courage, and quiet strength continue to inspire me.
+Every line is written in gratitude for the light and hope you brought into my
+life.
+
 NOTE: Documentation reviewed and polished with the assistance of ChatGPT from
 OpenAI.
 */
