@@ -21,12 +21,11 @@ package szargs
 import (
 	"testing"
 
-	"github.com/dancsecs/szlog"
 	"github.com/dancsecs/sztestlog"
 )
 
 func TestSzArgs_ArgCount(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	var (
@@ -79,7 +78,7 @@ func TestSzArgs_ArgCount(t *testing.T) {
 }
 
 func TestSzArgs_Is(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	var (
@@ -129,7 +128,7 @@ func TestSzArgs_Is(t *testing.T) {
 }
 
 func TestSzargs_ValueNonePresent(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	value, found, args, err := argFlag("[-n theName]").value(nil)
@@ -152,7 +151,7 @@ func TestSzargs_ValueNonePresent(t *testing.T) {
 }
 
 func TestSzargs_ValueBeginning(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	value, found, args, err := argFlag("[-n theName]").value(
@@ -175,7 +174,7 @@ func TestSzargs_ValueBeginning(t *testing.T) {
 }
 
 func TestSzargs_ValueMiddle(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	value, found, args, err := argFlag("-n").value(
@@ -189,7 +188,7 @@ func TestSzargs_ValueMiddle(t *testing.T) {
 }
 
 func TestSzargs_ValueEnd(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	value, found, args, err := argFlag("-n").value(
@@ -203,7 +202,7 @@ func TestSzargs_ValueEnd(t *testing.T) {
 }
 
 func TestSzargs_ValueDuplicate(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	value, found, args, err := argFlag("-n").value(
@@ -224,7 +223,7 @@ func TestSzargs_ValueDuplicate(t *testing.T) {
 }
 
 func TestSzargs_ValueTriplicate(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	value, found, args, err := argFlag("-n").value(
@@ -255,7 +254,7 @@ func TestSzargs_ValueTriplicate(t *testing.T) {
 }
 
 func TestSzargs_ValueMissing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	value, found, args, err := argFlag("-n value").value(
@@ -276,7 +275,7 @@ func TestSzargs_ValueMissing(t *testing.T) {
 }
 
 func TestSzargs_ValuesNonePresent(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	value, args, err := argFlag("-n").values(nil)
@@ -297,7 +296,7 @@ func TestSzargs_ValuesNonePresent(t *testing.T) {
 }
 
 func TestSzargs_ValuesAtBeginning(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	value, args, err := argFlag("-n").values(
@@ -318,7 +317,7 @@ func TestSzargs_ValuesAtBeginning(t *testing.T) {
 }
 
 func TestSzargs_ValuesMiddle(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	value, args, err := argFlag("-n").values(
@@ -331,7 +330,7 @@ func TestSzargs_ValuesMiddle(t *testing.T) {
 }
 
 func TestSzargs_ValuesEnd(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	value, args, err := argFlag("-n").values(
@@ -344,7 +343,7 @@ func TestSzargs_ValuesEnd(t *testing.T) {
 }
 
 func TestSzargs_ValuesDuplicate(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	value, args, err := argFlag("-n").values(
@@ -360,7 +359,7 @@ func TestSzargs_ValuesDuplicate(t *testing.T) {
 }
 
 func TestSzargs_ValuesMissing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	value, args, err := argFlag("-n value").values(

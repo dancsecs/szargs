@@ -46,7 +46,7 @@ const usageText = "" +
 
 // Passing test.
 func Test_PASS_NothingToDoAdd(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "add")
@@ -62,7 +62,7 @@ func Test_PASS_NothingToDoAdd(t *testing.T) {
 
 // Passing test.
 func Test_PASS_NothingToDoAverage(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "average")
@@ -77,7 +77,7 @@ func Test_PASS_NothingToDoAverage(t *testing.T) {
 }
 
 func Test_PASS_OneNumberAverage(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "-n", "123.456789", "average")
@@ -92,7 +92,7 @@ func Test_PASS_OneNumberAverage(t *testing.T) {
 }
 
 func Test_PASS_ThreeNumberAverage(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs(
@@ -113,7 +113,7 @@ func Test_PASS_ThreeNumberAverage(t *testing.T) {
 }
 
 func Test_PASS_NoArgs(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName")
@@ -129,7 +129,7 @@ func Test_PASS_NoArgs(t *testing.T) {
 
 // Failing test.
 func Test_FAIL_MissingNumber(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "-n")
@@ -150,7 +150,7 @@ func Test_FAIL_MissingNumber(t *testing.T) {
 }
 
 func Test_FAIL_InvalidNumberDefaultOperation(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "-n", "invalidNumber")
@@ -173,7 +173,7 @@ func Test_FAIL_InvalidNumberDefaultOperation(t *testing.T) {
 }
 
 func Test_FAIL_InvalidNumber(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "-n", "invalidNumber", "add")
@@ -196,7 +196,7 @@ func Test_FAIL_InvalidNumber(t *testing.T) {
 }
 
 func Test_FAIL_UnexpectedArguments(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "--count", "unexpectedArgument")

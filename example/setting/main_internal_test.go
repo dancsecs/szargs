@@ -39,7 +39,7 @@ const usageText = "" +
 	""
 
 func Test_PASS_Default(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName")
@@ -54,7 +54,7 @@ func Test_PASS_Default(t *testing.T) {
 }
 
 func Test_PASS_Environment(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName")
@@ -69,7 +69,7 @@ func Test_PASS_Environment(t *testing.T) {
 }
 
 func Test_PASS_Argument(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "-t", "f")
@@ -85,7 +85,7 @@ func Test_PASS_Argument(t *testing.T) {
 
 // Failing test.
 func Test_FAIL_UnknownArgument(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "unknownArgument")

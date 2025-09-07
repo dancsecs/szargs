@@ -21,7 +21,6 @@ package szargs
 import (
 	"testing"
 
-	"github.com/dancsecs/szlog"
 	"github.com/dancsecs/sztestlog"
 )
 
@@ -32,7 +31,7 @@ const (
 )
 
 func TestSzargs_ValueNoArgNoEnv(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	value, args, srcErr, err := setting(tstArgFlag, tstEnv, "def", nil)
@@ -55,7 +54,7 @@ func TestSzargs_ValueNoArgNoEnv(t *testing.T) {
 }
 
 func TestSzargs_ValueArgAmbiguous(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	value, args, srcErr, err := setting(tstArgFlag, tstEnv, "def",
@@ -75,7 +74,7 @@ func TestSzargs_ValueArgAmbiguous(t *testing.T) {
 }
 
 func TestSzargs_ValueArgMissing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	value, args, srcErr, err := setting(tstArgFlag, tstEnv, "def",
@@ -95,7 +94,7 @@ func TestSzargs_ValueArgMissing(t *testing.T) {
 }
 
 func TestSzargs_ValueEnv(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	chk.SetEnv(tstEnv, "env")
@@ -113,7 +112,7 @@ func TestSzargs_ValueEnv(t *testing.T) {
 }
 
 func TestSzargs_ValueEnvAndArg(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	chk.SetEnv(tstEnv, "env")

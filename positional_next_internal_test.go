@@ -21,12 +21,11 @@ package szargs
 import (
 	"testing"
 
-	"github.com/dancsecs/szlog"
 	"github.com/dancsecs/sztestlog"
 )
 
 func TestSzargs_Next(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	var (

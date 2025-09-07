@@ -43,7 +43,7 @@ const usageText = "" +
 	""
 
 func Test_PASS_NothingToDoAdd(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName")
@@ -59,7 +59,7 @@ func Test_PASS_NothingToDoAdd(t *testing.T) {
 }
 
 func Test_PASS_ValueName(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "--name", "theName")
@@ -75,7 +75,7 @@ func Test_PASS_ValueName(t *testing.T) {
 }
 
 func Test_PASS_ValueByte(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "--byte", "35")
@@ -92,7 +92,7 @@ func Test_PASS_ValueByte(t *testing.T) {
 
 // Failing test.
 func Test_FAIL_UnknownArgument(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "unknownArgument")
@@ -113,7 +113,7 @@ func Test_FAIL_UnknownArgument(t *testing.T) {
 }
 
 func Test_FAIL_InvalidExtraByte(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "-b", "22", "--byte", "35")

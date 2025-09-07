@@ -43,7 +43,7 @@ const usageText = "" +
 	""
 
 func Test_PASS_DefaultCount(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "what to repeat")
@@ -60,7 +60,7 @@ func Test_PASS_DefaultCount(t *testing.T) {
 }
 
 func Test_PASS_ValueByte(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "what to repeat", "2")
@@ -77,7 +77,7 @@ func Test_PASS_ValueByte(t *testing.T) {
 
 // Failing test.
 func Test_FAIL_UnknownArgument(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "what to repeat", "5", "unknownArgument")
@@ -98,7 +98,7 @@ func Test_FAIL_UnknownArgument(t *testing.T) {
 }
 
 func Test_FAIL_NoArguments(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName")

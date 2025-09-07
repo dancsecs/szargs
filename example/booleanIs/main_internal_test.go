@@ -39,7 +39,7 @@ const usageText = "" +
 	""
 
 func Test_PASS_NothingToDoAdd(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName")
@@ -54,7 +54,7 @@ func Test_PASS_NothingToDoAdd(t *testing.T) {
 }
 
 func Test_PASS_IsTrueLong(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "--true")
@@ -69,7 +69,7 @@ func Test_PASS_IsTrueLong(t *testing.T) {
 }
 
 func Test_PASS_IsTrueShort(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "-t")
@@ -85,7 +85,7 @@ func Test_PASS_IsTrueShort(t *testing.T) {
 
 // Failing test.
 func Test_FAIL_UnknownArgument(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "unknownArgument")
@@ -106,7 +106,7 @@ func Test_FAIL_UnknownArgument(t *testing.T) {
 }
 
 func Test_FAIL_InvalidExtraTrue(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	chk.SetArgs("programName", "-t", "--true")

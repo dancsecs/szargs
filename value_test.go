@@ -23,7 +23,6 @@ import (
 	"testing"
 
 	"github.com/dancsecs/szargs"
-	"github.com/dancsecs/szlog"
 	"github.com/dancsecs/sztestlog"
 )
 
@@ -36,7 +35,7 @@ import (
  */
 
 func TestSzargs_ValueString_Missing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -52,7 +51,7 @@ func TestSzargs_ValueString_Missing(t *testing.T) {
 }
 
 func TestSzargs_ValueString_Success(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -86,7 +85,7 @@ func TestSzargs_ValueString_Success(t *testing.T) {
  */
 
 func TestSzargs_ValueFloat64_Missing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -102,7 +101,7 @@ func TestSzargs_ValueFloat64_Missing(t *testing.T) {
 }
 
 func TestSzargs_ValueFloat64_InvalidSyntax(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -128,7 +127,7 @@ func TestSzargs_ValueFloat64_InvalidSyntax(t *testing.T) {
 }
 
 func TestSzargs_ValueFloat64_InvalidRangeHigh(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -154,7 +153,7 @@ func TestSzargs_ValueFloat64_InvalidRangeHigh(t *testing.T) {
 }
 
 func TestSzargs_ValueFloat64_InvalidRangeLow(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -180,7 +179,7 @@ func TestSzargs_ValueFloat64_InvalidRangeLow(t *testing.T) {
 }
 
 func TestSzargs_ValueFloat64_Success(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -212,7 +211,7 @@ func TestSzargs_ValueFloat64_Success(t *testing.T) {
  */
 
 func TestSzargs_ValueFloat32_Missing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -228,7 +227,7 @@ func TestSzargs_ValueFloat32_Missing(t *testing.T) {
 }
 
 func TestSzargs_ValueFloat32_InvalidSyntax(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -254,7 +253,7 @@ func TestSzargs_ValueFloat32_InvalidSyntax(t *testing.T) {
 }
 
 func TestSzargs_ValueFloat32_InvalidRangeHigh(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -280,7 +279,7 @@ func TestSzargs_ValueFloat32_InvalidRangeHigh(t *testing.T) {
 }
 
 func TestSzargs_ValueFloat32_InvalidRangeLow(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -306,7 +305,7 @@ func TestSzargs_ValueFloat32_InvalidRangeLow(t *testing.T) {
 }
 
 func TestSzargs_ValueFloat32_Success(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -338,7 +337,7 @@ func TestSzargs_ValueFloat32_Success(t *testing.T) {
  */
 
 func TestSzargs_ValueInt64_Missing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -354,7 +353,7 @@ func TestSzargs_ValueInt64_Missing(t *testing.T) {
 }
 
 func TestSzargs_ValueInt64_InvalidSyntax(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -380,7 +379,7 @@ func TestSzargs_ValueInt64_InvalidSyntax(t *testing.T) {
 }
 
 func TestSzargs_ValueInt64_InvalidRangeHigh(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -406,7 +405,7 @@ func TestSzargs_ValueInt64_InvalidRangeHigh(t *testing.T) {
 }
 
 func TestSzargs_ValueInt64_InvalidRangeLow(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -432,7 +431,7 @@ func TestSzargs_ValueInt64_InvalidRangeLow(t *testing.T) {
 }
 
 func TestSzargs_ValueInt64_Success(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -464,7 +463,7 @@ func TestSzargs_ValueInt64_Success(t *testing.T) {
  */
 
 func TestSzargs_ValueInt32_Missing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -480,7 +479,7 @@ func TestSzargs_ValueInt32_Missing(t *testing.T) {
 }
 
 func TestSzargs_ValueInt32_InvalidSyntax(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -506,7 +505,7 @@ func TestSzargs_ValueInt32_InvalidSyntax(t *testing.T) {
 }
 
 func TestSzargs_ValueInt32_InvalidRangeHigh(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -532,7 +531,7 @@ func TestSzargs_ValueInt32_InvalidRangeHigh(t *testing.T) {
 }
 
 func TestSzargs_ValueInt32_InvalidRangeLow(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -558,7 +557,7 @@ func TestSzargs_ValueInt32_InvalidRangeLow(t *testing.T) {
 }
 
 func TestSzargs_ValueInt32_Success(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -590,7 +589,7 @@ func TestSzargs_ValueInt32_Success(t *testing.T) {
  */
 
 func TestSzargs_ValueInt16_Missing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -606,7 +605,7 @@ func TestSzargs_ValueInt16_Missing(t *testing.T) {
 }
 
 func TestSzargs_ValueInt16_InvalidSyntax(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -632,7 +631,7 @@ func TestSzargs_ValueInt16_InvalidSyntax(t *testing.T) {
 }
 
 func TestSzargs_ValueInt16_InvalidRangeHigh(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -658,7 +657,7 @@ func TestSzargs_ValueInt16_InvalidRangeHigh(t *testing.T) {
 }
 
 func TestSzargs_ValueInt16_InvalidRangeLow(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -684,7 +683,7 @@ func TestSzargs_ValueInt16_InvalidRangeLow(t *testing.T) {
 }
 
 func TestSzargs_ValueInt16_Success(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -716,7 +715,7 @@ func TestSzargs_ValueInt16_Success(t *testing.T) {
  */
 
 func TestSzargs_ValueInt8_Missing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -732,7 +731,7 @@ func TestSzargs_ValueInt8_Missing(t *testing.T) {
 }
 
 func TestSzargs_ValueInt8_InvalidSyntax(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -758,7 +757,7 @@ func TestSzargs_ValueInt8_InvalidSyntax(t *testing.T) {
 }
 
 func TestSzargs_ValueInt8_InvalidRangeHigh(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -784,7 +783,7 @@ func TestSzargs_ValueInt8_InvalidRangeHigh(t *testing.T) {
 }
 
 func TestSzargs_ValueInt8_InvalidRangeLow(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -810,7 +809,7 @@ func TestSzargs_ValueInt8_InvalidRangeLow(t *testing.T) {
 }
 
 func TestSzargs_ValueInt8_Success(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -842,7 +841,7 @@ func TestSzargs_ValueInt8_Success(t *testing.T) {
  */
 
 func TestSzargs_ValueInt_Missing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -858,7 +857,7 @@ func TestSzargs_ValueInt_Missing(t *testing.T) {
 }
 
 func TestSzargs_ValueInt_InvalidSyntax(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -884,7 +883,7 @@ func TestSzargs_ValueInt_InvalidSyntax(t *testing.T) {
 }
 
 func TestSzargs_ValueInt_InvalidRangeHigh(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -910,7 +909,7 @@ func TestSzargs_ValueInt_InvalidRangeHigh(t *testing.T) {
 }
 
 func TestSzargs_ValueInt_InvalidRangeLow(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -936,7 +935,7 @@ func TestSzargs_ValueInt_InvalidRangeLow(t *testing.T) {
 }
 
 func TestSzargs_ValueInt_Success(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -968,7 +967,7 @@ func TestSzargs_ValueInt_Success(t *testing.T) {
  */
 
 func TestSzargs_ValueUint64_Missing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -984,7 +983,7 @@ func TestSzargs_ValueUint64_Missing(t *testing.T) {
 }
 
 func TestSzargs_ValueUint64_InvalidSyntax(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1010,7 +1009,7 @@ func TestSzargs_ValueUint64_InvalidSyntax(t *testing.T) {
 }
 
 func TestSzargs_ValueUint64_InvalidRange(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1036,7 +1035,7 @@ func TestSzargs_ValueUint64_InvalidRange(t *testing.T) {
 }
 
 func TestSzargs_ValueUint64_Success(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1068,7 +1067,7 @@ func TestSzargs_ValueUint64_Success(t *testing.T) {
  */
 
 func TestSzargs_ValueUint32_Missing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1084,7 +1083,7 @@ func TestSzargs_ValueUint32_Missing(t *testing.T) {
 }
 
 func TestSzargs_ValueUint32_InvalidSyntax(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1110,7 +1109,7 @@ func TestSzargs_ValueUint32_InvalidSyntax(t *testing.T) {
 }
 
 func TestSzargs_ValueUint32_InvalidRange(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1135,7 +1134,7 @@ func TestSzargs_ValueUint32_InvalidRange(t *testing.T) {
 }
 
 func TestSzargs_ValueUint32_Success(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1167,7 +1166,7 @@ func TestSzargs_ValueUint32_Success(t *testing.T) {
  */
 
 func TestSzargs_ValueUint16_Missing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1183,7 +1182,7 @@ func TestSzargs_ValueUint16_Missing(t *testing.T) {
 }
 
 func TestSzargs_ValueUint16_InvalidSyntax(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1209,7 +1208,7 @@ func TestSzargs_ValueUint16_InvalidSyntax(t *testing.T) {
 }
 
 func TestSzargs_ValueUint16_InvalidRange(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1235,7 +1234,7 @@ func TestSzargs_ValueUint16_InvalidRange(t *testing.T) {
 }
 
 func TestSzargs_ValueUint16_Success(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1267,7 +1266,7 @@ func TestSzargs_ValueUint16_Success(t *testing.T) {
  */
 
 func TestSzargs_ValueUint8_Missing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1283,7 +1282,7 @@ func TestSzargs_ValueUint8_Missing(t *testing.T) {
 }
 
 func TestSzargs_ValueUint8_InvalidSyntax(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1309,7 +1308,7 @@ func TestSzargs_ValueUint8_InvalidSyntax(t *testing.T) {
 }
 
 func TestSzargs_ValueUint8_InvalidRange(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1335,7 +1334,7 @@ func TestSzargs_ValueUint8_InvalidRange(t *testing.T) {
 }
 
 func TestSzargs_ValueUint8_Success(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1367,7 +1366,7 @@ func TestSzargs_ValueUint8_Success(t *testing.T) {
  */
 
 func TestSzargs_ValueUint_Missing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1383,7 +1382,7 @@ func TestSzargs_ValueUint_Missing(t *testing.T) {
 }
 
 func TestSzargs_ValueUint_InvalidSyntax(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1409,7 +1408,7 @@ func TestSzargs_ValueUint_InvalidSyntax(t *testing.T) {
 }
 
 func TestSzargs_ValueUint_InvalidRange(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1435,7 +1434,7 @@ func TestSzargs_ValueUint_InvalidRange(t *testing.T) {
 }
 
 func TestSzargs_ValueUint_Success(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1467,7 +1466,7 @@ func TestSzargs_ValueUint_Success(t *testing.T) {
  */
 
 func TestSzargs_ValueOption_Missing(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1485,7 +1484,7 @@ func TestSzargs_ValueOption_Missing(t *testing.T) {
 }
 
 func TestSzargs_ValueOption_InvalidSyntax(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{
@@ -1512,7 +1511,7 @@ func TestSzargs_ValueOption_InvalidSyntax(t *testing.T) {
 }
 
 func TestSzargs_ValueOption_Success(t *testing.T) {
-	chk := sztestlog.CaptureNothing(t, szlog.LevelAll)
+	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
 	args := szargs.New("program description", []string{

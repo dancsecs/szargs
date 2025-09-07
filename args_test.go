@@ -27,7 +27,7 @@ import (
 )
 
 func TestSzargs_New_NoArgs(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	args := szargs.New("description", nil)
@@ -54,7 +54,7 @@ func TestSzargs_New_NoArgs(t *testing.T) {
 }
 
 func TestSzargs_New_PushArgs(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	args := szargs.New("description", []string{"programName"})
@@ -78,7 +78,7 @@ func TestSzargs_New_PushArgs(t *testing.T) {
 
 //nolint:funlen // Ok.
 func TestSzargs_New_JustProgramName(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	args := szargs.New("description", []string{"noProgName"})
@@ -156,7 +156,7 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 }
 
 func TestSzargs_New_AmbiguousIsName(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	args := szargs.New("description", []string{
@@ -211,7 +211,7 @@ func TestSzargs_New_AmbiguousIsName(t *testing.T) {
 }
 
 func TestSzargs_Group(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	args := szargs.New("description", []string{
@@ -237,7 +237,7 @@ func TestSzargs_Group(t *testing.T) {
 }
 
 func TestSzargs_Synopsis(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	args := szargs.New("description", []string{
@@ -284,7 +284,7 @@ func TestSzargs_Synopsis(t *testing.T) {
 }
 
 func TestSzargs_SynopsisTwo(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	args := szargs.New("description", []string{
@@ -333,7 +333,7 @@ func TestSzargs_SynopsisTwo(t *testing.T) {
 }
 
 func TestSzargs_ProgramName(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
+	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
 	args := szargs.New("description", []string{
@@ -348,35 +348,4 @@ func TestSzargs_ProgramName(t *testing.T) {
 	chk.Log()
 	chk.Stderr()
 	chk.Stdout()
-}
-
-func TestSzargs_Dedication(t *testing.T) {
-	chk := sztestlog.CaptureAll(t)
-	defer chk.Release()
-
-	args := szargs.New("description", []string{
-		"noProgName",
-		"--Reem",
-	})
-
-	chk.Str(args.ProgramName(), "noProgName")
-	args.Done()
-
-	chk.NoErr(args.Err())
-
-	chk.Log()
-	chk.Stderr()
-
-	const dedication = `
-*****************************************************************************
-**                                                                         **
-** This project is dedicated to Reem.                                      **
-** Your brilliance, courage, and quiet strength continue to inspire me.    **
-** Every line is written in gratitude for the light and hope you brought   **
-** into my life.                                                           **
-**                                                                         **
-*****************************************************************************
-`
-
-	chk.Stdout(dedication)
 }
