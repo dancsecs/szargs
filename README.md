@@ -98,8 +98,6 @@ OpenAI.
   - [Example: Settings](example/setting/README.md#example-settings)
     - Description: Demonstrates use of settings with environment overrides.
 
-- [Version](#version)
-
 ## Usage
 
 Generally the flow of argument extraction proceeds as follows:
@@ -432,12 +430,5 @@ func (args *Args) SettingUint(flag, env string, def uint, desc string) uint
 ```
 <!--- gotomd::End::dcls::./Args.SettingFloat64 Args.SettingFloat32 Args.SettingInt64 Args.SettingInt32 Args.SettingInt16 Args.SettingInt8 Args.SettingInt Args.SettingUint64 Args.SettingUint32 Args.SettingUint16 Args.SettingUint8 Args.SettingUint -->
 
-
-[Contents](#contents)
-
-## Version
-
-- Current: v0.0.6
-- Go Version: 1.23+
 
 [Contents](#contents)
