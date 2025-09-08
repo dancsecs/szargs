@@ -1,8 +1,8 @@
-github.com/dancsecs/szlog v0.0.10 h1:/hNeaw+i7Uwr85I8cO/EsebulCU/JDaR1AULRlSd7zk=
-github.com/dancsecs/szlog v0.0.10/go.mod h1:d8hWIkcE/coVaWwqJOMq4CWt1Ct9726Z7RoP3SQL24k=
+github.com/dancsecs/szlog v0.0.11 h1:1YguTphv/Ez7edfCXbpQc0uzVNVtLb+coPvCLkhQTow=
+github.com/dancsecs/szlog v0.0.11/go.mod h1:d8hWIkcE/coVaWwqJOMq4CWt1Ct9726Z7RoP3SQL24k=
 github.com/dancsecs/sztest v0.1.6 h1:gGkthXm4ZUmNpf9oPiKKoGvSFv0BhVDP0JDasx4Ra1A=
 github.com/dancsecs/sztest v0.1.6/go.mod h1:3j1h9eWcBMjCAVUZ4MoI/Y/wSVgMAIQPwqiKmK6jmmo=
-github.com/dancsecs/sztestlog v0.0.8 h1:eMAG/PJyR12nUpFzBYAdHs67IikEUQTLxn/zgNPmkHM=
-github.com/dancsecs/sztestlog v0.0.8/go.mod h1:d2WZYv3sbp9UH8YH0RbOyq9gEFoX80YUr1h6VCFA9AE=
+github.com/dancsecs/sztestlog v0.0.9 h1:6Kp8FQHSMmRcyoodaJkH7Po8qKe4SmSkQxz3xuO49rg=
+github.com/dancsecs/sztestlog v0.0.9/go.mod h1:eza+gro8WUUYgCRjQK+Wxb3h7Hk3j2glhBMiOdysfAw=
 golang.org/x/text v0.28.0 h1:rhazDwis8INMIwQ4tpjLDzUhx6RlXqZNPEM0huQojng=
 golang.org/x/text v0.28.0/go.mod h1:U8nCwOR8jO/marOQ0QbDiOngZVEBB7MAiitBuMjXiNU=
