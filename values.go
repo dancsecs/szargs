@@ -29,7 +29,7 @@ import "fmt"
 //
 // Returns a slice of the captured string values.
 func (args *Args) ValuesString(flag, desc string) []string {
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 	result, newArgs, err := argFlag(flag).values(args.args)
 	args.args = newArgs
 	args.PushErr(err)
@@ -53,7 +53,7 @@ func (args *Args) ValuesFloat64(flag, desc string) []float64 {
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
@@ -105,7 +105,7 @@ func (args *Args) ValuesFloat32(flag, desc string) []float32 {
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
@@ -157,7 +157,7 @@ func (args *Args) ValuesInt64(flag, desc string) []int64 {
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
@@ -209,7 +209,7 @@ func (args *Args) ValuesInt32(flag, desc string) []int32 {
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
@@ -261,7 +261,7 @@ func (args *Args) ValuesInt16(flag, desc string) []int16 {
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
@@ -313,7 +313,7 @@ func (args *Args) ValuesInt8(flag, desc string) []int8 {
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
@@ -365,7 +365,7 @@ func (args *Args) ValuesInt(flag, desc string) []int {
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
@@ -417,7 +417,7 @@ func (args *Args) ValuesUint64(flag, desc string) []uint64 {
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
@@ -469,7 +469,7 @@ func (args *Args) ValuesUint32(flag, desc string) []uint32 {
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
@@ -521,7 +521,7 @@ func (args *Args) ValuesUint16(flag, desc string) []uint16 {
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
@@ -573,7 +573,7 @@ func (args *Args) ValuesUint8(flag, desc string) []uint8 {
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
@@ -625,7 +625,7 @@ func (args *Args) ValuesUint(flag, desc string) []uint {
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 
@@ -679,7 +679,7 @@ func (args *Args) ValuesOption(
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	matches, cleanedArgs, err = argFlag(flag).values(args.Args())
 

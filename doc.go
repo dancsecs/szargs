@@ -25,9 +25,7 @@ It supports three types of arguments:
     double dash (e.g., "--dir") for long-form flags. Flags may be standalone
     booleans or followed by a value.
   - Positional: Identified by their order in the argument list after all
-    flagged arguments have been processed. Positional arguments can be
-    retrieved in two forms: Next (in order) or Last (ensuring no trailing
-    arguments remain).
+    flagged arguments have been processed.
   - Settings: A composite configuration mechanism that combines a default
     value, an environment variable, and a flagged argument—allowing each to
     override the previous in precedence: default < env < flag.

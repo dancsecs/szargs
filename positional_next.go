@@ -39,7 +39,7 @@ func next(name string, args []string) (string, []string, error) {
 //
 // Returns the next argument value as a string.
 func (args *Args) NextString(name, desc string) string {
-	args.addUsage(name, desc)
+	args.RegisterUsage(name, desc)
 	result, newArgs, err := next(name, args.args)
 	args.args = newArgs
 	args.PushErr(err)
@@ -61,7 +61,7 @@ func (args *Args) NextFloat64(name, desc string) float64 {
 		err    error
 	)
 
-	args.addUsage(name, desc)
+	args.RegisterUsage(name, desc)
 
 	arg, newArgs, err := next(name, args.args)
 
@@ -89,7 +89,7 @@ func (args *Args) NextFloat32(name, desc string) float32 {
 		err    error
 	)
 
-	args.addUsage(name, desc)
+	args.RegisterUsage(name, desc)
 
 	arg, newArgs, err := next(name, args.args)
 
@@ -117,7 +117,7 @@ func (args *Args) NextInt64(name, desc string) int64 {
 		err    error
 	)
 
-	args.addUsage(name, desc)
+	args.RegisterUsage(name, desc)
 
 	arg, newArgs, err := next(name, args.args)
 
@@ -145,7 +145,7 @@ func (args *Args) NextInt32(name, desc string) int32 {
 		err    error
 	)
 
-	args.addUsage(name, desc)
+	args.RegisterUsage(name, desc)
 
 	arg, newArgs, err := next(name, args.args)
 
@@ -173,7 +173,7 @@ func (args *Args) NextInt16(name, desc string) int16 {
 		err    error
 	)
 
-	args.addUsage(name, desc)
+	args.RegisterUsage(name, desc)
 
 	arg, newArgs, err := next(name, args.args)
 
@@ -201,7 +201,7 @@ func (args *Args) NextInt8(name, desc string) int8 {
 		err    error
 	)
 
-	args.addUsage(name, desc)
+	args.RegisterUsage(name, desc)
 
 	arg, newArgs, err := next(name, args.args)
 
@@ -229,7 +229,7 @@ func (args *Args) NextInt(name, desc string) int {
 		err    error
 	)
 
-	args.addUsage(name, desc)
+	args.RegisterUsage(name, desc)
 
 	arg, newArgs, err := next(name, args.args)
 
@@ -257,7 +257,7 @@ func (args *Args) NextUint64(name, desc string) uint64 {
 		err    error
 	)
 
-	args.addUsage(name, desc)
+	args.RegisterUsage(name, desc)
 
 	arg, newArgs, err := next(name, args.args)
 
@@ -285,7 +285,7 @@ func (args *Args) NextUint32(name, desc string) uint32 {
 		err    error
 	)
 
-	args.addUsage(name, desc)
+	args.RegisterUsage(name, desc)
 
 	arg, newArgs, err := next(name, args.args)
 
@@ -313,7 +313,7 @@ func (args *Args) NextUint16(name, desc string) uint16 {
 		err    error
 	)
 
-	args.addUsage(name, desc)
+	args.RegisterUsage(name, desc)
 
 	arg, newArgs, err := next(name, args.args)
 
@@ -341,7 +341,7 @@ func (args *Args) NextUint8(name, desc string) uint8 {
 		err    error
 	)
 
-	args.addUsage(name, desc)
+	args.RegisterUsage(name, desc)
 
 	arg, newArgs, err := next(name, args.args)
 
@@ -369,7 +369,7 @@ func (args *Args) NextUint(name, desc string) uint {
 		err    error
 	)
 
-	args.addUsage(name, desc)
+	args.RegisterUsage(name, desc)
 
 	arg, newArgs, err := next(name, args.args)
 
@@ -399,7 +399,7 @@ func (args *Args) NextOption(
 		err    error
 	)
 
-	args.addUsage(name, desc)
+	args.RegisterUsage(name, desc)
 
 	arg, newArgs, err := next(name, args.args)
 

@@ -28,7 +28,7 @@ package szargs
 // Returns the string value and a boolean indicating whether the flag was
 // found.
 func (args *Args) ValueString(flag, desc string) (string, bool) {
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 	result, found, newArgs, err := argFlag(flag).value(args.args)
 	args.args = newArgs
 	args.PushErr(err)
@@ -54,7 +54,7 @@ func (args *Args) ValueFloat64(flag, desc string) (float64, bool) {
 		err    error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
@@ -89,7 +89,7 @@ func (args *Args) ValueFloat32(flag, desc string) (float32, bool) {
 		err    error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
@@ -124,7 +124,7 @@ func (args *Args) ValueInt64(flag, desc string) (int64, bool) {
 		err    error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
@@ -159,7 +159,7 @@ func (args *Args) ValueInt32(flag, desc string) (int32, bool) {
 		err    error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
@@ -194,7 +194,7 @@ func (args *Args) ValueInt16(flag, desc string) (int16, bool) {
 		err    error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
@@ -229,7 +229,7 @@ func (args *Args) ValueInt8(flag, desc string) (int8, bool) {
 		err    error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
@@ -264,7 +264,7 @@ func (args *Args) ValueInt(flag, desc string) (int, bool) {
 		err    error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
@@ -299,7 +299,7 @@ func (args *Args) ValueUint64(flag, desc string) (uint64, bool) {
 		err    error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
@@ -334,7 +334,7 @@ func (args *Args) ValueUint32(flag, desc string) (uint32, bool) {
 		err    error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
@@ -369,7 +369,7 @@ func (args *Args) ValueUint16(flag, desc string) (uint16, bool) {
 		err    error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
@@ -404,7 +404,7 @@ func (args *Args) ValueUint8(flag, desc string) (uint8, bool) {
 		err    error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
@@ -439,7 +439,7 @@ func (args *Args) ValueUint(flag, desc string) (uint, bool) {
 		err    error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	arg, found, newArgs, err := argFlag(flag).value(args.args)
 
@@ -475,7 +475,7 @@ func (args *Args) ValueOption(
 		err    error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	arg, found, newArgs, err := argFlag(flag).value(args.args)
 

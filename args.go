@@ -108,7 +108,9 @@ func (args *Args) addBodyLine(lineToAdd string) {
 	args.usageBody += lineAsAdded + "\n"
 }
 
-func (args *Args) addUsage(item, desc string) {
+// RegisterUsage registers a new flag and its description if and only if the
+// flag has not been already  registered.
+func (args *Args) RegisterUsage(item, desc string) {
 	if !args.usageDefined[item] {
 		lines := strings.Split(args.usageHeader, "\n")
 		line := lines[len(lines)-1]
@@ -222,7 +224,7 @@ func (args *Args) AddSynopsis(s string) {
 func (args *Args) Count(flag, desc string) int {
 	var count int
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	count, args.args = argFlag(flag).count(args.args)
 
@@ -236,7 +238,7 @@ func (args *Args) Is(flag, desc string) bool {
 		err   error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	found, args.args, err = argFlag(flag).is(args.args)
 	if err != nil {

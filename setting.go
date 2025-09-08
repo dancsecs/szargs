@@ -66,7 +66,7 @@ func setting(
 func (args *Args) SettingString(
 	flag, env, def, desc string,
 ) string {
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 	result, cleanedArgs, srcErr, err := setting(flag, env, def, args.Args())
 	args.args = cleanedArgs
 
@@ -99,7 +99,7 @@ func (args *Args) SettingFloat64(
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	value, cleanedArgs, srcErr, err = setting(
 		flag, env, defaultStandIn, args.Args(),
@@ -150,7 +150,7 @@ func (args *Args) SettingFloat32(
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	value, cleanedArgs, srcErr, err = setting(
 		flag, env, defaultStandIn, args.Args(),
@@ -200,7 +200,7 @@ func (args *Args) SettingInt64(
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	value, cleanedArgs, srcErr, err = setting(
 		flag, env, defaultStandIn, args.Args(),
@@ -250,7 +250,7 @@ func (args *Args) SettingInt32(
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	value, cleanedArgs, srcErr, err = setting(
 		flag, env, defaultStandIn, args.Args(),
@@ -300,7 +300,7 @@ func (args *Args) SettingInt16(
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	value, cleanedArgs, srcErr, err = setting(
 		flag, env, defaultStandIn, args.Args(),
@@ -350,7 +350,7 @@ func (args *Args) SettingInt8(
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	value, cleanedArgs, srcErr, err = setting(
 		flag, env, defaultStandIn, args.Args(),
@@ -400,7 +400,7 @@ func (args *Args) SettingInt(
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	value, cleanedArgs, srcErr, err = setting(
 		flag, env, defaultStandIn, args.Args(),
@@ -450,7 +450,7 @@ func (args *Args) SettingUint64(
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	value, cleanedArgs, srcErr, err = setting(
 		flag, env, defaultStandIn, args.Args(),
@@ -500,7 +500,7 @@ func (args *Args) SettingUint32(
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	value, cleanedArgs, srcErr, err = setting(
 		flag, env, defaultStandIn, args.Args(),
@@ -550,7 +550,7 @@ func (args *Args) SettingUint16(
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	value, cleanedArgs, srcErr, err = setting(
 		flag, env, defaultStandIn, args.Args(),
@@ -600,7 +600,7 @@ func (args *Args) SettingUint8(
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	value, cleanedArgs, srcErr, err = setting(
 		flag, env, defaultStandIn, args.Args(),
@@ -650,7 +650,7 @@ func (args *Args) SettingUint(
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	value, cleanedArgs, srcErr, err = setting(
 		flag, env, defaultStandIn, args.Args(),
@@ -700,7 +700,7 @@ func (args *Args) SettingOption(
 		err         error
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	value, cleanedArgs, srcErr, err = setting(
 		flag, env, defaultStandIn, args.Args(),
@@ -750,7 +750,7 @@ func (args *Args) SettingIs(flag, env string, desc string) bool {
 		result bool
 	)
 
-	args.addUsage(flag, desc)
+	args.RegisterUsage(flag, desc)
 
 	result = args.Is(flag, desc)
 
