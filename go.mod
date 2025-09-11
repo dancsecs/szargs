@@ -2,7 +2,7 @@ module github.com/dancsecs/szargs
 
 go 1.25
 
-require github.com/dancsecs/sztestlog v0.0.10
+require github.com/dancsecs/sztestlog v0.0.11
 
 require (
 	github.com/dancsecs/szlog v0.0.12 // indirect
