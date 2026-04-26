@@ -25,7 +25,10 @@ import (
 	"strings"
 )
 
-const defaultLineWidth = 75
+const (
+	usagePrefix      = "usage: "
+	defaultLineWidth = 75
+)
 
 // Args provides a single point to access and extract program arguments.
 type Args struct {
@@ -61,7 +64,7 @@ func New(programDesc string, args []string) *Args {
 	if len(args) < 1 {
 		return &Args{
 			usageDefined:  make(map[string]bool),
-			usageHeader:   "    NotDefined",
+			usageHeader:   usagePrefix + "NotDefined",
 			usageSynopsis: nil,
 			usageBody:     "",
 			programName:   "NotDefined",
@@ -80,7 +83,7 @@ func New(programDesc string, args []string) *Args {
 
 	return &Args{
 		usageDefined:  make(map[string]bool),
-		usageHeader:   "    " + filepath.Base(args[0]),
+		usageHeader:   usagePrefix + filepath.Base(args[0]),
 		usageSynopsis: nil,
 		usageBody:     "",
 		programName:   filepath.Base(args[0]),
@@ -118,12 +121,10 @@ func (args *Args) RegisterUsage(item, desc string) {
 		if len(line)+len(item)+1 < args.lineWidth {
 			args.usageHeader += " " + item
 		} else {
+			prefixLength := len(usagePrefix) + len(args.programName) + 1
 			args.usageHeader += "" +
 				"\n" +
-				strings.Repeat(
-					" ",
-					5+len(args.programName), //nolint:mnd // Ok.
-				) +
+				strings.Repeat(" ", prefixLength) +
 				item
 		}
 
@@ -184,34 +185,27 @@ func (args *Args) UsageWidth(newLineWidth int) {
 	args.lineWidth = newLineWidth
 }
 
-//		Usage returns a usage message based on the parsed arguments.
-//	   /*
-//	   # Usage
-//
-//	   Golang to 'github' markdown.
-//
-//	       gotomd [options] [path ...]
-//
-//	   	[-v | --verbose ...]
-//	   		Provide more information when processing.
-//
-//	   */
+// Usage returns a usage messages representing the Args object.
 func (args *Args) Usage() string {
 	var header string
 
 	if len(args.usageSynopsis) > 0 {
-		for _, s := range args.usageSynopsis {
-			header += "\n    " + args.programName + " " + s
+		for i, synopsis := range args.usageSynopsis {
+			if i == 0 {
+				header += "\n" + usagePrefix
+			} else {
+				header += "\n" + strings.Repeat(" ", len(usagePrefix))
+			}
+
+			header += args.programName + " " + synopsis
 		}
 	} else {
 		header = "\n" + args.usageHeader
 	}
 
-	return "# Usage: " + args.programName +
+	return header[1:] +
 		"\n\n" +
 		args.programDesc +
-		"\n" +
-		header +
 		args.usageBody
 }
 

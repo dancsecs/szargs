@@ -40,11 +40,9 @@ func TestSzargs_New_NoArgs(t *testing.T) {
 	chk.StrSlice(
 		strings.Split(args.Usage(), "\n"),
 		[]string{
-			"# Usage: NotDefined",
+			"usage: NotDefined",
 			"",
 			"description",
-			"",
-			"    NotDefined",
 		},
 	)
 
@@ -111,13 +109,11 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 	chk.StrSlice(
 		strings.Split(args.Usage(), "\n"),
 		[]string{
-			"# Usage: noProgName",
+			"usage: noProgName [ -v | --verbose] [-f|--flag] [-g|--group] " +
+				"[-h|--human]",
+			"                  [-q|--quick_mode] [-o|--over]",
 			"",
 			"description",
-			"",
-			"    noProgName [ -v | --verbose] [-f|--flag] [-g|--group] " +
-				"[-h|--human]",
-			"               [-q|--quick_mode] [-o|--over]",
 			"",
 			"    [ -v | --verbose]",
 			"        how chatty should I be",
@@ -177,11 +173,9 @@ func TestSzargs_New_AmbiguousIsName(t *testing.T) {
 	chk.StrSlice(
 		strings.Split(args.Usage(), "\n"),
 		[]string{
-			"# Usage: noProgName",
+			"usage: noProgName [ -v | --verbose] [-f|--flag]",
 			"",
 			"description",
-			"",
-			"    noProgName [ -v | --verbose] [-f|--flag]",
 			"",
 			"    [ -v | --verbose]",
 			"        how chatty should I be",
@@ -259,11 +253,9 @@ func TestSzargs_Synopsis(t *testing.T) {
 	chk.StrSlice(
 		strings.Split(args.Usage(), "\n"),
 		[]string{
-			"# Usage: noProgName",
+			"usage: noProgName [OPTION ...] [PATH ...]",
 			"",
 			"description",
-			"",
-			"    noProgName [OPTION ...] [PATH ...]",
 			"",
 			"    [ -v | --verbose]",
 			"        how chatty should I be",
@@ -307,12 +299,10 @@ func TestSzargs_SynopsisTwo(t *testing.T) {
 	chk.StrSlice(
 		strings.Split(args.Usage(), "\n"),
 		[]string{
-			"# Usage: noProgName",
+			"usage: noProgName [OPTION ...] [PATH ...]",
+			"       noProgName help [OPTION]",
 			"",
 			"description",
-			"",
-			"    noProgName [OPTION ...] [PATH ...]",
-			"    noProgName help [OPTION]",
 			"",
 			"    [ -v | --verbose]",
 			"        how chatty should I be",
