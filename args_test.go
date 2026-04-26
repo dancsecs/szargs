@@ -91,7 +91,7 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 	chk.False(
 		args.Is(
 			"[-f|--flag]",
-			"a test flag\n"+
+			"a test flag\n\n"+
 				"And a needlessly long sentence to over the eighty byte "+
 				"threshold so we can see a result of wrapping a line at "+
 				"eighty characters."+

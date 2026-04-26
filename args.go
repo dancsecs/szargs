@@ -68,7 +68,7 @@ func New(programDesc string, args []string) *Args {
 			usageSynopsis: nil,
 			usageBody:     "",
 			programName:   "NotDefined",
-			programDesc:   programDesc,
+			programDesc:   prepareDesc(programDesc),
 			lineWidth:     defaultLineWidth,
 			args:          nil,
 			err:           ErrNoArgs,
@@ -87,7 +87,7 @@ func New(programDesc string, args []string) *Args {
 		usageSynopsis: nil,
 		usageBody:     "",
 		programName:   filepath.Base(args[0]),
-		programDesc:   programDesc,
+		programDesc:   prepareDesc(programDesc),
 		lineWidth:     defaultLineWidth,
 		args:          myArgs,
 		err:           nil,
@@ -111,6 +111,26 @@ func (args *Args) addBodyLine(lineToAdd string) {
 	args.usageBody += lineAsAdded + "\n"
 }
 
+func prepareDesc(desc string) string {
+	var res strings.Builder
+
+	lines := strings.Split(strings.Trim(desc, "\n"), "\n")
+	first := 0
+
+	for i, l := range lines {
+		if l == "" {
+			res.WriteString(strings.Join(lines[first:i], " ") + "\n")
+			first = i + 1
+		}
+	}
+
+	if first < len(lines) {
+		res.WriteString(strings.Join(lines[first:], " "))
+	}
+
+	return strings.TrimRight(res.String(), "\n")
+}
+
 // RegisterUsage registers a new flag and its description if and only if the
 // flag has not been already  registered.
 func (args *Args) RegisterUsage(item, desc string) {
@@ -129,7 +149,7 @@ func (args *Args) RegisterUsage(item, desc string) {
 		}
 
 		args.usageBody += "\n\n    " + item
-		for _, line = range strings.Split(desc, "\n") {
+		for _, line = range strings.Split(prepareDesc(desc), "\n") {
 			args.usageBody += "\n"
 			args.addBodyLine(line)
 		}
