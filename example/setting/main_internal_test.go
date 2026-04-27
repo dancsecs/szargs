@@ -26,16 +26,14 @@ import (
 )
 
 const usageText = "" +
-	"programName" +
-	"\n" +
+	"usage: programName " +
+	"[-t | --temp {c,f}]" +
+	"\n\n" +
 	"A simple demo of a setting." +
 	"\n\n" +
-	"Usage: programName " +
-	"[-t | --temp {c,f}]" +
-	"\n\n" +
-	"[-t | --temp {c,f}]" +
+	"    [-t | --temp {c,f}]" +
 	"\n" +
-	"Temperature measurement to use (celsius or fahrenheit)." +
+	"        Temperature measurement to use (celsius or fahrenheit)." +
 	""
 
 func Test_PASS_Default(t *testing.T) {

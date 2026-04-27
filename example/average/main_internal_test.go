@@ -26,22 +26,21 @@ import (
 )
 
 const usageText = "" +
-	"programName\n" +
+	"usage: programName" +
+	" [-v | --verbose ...]" +
+	" [-n | --number float64 ...]\n" +
+	"                   [operation]" +
+	"\n\n" +
 	"A simple utility to add or average a number list.\n" +
 	"\n" +
-	"Usage: programName" +
-	" [-v | --verbose ...]" +
-	" [-n | --number float64 ...]" +
-	" [operation]" +
-	"\n\n" +
-	"[-v | --verbose ...]\n" +
-	"The verbose level.\n" +
+	"    [-v | --verbose ...]\n" +
+	"        The verbose level.\n" +
 	"\n" +
-	"[-n | --number float64 ...]\n" +
-	"The numbers to act on.\n" +
+	"    [-n | --number float64 ...]\n" +
+	"        The numbers to act on.\n" +
 	"\n" +
-	"[operation]\n" +
-	"The operation (add or average) defaulting to add.\n" +
+	"    [operation]\n" +
+	"        The operation (add or average) defaulting to add." +
 	""
 
 // Passing test.

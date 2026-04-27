@@ -26,20 +26,18 @@ import (
 )
 
 const usageText = "" +
-	"programName" +
-	"\n" +
-	"A simple demo of value flags." +
-	"\n\n" +
-	"Usage: programName" +
+	"usage: programName" +
 	" [-n | --name] [-b | --byte]" +
 	"\n\n" +
-	"[-n | --name]" +
-	"\n" +
-	"The name string value." +
+	"A simple demo of value flags." +
 	"\n\n" +
-	"[-b | --byte]" +
+	"    [-n | --name]" +
 	"\n" +
-	"The byte (0-255) value." +
+	"        The name string value." +
+	"\n\n" +
+	"    [-b | --byte]" +
+	"\n" +
+	"        The byte (0-255) value." +
 	""
 
 func Test_PASS_NothingToDoAdd(t *testing.T) {

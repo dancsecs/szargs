@@ -94,23 +94,6 @@ func New(programDesc string, args []string) *Args {
 	}
 }
 
-func (args *Args) addBodyLine(lineToAdd string) {
-	lineAsAdded := "       " // Just 7. First added word will make it 8.
-	for _, wrd := range strings.Split(
-		strings.TrimSpace(lineToAdd),
-		" ",
-	) {
-		if len(lineAsAdded)+len(wrd)+1 < args.lineWidth {
-			lineAsAdded += " " + wrd
-		} else {
-			args.usageBody += lineAsAdded + "\n"
-			lineAsAdded = "        " + wrd
-		}
-	}
-
-	args.usageBody += lineAsAdded + "\n"
-}
-
 func prepareDesc(desc string) string {
 	var res strings.Builder
 
@@ -148,10 +131,11 @@ func (args *Args) RegisterUsage(item, desc string) {
 				item
 		}
 
-		args.usageBody += "\n\n    " + item
+		args.usageBody += "\n    " + item
 		for _, line = range strings.Split(prepareDesc(desc), "\n") {
 			args.usageBody += "\n"
-			args.addBodyLine(line)
+			lineAsAdded := reflowLine("        ", line, args.lineWidth)
+			args.usageBody += lineAsAdded + "\n"
 		}
 
 		args.usageDefined[item] = true
@@ -223,10 +207,13 @@ func (args *Args) Usage() string {
 		header = "\n" + args.usageHeader
 	}
 
-	return header[1:] +
-		"\n\n" +
-		args.programDesc +
-		args.usageBody
+	return strings.TrimRight(
+		header[1:]+
+			"\n\n"+
+			reflowLine("", args.programDesc, args.lineWidth)+"\n"+
+			args.usageBody,
+		"\n",
+	)
 }
 
 // AddSynopsis includes another static synopsis message.

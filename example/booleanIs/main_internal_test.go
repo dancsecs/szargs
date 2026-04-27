@@ -26,17 +26,14 @@ import (
 )
 
 const usageText = "" +
-	"programName" +
-	"\n" +
-	"A simple utility to demo identifying a boolean flag." +
-	"\n\n" +
-	"Usage: programName" +
+	"usage: programName" +
 	" [-t | --true]" +
 	"\n\n" +
-	"[-t | --true]" +
+	"A simple utility to demo identifying a boolean flag." +
+	"\n\n" +
+	"    [-t | --true]" +
 	"\n" +
-	"A single flag indicating true." +
-	""
+	"        A single flag indicating true."
 
 func Test_PASS_NothingToDoAdd(t *testing.T) {
 	chk := sztestlog.CaptureLogAndStderrAndStdout(t)

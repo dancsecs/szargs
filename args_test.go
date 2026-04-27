@@ -79,7 +79,13 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
 
-	args := szargs.New("description", []string{"noProgName"})
+	description := "" +
+		"This description will demo\n" +
+		"patching together shorter lines and then reformat\n" +
+		"to fit in the usage width.\n\n\n" +
+		"While this line starts anew."
+
+	args := szargs.New(description, []string{"noProgName"})
 
 	args.UsageWidth(78) // Otherwise -f description changes.
 
@@ -113,11 +119,14 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 				"[-h|--human]",
 			"                  [-q|--quick_mode] [-o|--over]",
 			"",
-			"description",
+			"This description will demo patching together shorter lines and " +
+				"then reformat",
+			"to fit in the usage width.",
+			"",
+			"While this line starts anew.",
 			"",
 			"    [ -v | --verbose]",
 			"        how chatty should I be",
-			"",
 			"",
 			"    [-f|--flag]",
 			"        a test flag",
@@ -127,22 +136,17 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 			"        we can see a result of wrapping a line at " +
 				"eighty characters.",
 			"",
-			"",
 			"    [-g|--group]",
 			"        a group flag",
-			"",
 			"",
 			"    [-h|--human]",
 			"        a human flag",
 			"",
-			"",
 			"    [-q|--quick_mode]",
 			"        magic mystery method",
 			"",
-			"",
 			"    [-o|--over]",
 			"        an over flag",
-			"",
 		},
 	)
 
@@ -180,10 +184,8 @@ func TestSzargs_New_AmbiguousIsName(t *testing.T) {
 			"    [ -v | --verbose]",
 			"        how chatty should I be",
 			"",
-			"",
 			"    [-f|--flag]",
 			"        a test flag",
-			"",
 		},
 	)
 
@@ -260,10 +262,8 @@ func TestSzargs_Synopsis(t *testing.T) {
 			"    [ -v | --verbose]",
 			"        how chatty should I be",
 			"",
-			"",
 			"    [-f|--flag]",
 			"        a test flag",
-			"",
 		},
 	)
 
@@ -307,10 +307,8 @@ func TestSzargs_SynopsisTwo(t *testing.T) {
 			"    [ -v | --verbose]",
 			"        how chatty should I be",
 			"",
-			"",
 			"    [-f|--flag]",
 			"        a test flag",
-			"",
 		},
 	)
 

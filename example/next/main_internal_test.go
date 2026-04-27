@@ -26,21 +26,18 @@ import (
 )
 
 const usageText = "" +
-	"programName" +
-	"\n" +
-	"A simple demo of repeating a string." +
-	"\n\n" +
-	"Usage: programName" +
+	"usage: programName" +
 	" message [times]" +
 	"\n\n" +
-	"message" +
-	"\n" +
-	"What to repeat." +
+	"A simple demo of repeating a string." +
 	"\n\n" +
-	"[times]" +
+	"    message" +
 	"\n" +
-	"The number of times to repeat.  Defaults to 3." +
-	""
+	"        What to repeat." +
+	"\n" +
+	"\n" +
+	"    [times]\n" +
+	"        The number of times to repeat.  Defaults to 3."
 
 func Test_PASS_DefaultCount(t *testing.T) {
 	chk := sztestlog.CaptureLogAndStderrAndStdout(t)

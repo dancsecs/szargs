@@ -26,16 +26,14 @@ import (
 )
 
 const usageText = "" +
-	"programName" +
-	"\n" +
-	"A simple utility to demo counting boolean flags." +
-	"\n\n" +
-	"Usage: programName" +
+	"usage: programName" +
 	" [-c | --count ...]" +
 	"\n\n" +
-	"[-c | --count ...]" +
+	"A simple utility to demo counting boolean flags." +
+	"\n\n" +
+	"    [-c | --count ...]" +
 	"\n" +
-	"How many times?" +
+	"        How many times?" +
 	""
 
 func Test_PASS_NothingToDoAdd(t *testing.T) {
