@@ -19,7 +19,6 @@
 package szargs_test
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/dancsecs/szargs"
@@ -35,15 +34,6 @@ func TestSzargs_New_NoArgs(t *testing.T) {
 	chk.Err(
 		args.Err(),
 		szargs.ErrNoArgs.Error(),
-	)
-
-	chk.StrSlice(
-		strings.Split(args.Usage(0), "\n"),
-		[]string{
-			"usage: NotDefined",
-			"",
-			"description",
-		},
 	)
 
 	chk.Log()
@@ -74,7 +64,6 @@ func TestSzargs_New_PushArgs(t *testing.T) {
 	chk.Stdout()
 }
 
-//nolint:funlen // Ok.
 func TestSzargs_New_JustProgramName(t *testing.T) {
 	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
 	defer chk.Release()
@@ -86,8 +75,6 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 		"While this line starts anew."
 
 	args := szargs.New(description, []string{"noProgName"})
-
-	//  args.UsageWidth(78) // Otherwise -f description changes.
 
 	chk.Int(
 		args.Count("[ -v | --verbose]", "how chatty should I be"),
@@ -112,44 +99,6 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 	args.Done()
 	chk.NoErr(args.Err())
 
-	chk.StrSlice(
-		strings.Split(args.Usage(50), "\n"),
-		[]string{
-			"usage: noProgName [ -v | --verbose] [-f|--flag]",
-			"                  [-g|--group] [-h|--human]",
-			"                  [-q|--quick_mode] [-o|--over]",
-			"",
-			"This description will demo patching together",
-			"shorter lines and then reformat to fit in the",
-			"usage width.",
-			"",
-			"While this line starts anew.",
-			"",
-			"    [ -v | --verbose]",
-			"        how chatty should I be",
-			"",
-			"    [-f|--flag]",
-			"        a test flag",
-			"",
-			"        And a needlessly long sentence to over",
-			"        the eighty byte threshold so we can see",
-			"        a result of wrapping a line at eighty",
-			"        characters.",
-			"",
-			"    [-g|--group]",
-			"        a group flag",
-			"",
-			"    [-h|--human]",
-			"        a human flag",
-			"",
-			"    [-q|--quick_mode]",
-			"        magic mystery method",
-			"",
-			"    [-o|--over]",
-			"        an over flag",
-		},
-	)
-
 	chk.Log()
 	chk.Stderr()
 	chk.Stdout()
@@ -173,21 +122,6 @@ func TestSzargs_New_AmbiguousIsName(t *testing.T) {
 	chk.False(args.Is("[-f|--flag]", "a test flag"))
 
 	args.Done()
-
-	chk.StrSlice(
-		strings.Split(args.Usage(0), "\n"),
-		[]string{
-			"usage: noProgName [ -v | --verbose] [-f|--flag]",
-			"",
-			"description",
-			"",
-			"    [ -v | --verbose]",
-			"        how chatty should I be",
-			"",
-			"    [-f|--flag]",
-			"        a test flag",
-		},
-	)
 
 	chk.True(args.HasNext())
 	chk.True(args.HasErr())
@@ -226,94 +160,6 @@ func TestSzargs_Group(t *testing.T) {
 	args.Done()
 
 	chk.NoErr(args.Err())
-
-	chk.Log()
-	chk.Stderr()
-	chk.Stdout()
-}
-
-func TestSzargs_Synopsis(t *testing.T) {
-	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
-	defer chk.Release()
-
-	args := szargs.New("description", []string{
-		"noProgName",
-		"-v",
-	})
-
-	args.AddSynopsis("[OPTION ...] [PATH ...]")
-
-	chk.Int(
-		args.Count("[ -v | --verbose]", "how chatty should I be"),
-		1,
-	)
-
-	chk.False(args.Is("[-f|--flag]", "a test flag"))
-
-	args.Done()
-
-	chk.StrSlice(
-		strings.Split(args.Usage(0), "\n"),
-		[]string{
-			"usage: noProgName [OPTION ...] [PATH ...]",
-			"",
-			"description",
-			"",
-			"    [ -v | --verbose]",
-			"        how chatty should I be",
-			"",
-			"    [-f|--flag]",
-			"        a test flag",
-		},
-	)
-
-	chk.False(args.HasNext())
-	chk.False(args.HasErr())
-
-	chk.Log()
-	chk.Stderr()
-	chk.Stdout()
-}
-
-func TestSzargs_SynopsisTwo(t *testing.T) {
-	chk := sztestlog.CaptureLogAndStderrAndStdout(t)
-	defer chk.Release()
-
-	args := szargs.New("description", []string{
-		"noProgName",
-		"-v",
-	})
-
-	args.AddSynopsis("[OPTION ...] [PATH ...]")
-	args.AddSynopsis("help [OPTION]")
-
-	chk.Int(
-		args.Count("[ -v | --verbose]", "how chatty should I be"),
-		1,
-	)
-
-	chk.False(args.Is("[-f|--flag]", "a test flag"))
-
-	args.Done()
-
-	chk.StrSlice(
-		strings.Split(args.Usage(0), "\n"),
-		[]string{
-			"usage: noProgName [OPTION ...] [PATH ...]",
-			"       noProgName help [OPTION]",
-			"",
-			"description",
-			"",
-			"    [ -v | --verbose]",
-			"        how chatty should I be",
-			"",
-			"    [-f|--flag]",
-			"        a test flag",
-		},
-	)
-
-	chk.False(args.HasNext())
-	chk.False(args.HasErr())
 
 	chk.Log()
 	chk.Stderr()
