@@ -29,7 +29,7 @@ func main() {
 	args.Done() // All arguments should have consumed.
 
 	if args.HasErr() {
-		fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage())
+		fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage(0))
 	} else {
 		fmt.Printf("%d Name(s) Found: %v.\n", len(nameList), nameList)
 		fmt.Printf("%d Byte(s) Found: %v.\n", len(byteList), byteList)

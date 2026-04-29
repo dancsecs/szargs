@@ -51,7 +51,7 @@ func main() {
 
 	// Report parsing errors or process the arguments.
 	if args.HasErr() {
-		fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage())
+		fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage(0))
 	} else {
 		process(numbers, operation)
 	}

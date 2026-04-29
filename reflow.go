@@ -22,11 +22,49 @@ import (
 	"strings"
 )
 
+func reflowLines(prefix, lines string, width int) string {
+	var (
+		lastLineWasBlank = true
+		reflowedLine     string
+		res              strings.Builder
+	)
+
+	for line := range strings.SplitSeq(lines, "\n") {
+		if line == "" && lastLineWasBlank {
+			continue
+		}
+
+		lastLineWasBlank = line == ""
+
+		// Line is also indented to ass this to the prefix.
+		lineMinusIndent := strings.TrimLeft(line, " ")
+		indent := len(line) - len(lineMinusIndent)
+
+		if indent > 0 {
+			reflowedLine = reflowLine(
+				prefix+strings.Repeat(" ", indent),
+				line,
+				width,
+			)
+		} else {
+			reflowedLine = reflowLine(prefix, line, width)
+		}
+
+		res.WriteString(reflowedLine + "\n")
+	}
+
+	return strings.TrimRight(res.String(), "\n")
+}
+
 func reflowLine(prefix, line string, width int) string {
 	var (
 		res     string
 		newLine string
 	)
+
+	if line == "" {
+		return ""
+	}
 
 	isFirstLine := true
 	prefixWidth := len(prefix)

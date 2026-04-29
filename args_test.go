@@ -38,7 +38,7 @@ func TestSzargs_New_NoArgs(t *testing.T) {
 	)
 
 	chk.StrSlice(
-		strings.Split(args.Usage(), "\n"),
+		strings.Split(args.Usage(0), "\n"),
 		[]string{
 			"usage: NotDefined",
 			"",
@@ -82,12 +82,12 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 	description := "" +
 		"This description will demo\n" +
 		"patching together shorter lines and then reformat\n" +
-		"to fit in the usage width.\n\n\n" +
+		"to fit in the usage width.\n\n" +
 		"While this line starts anew."
 
 	args := szargs.New(description, []string{"noProgName"})
 
-	args.UsageWidth(78) // Otherwise -f description changes.
+	//  args.UsageWidth(78) // Otherwise -f description changes.
 
 	chk.Int(
 		args.Count("[ -v | --verbose]", "how chatty should I be"),
@@ -113,15 +113,15 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 	chk.NoErr(args.Err())
 
 	chk.StrSlice(
-		strings.Split(args.Usage(), "\n"),
+		strings.Split(args.Usage(50), "\n"),
 		[]string{
-			"usage: noProgName [ -v | --verbose] [-f|--flag] [-g|--group] " +
-				"[-h|--human]",
+			"usage: noProgName [ -v | --verbose] [-f|--flag]",
+			"                  [-g|--group] [-h|--human]",
 			"                  [-q|--quick_mode] [-o|--over]",
 			"",
-			"This description will demo patching together shorter lines and " +
-				"then reformat",
-			"to fit in the usage width.",
+			"This description will demo patching together",
+			"shorter lines and then reformat to fit in the",
+			"usage width.",
 			"",
 			"While this line starts anew.",
 			"",
@@ -131,10 +131,10 @@ func TestSzargs_New_JustProgramName(t *testing.T) {
 			"    [-f|--flag]",
 			"        a test flag",
 			"",
-			"        And a needlessly long sentence to over the eighty " +
-				"byte threshold so",
-			"        we can see a result of wrapping a line at " +
-				"eighty characters.",
+			"        And a needlessly long sentence to over",
+			"        the eighty byte threshold so we can see",
+			"        a result of wrapping a line at eighty",
+			"        characters.",
 			"",
 			"    [-g|--group]",
 			"        a group flag",
@@ -175,7 +175,7 @@ func TestSzargs_New_AmbiguousIsName(t *testing.T) {
 	args.Done()
 
 	chk.StrSlice(
-		strings.Split(args.Usage(), "\n"),
+		strings.Split(args.Usage(0), "\n"),
 		[]string{
 			"usage: noProgName [ -v | --verbose] [-f|--flag]",
 			"",
@@ -253,7 +253,7 @@ func TestSzargs_Synopsis(t *testing.T) {
 	args.Done()
 
 	chk.StrSlice(
-		strings.Split(args.Usage(), "\n"),
+		strings.Split(args.Usage(0), "\n"),
 		[]string{
 			"usage: noProgName [OPTION ...] [PATH ...]",
 			"",
@@ -297,7 +297,7 @@ func TestSzargs_SynopsisTwo(t *testing.T) {
 	args.Done()
 
 	chk.StrSlice(
-		strings.Split(args.Usage(), "\n"),
+		strings.Split(args.Usage(0), "\n"),
 		[]string{
 			"usage: noProgName [OPTION ...] [PATH ...]",
 			"       noProgName help [OPTION]",

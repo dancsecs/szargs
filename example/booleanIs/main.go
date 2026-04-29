@@ -24,7 +24,7 @@ func main() {
 	args.Done() // All arguments should have consumed.
 
 	if args.HasErr() {
-		fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage())
+		fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage(0))
 	} else {
 		if isTrue {
 			fmt.Println("Is true.")

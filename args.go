@@ -20,14 +20,17 @@ package szargs
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"golang.org/x/term"
 )
 
 const (
 	usagePrefix      = "usage: "
-	defaultLineWidth = 75
+	defaultLineWidth = 79
 )
 
 // Args provides a single point to access and extract program arguments.
@@ -64,11 +67,11 @@ func New(programDesc string, args []string) *Args {
 	if len(args) < 1 {
 		return &Args{
 			usageDefined:  make(map[string]bool),
-			usageHeader:   usagePrefix + "NotDefined",
+			usageHeader:   "",
 			usageSynopsis: nil,
 			usageBody:     "",
 			programName:   "NotDefined",
-			programDesc:   prepareDesc(programDesc),
+			programDesc:   prepareDesc("", programDesc),
 			lineWidth:     defaultLineWidth,
 			args:          nil,
 			err:           ErrNoArgs,
@@ -83,18 +86,20 @@ func New(programDesc string, args []string) *Args {
 
 	return &Args{
 		usageDefined:  make(map[string]bool),
-		usageHeader:   usagePrefix + filepath.Base(args[0]),
+		usageHeader:   "",
 		usageSynopsis: nil,
 		usageBody:     "",
 		programName:   filepath.Base(args[0]),
-		programDesc:   prepareDesc(programDesc),
+		programDesc:   prepareDesc("", programDesc),
 		lineWidth:     defaultLineWidth,
 		args:          myArgs,
 		err:           nil,
 	}
 }
 
-func prepareDesc(desc string) string {
+// Prepare desc appends paragraphs (separated by blank lines) to single lines
+// in preparation for reflowing to different widths.
+func prepareDesc(prefix, desc string) string {
 	var res strings.Builder
 
 	lines := strings.Split(strings.Trim(desc, "\n"), "\n")
@@ -102,13 +107,18 @@ func prepareDesc(desc string) string {
 
 	for i, l := range lines {
 		if l == "" {
-			res.WriteString(strings.Join(lines[first:i], " ") + "\n")
+			res.WriteString(
+				prefix +
+					strings.Join(lines[first:i], " ") +
+					"\n\n",
+			)
+
 			first = i + 1
 		}
 	}
 
 	if first < len(lines) {
-		res.WriteString(strings.Join(lines[first:], " "))
+		res.WriteString(prefix + strings.Join(lines[first:], " "))
 	}
 
 	return strings.TrimRight(res.String(), "\n")
@@ -118,26 +128,9 @@ func prepareDesc(desc string) string {
 // flag has not been already  registered.
 func (args *Args) RegisterUsage(item, desc string) {
 	if !args.usageDefined[item] {
-		lines := strings.Split(args.usageHeader, "\n")
-		line := lines[len(lines)-1]
-
-		if len(line)+len(item)+1 < args.lineWidth {
-			args.usageHeader += " " + item
-		} else {
-			prefixLength := len(usagePrefix) + len(args.programName) + 1
-			args.usageHeader += "" +
-				"\n" +
-				strings.Repeat(" ", prefixLength) +
-				item
-		}
-
-		args.usageBody += "\n    " + item
-		for _, line = range strings.Split(prepareDesc(desc), "\n") {
-			args.usageBody += "\n"
-			lineAsAdded := reflowLine("        ", line, args.lineWidth)
-			args.usageBody += lineAsAdded + "\n"
-		}
-
+		args.usageHeader += " " + item
+		args.usageBody += "\n" + item + "\n" +
+			prepareDesc("    ", desc) + "\n"
 		args.usageDefined[item] = true
 	}
 }
@@ -182,16 +175,35 @@ func (args *Args) Args() []string {
 	return cpy
 }
 
-// UsageWidth sets the width the usage message.  Must be called before any
-// options or arguments are removed otherwise the width will only apply to
-// subsequent additions.
-func (args *Args) UsageWidth(newLineWidth int) {
-	args.lineWidth = newLineWidth
+func terminalWidth() int {
+	fd := int(os.Stdout.Fd())
+
+	if term.IsTerminal(fd) {
+		w, _, err := term.GetSize(fd)
+		if err == nil {
+			return w
+		}
+	}
+
+	return defaultLineWidth
 }
 
-// Usage returns a usage messages representing the Args object.
-func (args *Args) Usage() string {
+// Usage returns a usage messages representing the Args object.  It is
+// formatted to the lineWidth provided.  A zero uses the defaultLineWidth
+// while a negative value caused an effort to determine if writing to a
+// terminal and if so using its width otherwise defaulting.
+func (args *Args) Usage(lineWidth int) string {
 	var header string
+
+	if lineWidth < 0 {
+		lineWidth = terminalWidth()
+	}
+
+	if lineWidth < 1 {
+		lineWidth = defaultLineWidth
+	}
+
+	args.lineWidth = lineWidth
 
 	if len(args.usageSynopsis) > 0 {
 		for i, synopsis := range args.usageSynopsis {
@@ -204,14 +216,21 @@ func (args *Args) Usage() string {
 			header += args.programName + " " + synopsis
 		}
 	} else {
-		header = "\n" + args.usageHeader
+		if args.usageHeader == "" {
+			header = "\nusage: " + args.programName
+		} else {
+			header = "\n" + reflowLine("usage: "+args.programName+" ",
+				args.usageHeader,
+				args.lineWidth,
+			)
+		}
 	}
 
 	return strings.TrimRight(
 		header[1:]+
 			"\n\n"+
-			reflowLine("", args.programDesc, args.lineWidth)+"\n"+
-			args.usageBody,
+			reflowLine("", args.programDesc, args.lineWidth)+"\n\n"+
+			reflowLines("    ", args.usageBody, args.lineWidth)+"\n",
 		"\n",
 	)
 }
