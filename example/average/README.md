@@ -1,4 +1,6 @@
-<!--- gotomd::Auto:: See github.com/dancsecs/gotomd **DO NOT MODIFY** -->
+<!---             *****  AUTO GENERATED:  DO NOT MODIFY  ***** -->
+<!---           MODIFY TEMPLATE: 'example/average/.README.gtm.md' -->
+<!---               See: 'https://github.com/dancsecs/gotomd' -->
 
 <!---
    Szerszam argument library: szargs.
@@ -20,7 +22,6 @@
 
 # Example Average
 
-
 ## Overview
 
 This larger example demos several aspects of using the szargs library.  It
@@ -31,7 +32,6 @@ program.
 
 It demonstrates the following szargs functions:
 
-<!--- gotomd::Bgn::dcln::./../../New Args.Count Args.ValuesFloat64 Args.HasNext Args.PushArg Args.NextOption Args.Done Args.HasErr Args.Err Args.Usage -->
 ```go
 // New creates a new Args object based in the arguments passed.  The first
 // element of the arguments must be the program name.
@@ -75,10 +75,12 @@ func (args *Args) HasErr() bool
 // arguments.
 func (args *Args) Err() error
 
-// Usage returns a usage message based on the parsed arguments.
-func (args *Args) Usage() string
+// Usage returns a usage messages representing the Args object.  It is
+// formatted to the lineWidth provided.  A zero uses the defaultLineWidth
+// while a negative value caused an effort to determine if writing to a
+// terminal and if so using its width otherwise defaulting.
+func (args *Args) Usage(lineWidth int) string
 ```
-<!--- gotomd::End::dcln::./../../New Args.Count Args.ValuesFloat64 Args.HasNext Args.PushArg Args.NextOption Args.Done Args.HasErr Args.Err Args.Usage -->
 
 ## Contents
 
@@ -96,14 +98,12 @@ func (args *Args) Usage() string
     - [Example: **FAIL**: Invalid Operation](#fail-invalid-operation)
     - [Example: **FAIL**: Invalid Number](#fail-invalid-number)
 
-
 ## Source
 
 The sources used for this example are broken into three files as follows:
 
 This defines the verbose processing.
 
-<!--- gotomd::Bgn::file::./verbose.go -->
 ```bash
 cat ./verbose.go
 ```
@@ -131,12 +131,10 @@ func sayPrintf(minLevel int, msgFormat string, msgArgs ...any) {
     }
 }
 ```
-<!--- gotomd::End::file::./verbose.go -->
 
 and this defines all of the processing to be performed if and only if the
 arguments are parsed without any errors.
 
-<!--- gotomd::Bgn::file::./process.go -->
 ```bash
 cat ./process.go
 ```
@@ -168,11 +166,9 @@ func process(numbers []float64, operation string) {
     }
 }
 ```
-<!--- gotomd::End::file::./process.go -->
 
 finally the mainline where the arguments are parsed is defined as follows:
 
-<!--- gotomd::Bgn::file::./main.go -->
 ```bash
 cat ./main.go
 ```
@@ -231,14 +227,12 @@ func main() {
 
     // Report parsing errors or process the arguments.
     if args.HasErr() {
-        fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage())
+        fmt.Fprintf(os.Stderr, "Error: %v\n\n%s\n", args.Err(), args.Usage(0))
     } else {
         process(numbers, operation)
     }
 }
 ```
-<!--- gotomd::End::file::./main.go -->
-
 
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
@@ -247,249 +241,219 @@ func main() {
 
 An empty list sums and averages to zero for simplicity. No error is reported.
 
-<!--- gotomd::Bgn::run::./. -->
 ---
 ```bash
 go run .
 ```
 
-<pre>
+```
 Sum: 0.000000
-</pre>
+```
 ---
-<!--- gotomd::End::run::./. -->
 
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
 ### **PASS**: Just Operation Add
 
-<!--- gotomd::Bgn::run::./. add -->
 ---
 ```bash
 go run . add
 ```
 
-<pre>
+```
 Sum: 0.000000
-</pre>
+```
 ---
-<!--- gotomd::End::run::./. add -->
 
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
 ### **PASS**: Just Operation Average
 
-<!--- gotomd::Bgn::run::./. average -->
 ---
 ```bash
 go run . average
 ```
 
-<pre>
+```
 Avg: 0.000000
-</pre>
+```
 ---
-<!--- gotomd::End::run::./. average -->
 
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
 ### **PASS**: One Number Defaulting To Add
 
-<!--- gotomd::Bgn::run::./. -n 1000 -->
 ---
 ```bash
 go run . -n 1000
 ```
 
-<pre>
+```
 Sum: 1000.000000
-</pre>
+```
 ---
-<!--- gotomd::End::run::./. -n 1000 -->
 
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
 ### **PASS**: Two Numbers Defaulting To Add
 
-<!--- gotomd::Bgn::run::./. --number 1 -n 2 -->
 ---
 ```bash
 go run . --number 1 -n 2
 ```
 
-<pre>
+```
 Sum: 3.000000
-</pre>
+```
 ---
-<!--- gotomd::End::run::./. --number 1 -n 2 -->
 
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
 ### **PASS**: One Number Average
 
-<!--- gotomd::Bgn::run::./. --number 512 average -->
 ---
 ```bash
 go run . --number 512 average
 ```
 
-<pre>
+```
 Avg: 512.000000
-</pre>
+```
 ---
-<!--- gotomd::End::run::./. --number 512 average -->
 
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
 ### **PASS**: Two Number Average
 
-<!--- gotomd::Bgn::run::./. -n 100 -n 200 average -->
 ---
 ```bash
 go run . -n 100 -n 200 average
 ```
 
-<pre>
+```
 Avg: 150.000000
-</pre>
+```
 ---
-<!--- gotomd::End::run::./. -n 100 -n 200 average -->
 
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
 ### **PASS**: Three Number Add
 
-<!--- gotomd::Bgn::run::./. --number 23 --number 56 -n 22 add -->
 ---
 ```bash
 go run . --number 23 --number 56 -n 22 add
 ```
 
-<pre>
+```
 Sum: 101.000000
-</pre>
+```
 ---
-<!--- gotomd::End::run::./. --number 23 --number 56 -n 22 add -->
 
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
 ### **PASS**: Three Number Average
 
-<!--- gotomd::Bgn::run::./. -n 23 -n 56 -n 22 average -->
 ---
 ```bash
 go run . -n 23 -n 56 -n 22 average
 ```
 
-<pre>
+```
 Avg: 33.666667
-</pre>
+```
 ---
-<!--- gotomd::End::run::./. -n 23 -n 56 -n 22 average -->
 
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
 ### **FAIL**: Extra Unknown Argument
 
-<!--- gotomd::Bgn::run::./. add extraUnknownArgument -->
 ---
 ```bash
 go run . add extraUnknownArgument
 ```
 
-<pre>
+```
 Error: unexpected argument: [extraUnknownArgument]
 
-average
+usage: average [-v | --verbose ...] [-n | --number float64 ...] [operation]
+
 A simple utility to add or average a number list.
 
-Usage: average [-v | --verbose ...] [-n | --number float64 ...] [operation]
+    [-v | --verbose ...]
+        The verbose level.
 
-[-v | --verbose ...]
-The verbose level.
+    [-n | --number float64 ...]
+        The numbers to act on.
 
-[-n | --number float64 ...]
-The numbers to act on.
-
-[operation]
-The operation (add or average) defaulting to add.
-</pre>
+    [operation]
+        The operation (add or average) defaulting to add.
+```
 ---
-<!--- gotomd::End::run::./. add extraUnknownArgument -->
 
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
-
 ### **FAIL**: Invalid operation
 
-<!--- gotomd::Bgn::run::./. invalidOperation -->
 ---
 ```bash
 go run . invalidOperation
 ```
 
-<pre>
+```
 Error: invalid option: 'invalidOperation' ([operation] must be one of [add average])
 
-average
+usage: average [-v | --verbose ...] [-n | --number float64 ...] [operation]
+
 A simple utility to add or average a number list.
 
-Usage: average [-v | --verbose ...] [-n | --number float64 ...] [operation]
+    [-v | --verbose ...]
+        The verbose level.
 
-[-v | --verbose ...]
-The verbose level.
+    [-n | --number float64 ...]
+        The numbers to act on.
 
-[-n | --number float64 ...]
-The numbers to act on.
-
-[operation]
-The operation (add or average) defaulting to add.
-</pre>
+    [operation]
+        The operation (add or average) defaulting to add.
+```
 ---
-<!--- gotomd::End::run::./. invalidOperation -->
 
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)
 
-
 ### **FAIL**: Invalid Number
 
-
-<!--- gotomd::Bgn::run::./. -n invalidNumber -->
 ---
 ```bash
 go run . -n invalidNumber
 ```
 
-<pre>
+```
 Error: invalid float64: syntax: [-n | --number float64 ...]: 'invalidNumber'
 
-average
+usage: average [-v | --verbose ...] [-n | --number float64 ...] [operation]
+
 A simple utility to add or average a number list.
 
-Usage: average [-v | --verbose ...] [-n | --number float64 ...] [operation]
+    [-v | --verbose ...]
+        The verbose level.
 
-[-v | --verbose ...]
-The verbose level.
+    [-n | --number float64 ...]
+        The numbers to act on.
 
-[-n | --number float64 ...]
-The numbers to act on.
-
-[operation]
-The operation (add or average) defaulting to add.
-</pre>
+    [operation]
+        The operation (add or average) defaulting to add.
+```
 ---
-<!--- gotomd::End::run::./. -n invalidNumber -->
 
 [Top of Page](#example-average) --
 [Szargs Contents](../../README.md#contents)

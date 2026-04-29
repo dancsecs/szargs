@@ -1,4 +1,6 @@
-<!--- gotomd::Auto:: See github.com/dancsecs/gotomd **DO NOT MODIFY** -->
+<!---             *****  AUTO GENERATED:  DO NOT MODIFY  ***** -->
+<!---                   MODIFY TEMPLATE: '.README.gtm.md' -->
+<!---               See: 'https://github.com/dancsecs/gotomd' -->
 
 <!---
    Szerszam argument library: szargs.
@@ -20,10 +22,8 @@
 
 # Package szargs
 
-
 ## Overview
 
-<!--- gotomd::Bgn::doc::./package -->
 ```go
 package szargs
 ```
@@ -65,8 +65,6 @@ life.
 
 NOTE: Documentation reviewed and polished with the assistance of ChatGPT from
 OpenAI.
-<!--- gotomd::End::doc::./package -->
-
 
 ---
 
@@ -138,7 +136,6 @@ into three categories as follows:
 
 Relating to errors:
 
-<!--- gotomd::Bgn::dcln::./Args.HasErr Args.PushErr Args.Err -->
 ```go
 // HasErr returns true if any errors have been encountered or registered.
 func (args *Args) HasErr() bool
@@ -150,11 +147,9 @@ func (args *Args) PushErr(err error)
 // arguments.
 func (args *Args) Err() error
 ```
-<!--- gotomd::End::dcln::./Args.HasErr Args.PushErr Args.Err -->
 
 Relating to the raw argument list:
 
-<!--- gotomd::Bgn::dcln::./Args.HasNext Args.PushArg Args.Args -->
 ```go
 // HasNext returns true if any arguments remain unabsorbed.
 func (args *Args) HasNext() bool
@@ -165,30 +160,19 @@ func (args *Args) PushArg(arg string)
 // Args returns a copy of the current argument list.
 func (args *Args) Args() []string
 ```
-<!--- gotomd::End::dcln::./Args.HasNext Args.PushArg Args.Args -->
 
 And general reporting and processing:
 
-<!--- gotomd::Bgn::dcln::./Args.Usage Args.Done -->
 ```go
-// Usage returns a usage message based on the parsed arguments.
-//        /*
-//        # Usage
-// 
-//        Golang to 'github' markdown.
-// 
-//            gotomd [options] [path ...]
-// 
-//            [-v | --verbose ...]
-//                Provide more information when processing.
-// 
-//        */
-func (args *Args) Usage() string
+// Usage returns a usage messages representing the Args object.  It is
+// formatted to the lineWidth provided.  A zero uses the defaultLineWidth
+// while a negative value caused an effort to determine if writing to a
+// terminal and if so using its width otherwise defaulting.
+func (args *Args) Usage(lineWidth int) string
 
 // Done registers an error if there are any remaining arguments.
 func (args *Args) Done()
 ```
-<!--- gotomd::End::dcln::./Args.Usage Args.Done -->
 
 A working example can be found in the example directory as described here:
 - [Example: Average](example/average/README.md#example-average)
@@ -201,7 +185,6 @@ Boolean flags are defined by their presence only.  If they are present then
 they are true and/or counted.  If not present then they are considered false.
 There are two methods that operate with boolean flags as follows:
 
-<!--- gotomd::Bgn::dcln::./Args.Is Args.Count -->
 ```go
 // Is returns true if the flag is present one and only one time.
 func (args *Args) Is(flag, desc string) bool
@@ -209,7 +192,6 @@ func (args *Args) Is(flag, desc string) bool
 // Count returns the number of times the flag appears.
 func (args *Args) Count(flag, desc string) int
 ```
-<!--- gotomd::End::dcln::./Args.Is Args.Count -->
 
 - [Example: Boolean Is](example/booleanIs/README.md#example-boolean-is)
 - [Example: Boolean Count](example/booleanCount/README.md#example-boolean-count)
@@ -221,7 +203,6 @@ func (args *Args) Count(flag, desc string) int
 A flagged argument has two components: the flag followed by the value. It may
 only appear once in the argument list.  The basic string functions are:
 
-<!--- gotomd::Bgn::dcln::./Args.ValueString Args.ValueOption -->
 ```go
 // ValueString scans for a specific flagged argument and captures its
 // following value as a string. The flag and its value are removed from the
@@ -245,11 +226,9 @@ func (args *Args) ValueString(flag, desc string) (string, bool)
 // Returns the value and a boolean indicating whether the flag was found.
 func (args *Args) ValueOption(flag string, validOptions []string, desc string) (string, bool)
 ```
-<!--- gotomd::End::dcln::./Args.ValueString Args.ValueOption -->
 
 with numeric versions for basic go data types
 
-<!--- gotomd::Bgn::dcls::./Args.ValueFloat64 Args.ValueFloat32 Args.ValueInt64 Args.ValueInt32 Args.ValueInt16 Args.ValueInt8 Args.ValueInt Args.ValueUint64 Args.ValueUint32 Args.ValueUint16 Args.ValueUint8 Args.ValueUint -->
 ```go
 func (args *Args) ValueFloat64(flag, desc string) (float64, bool)
 func (args *Args) ValueFloat32(flag, desc string) (float32, bool)
@@ -264,10 +243,8 @@ func (args *Args) ValueUint16(flag, desc string) (uint16, bool)
 func (args *Args) ValueUint8(flag, desc string) (uint8, bool)
 func (args *Args) ValueUint(flag, desc string) (uint, bool)
 ```
-<!--- gotomd::End::dcls::./Args.ValueFloat64 Args.ValueFloat32 Args.ValueInt64 Args.ValueInt32 Args.ValueInt16 Args.ValueInt8 Args.ValueInt Args.ValueUint64 Args.ValueUint32 Args.ValueUint16 Args.ValueUint8 Args.ValueUint -->
 
 [Contents](#contents)
-
 
 ## Value Flagged Slices
 
@@ -275,7 +252,6 @@ A flagged argument has two components: the flag followed by the value.
 Multiple instances may be provided with all the values collected and returned
 in a slice. The basic string functions are:
 
-<!--- gotomd::Bgn::dcln::./Args.ValuesString Args.ValuesOption -->
 ```go
 // ValuesString scans for repeated instances of the specified flag and
 // captures the following values as a slice of strings. The flags and values
@@ -297,11 +273,9 @@ func (args *Args) ValuesString(flag, desc string) []string
 // Returns a slice of the captured values.
 func (args *Args) ValuesOption(flag string, validOptions []string, desc string) []string
 ```
-<!--- gotomd::End::dcln::./Args.ValuesString Args.ValuesOption -->
 
 with numeric versions for basic go data types
 
-<!--- gotomd::Bgn::dcls::./Args.ValuesFloat64 Args.ValuesFloat32 Args.ValuesInt64 Args.ValuesInt32 Args.ValuesInt16 Args.ValuesInt8 Args.ValuesInt Args.ValuesUint64 Args.ValuesUint32 Args.ValuesUint16 Args.ValuesUint8 Args.ValuesUint -->
 ```go
 func (args *Args) ValuesFloat64(flag, desc string) []float64
 func (args *Args) ValuesFloat32(flag, desc string) []float32
@@ -316,7 +290,6 @@ func (args *Args) ValuesUint16(flag, desc string) []uint16
 func (args *Args) ValuesUint8(flag, desc string) []uint8
 func (args *Args) ValuesUint(flag, desc string) []uint
 ```
-<!--- gotomd::End::dcls::./Args.ValuesFloat64 Args.ValuesFloat32 Args.ValuesInt64 Args.ValuesInt32 Args.ValuesInt16 Args.ValuesInt8 Args.ValuesInt Args.ValuesUint64 Args.ValuesUint32 Args.ValuesUint16 Args.ValuesUint8 Args.ValuesUint -->
 
 [Contents](#contents)
 
@@ -327,7 +300,6 @@ flagged arguments are not automatically distinguished from positional ones, it
 is recommended to extract all flagged arguments first—before retrieving
 positional ones.  The basic string functions are:
 
-<!--- gotomd::Bgn::dcln::./Args.NextString Args.NextOption -->
 ```go
 // NextString removes and returns the next argument from the argument list.
 // 
@@ -345,11 +317,9 @@ func (args *Args) NextString(name, desc string) string
 // Returns the next argument value.
 func (args *Args) NextOption(name string, validOptions []string, desc string) string
 ```
-<!--- gotomd::End::dcln::./Args.NextString Args.NextOption -->
 
 with numeric versions for basic go data types
 
-<!--- gotomd::Bgn::dcls::./Args.NextFloat64 Args.NextFloat32 Args.NextInt64 Args.NextInt32 Args.NextInt16 Args.NextInt8 Args.NextInt Args.NextUint64 Args.NextUint32 Args.NextUint16 Args.NextUint8 Args.NextUint -->
 ```go
 func (args *Args) NextFloat64(name, desc string) float64
 func (args *Args) NextFloat32(name, desc string) float32
@@ -364,8 +334,6 @@ func (args *Args) NextUint16(name, desc string) uint16
 func (args *Args) NextUint8(name, desc string) uint8
 func (args *Args) NextUint(name, desc string) uint
 ```
-<!--- gotomd::End::dcls::./Args.NextFloat64 Args.NextFloat32 Args.NextInt64 Args.NextInt32 Args.NextInt16 Args.NextInt8 Args.NextInt Args.NextUint64 Args.NextUint32 Args.NextUint16 Args.NextUint8 Args.NextUint -->
-
 
 [Contents](#contents)
 
@@ -375,7 +343,6 @@ A setting implements an argument that has a default that can be overridden by
 an system environment variable which can be overridden by a flagged value. The
 basic string functions are:
 
-<!--- gotomd::Bgn::dcln::./Args.SettingString Args.SettingOption  Args.SettingIs -->
 ```go
 // SettingString returns a configuration value based on a default,
 // optionally overridden by an environment variable, and further overridden
@@ -409,11 +376,9 @@ func (args *Args) SettingOption(flag, env string, def string, validOptions []str
 // Returns the resulting boolean value.
 func (args *Args) SettingIs(flag, env string, desc string) bool
 ```
-<!--- gotomd::End::dcln::./Args.SettingString Args.SettingOption  Args.SettingIs -->
 
 with numeric versions for basic go data types
 
-<!--- gotomd::Bgn::dcls::./Args.SettingFloat64 Args.SettingFloat32 Args.SettingInt64 Args.SettingInt32 Args.SettingInt16 Args.SettingInt8 Args.SettingInt Args.SettingUint64 Args.SettingUint32 Args.SettingUint16 Args.SettingUint8 Args.SettingUint -->
 ```go
 func (args *Args) SettingFloat64(flag, env string, def float64, desc string) float64
 func (args *Args) SettingFloat32(flag, env string, def float32, desc string) float32
@@ -428,7 +393,5 @@ func (args *Args) SettingUint16(flag, env string, def uint16, desc string) uint1
 func (args *Args) SettingUint8(flag, env string, def uint8, desc string) uint8
 func (args *Args) SettingUint(flag, env string, def uint, desc string) uint
 ```
-<!--- gotomd::End::dcls::./Args.SettingFloat64 Args.SettingFloat32 Args.SettingInt64 Args.SettingInt32 Args.SettingInt16 Args.SettingInt8 Args.SettingInt Args.SettingUint64 Args.SettingUint32 Args.SettingUint16 Args.SettingUint8 Args.SettingUint -->
-
 
 [Contents](#contents)
