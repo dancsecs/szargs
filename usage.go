@@ -57,11 +57,14 @@ func prepareDesc(prefix, desc string) string {
 	return strings.TrimRight(res.String(), "\n")
 }
 
+const spacePlaceholder = "\u001f"
+
 // RegisterUsage registers a new flag and its description if and only if the
 // flag has not been already  registered.
 func (args *Args) RegisterUsage(item, desc string) {
 	if !args.usageDefined[item] {
-		args.usageHeader += " " + item
+		args.usageHeader += " " +
+			strings.ReplaceAll(item, " ", spacePlaceholder)
 		args.usageBody += "\n" + item + "\n" +
 			prepareDesc("    ", desc) + "\n"
 		args.usageDefined[item] = true
@@ -126,6 +129,7 @@ func (args *Args) Usage(lineWidth int) string {
 				args.usageHeader,
 				args.lineWidth,
 			)
+			header = strings.ReplaceAll(header, spacePlaceholder, " ")
 		}
 	}
 
