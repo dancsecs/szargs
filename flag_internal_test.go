@@ -154,8 +154,8 @@ func TestSzargs_ValueBeginning(t *testing.T) {
 	chk := sztestlog.CaptureNothing(t)
 	defer chk.Release()
 
-	value, found, args, err := argFlag("[-n theName]").value(
-		[]string{"-n", "theName"},
+	value, found, args, err := argFlag("[-n | --name <all|name>]").value(
+		[]string{"--name", "theName"},
 	)
 
 	chk.Str(value, "theName")

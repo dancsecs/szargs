@@ -35,18 +35,18 @@ var (
 type argFlag string
 
 func (a argFlag) argIs(arg string) bool {
-	flagVersions := strings.Split(strings.Trim(string(a), "[]{}."), "|")
-	lastFlagVersion := len(flagVersions) - 1
+	flagVersions := strings.Split(strings.Trim(string(a), "[]{}"), "|")
 
-	for i, flg := range flagVersions {
-		flg = strings.TrimSpace(flg)
-		if i == lastFlagVersion {
-			// Remove optional arg name.  IE: [-n theName]
-			flg = strings.Split(flg, " ")[0]
+	for _, flgEntry := range flagVersions {
+		flg := strings.Split(strings.TrimSpace(flgEntry), " ")
+
+		if flg[0] == arg {
+			return true
 		}
 
-		if flg == arg {
-			return true
+		if len(flg) > 1 {
+			// Stop optional arg name.  IE: [-n | --name all|theName]
+			break
 		}
 	}
 
