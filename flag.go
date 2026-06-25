@@ -35,9 +35,10 @@ var (
 type argFlag string
 
 func (a argFlag) argIs(arg string) bool {
-	flagVersions := strings.Split(strings.Trim(string(a), "[]{}"), "|")
+	// Remove optional [], mandatory {} and repeating ... frames.
+	cleanFlg := strings.Trim(string(a), "[]{}.")
 
-	for _, flgEntry := range flagVersions {
+	for flgEntry := range strings.SplitSeq(cleanFlg, "|") {
 		flg := strings.Split(strings.TrimSpace(flgEntry), " ")
 
 		if flg[0] == arg {
